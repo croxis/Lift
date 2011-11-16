@@ -6,4 +6,4 @@ main: net.croxis.plugins.lift.Lift
 name: Lift
 startup: postworld
 version: '1.0'
-depend: [spout]
+depend: [Spout]
