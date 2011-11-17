@@ -18,6 +18,10 @@ public class LiftRedstoneListener  extends BlockListener {
 		this.plugin = instance;
 	} 
 	public void onBlockRedstoneChange(BlockRedstoneEvent event){
+		long totalTime = System.currentTimeMillis();
+		if (plugin.debug)
+			System.out.println("Starting elevator generation");
+		
 		Block block = event.getBlock();
 		Elevator elevator = null;
 		if ((block.getType() == Material.STONE_BUTTON) && (!block.isBlockIndirectlyPowered())){
@@ -76,7 +80,11 @@ public class LiftRedstoneListener  extends BlockListener {
 					//Restore gravity to normal
 				}
 			}
+			long tt = System.currentTimeMillis() - totalTime;
+			if (plugin.debug)
+				System.out.println("Total time: " + tt);
 		}
+		
 	}
 	
 }
