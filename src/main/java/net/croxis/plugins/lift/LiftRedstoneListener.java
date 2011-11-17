@@ -25,7 +25,11 @@ public class LiftRedstoneListener  extends BlockListener {
 		Block block = event.getBlock();
 		Elevator elevator = null;
 		if ((block.getType() == Material.STONE_BUTTON) && (!block.isBlockIndirectlyPowered())){
+			long startTime = System.currentTimeMillis();
 			elevator = new Elevator(this.plugin, block);
+			if (plugin.debug)
+				System.out.println("Elevator gen took: " + (System.currentTimeMillis() - startTime));
+			
 			int y = block.getY();
 			Floor startFloor = elevator.getFloormap().get(y);
 			//Sign is:
@@ -33,7 +37,7 @@ public class LiftRedstoneListener  extends BlockListener {
 			//5
 			//Destination Floor:
 			//10
-			int destination = Integer.parseInt(((Sign) block.getRelative(BlockFace.UP)).getLine(3));
+			int destination = Integer.parseInt(((Sign) block.getRelative(BlockFace.UP).getState()).getLine(3));			
 			for (Floor destFloor : elevator.getFloormap().values()){
 				if (destFloor.getFloor() == destination){
 					//Get all players in elevator shaft (at floor of button pusher if possible)
