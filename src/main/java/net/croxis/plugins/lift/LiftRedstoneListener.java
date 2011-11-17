@@ -18,10 +18,6 @@ public class LiftRedstoneListener  extends BlockListener {
 		this.plugin = instance;
 	} 
 	public void onBlockRedstoneChange(BlockRedstoneEvent event){
-		long totalTime = System.currentTimeMillis();
-		if (plugin.debug)
-			System.out.println("Starting elevator generation");
-		
 		Block block = event.getBlock();
 		Elevator elevator = null;
 		if ((block.getType() == Material.STONE_BUTTON) && (!block.isBlockIndirectlyPowered())){
@@ -37,7 +33,11 @@ public class LiftRedstoneListener  extends BlockListener {
 			//5
 			//Destination Floor:
 			//10
-			int destination = Integer.parseInt(((Sign) block.getRelative(BlockFace.UP).getState()).getLine(3));			
+			int destination = Integer.parseInt(((Sign) block.getRelative(BlockFace.UP).getState()).getLine(3));	
+			if (plugin.debug){
+				System.out.println("Elevator start floor:" + startFloor.getFloor());
+				System.out.println("Elevator destination floor:" + destination);
+			}
 			for (Floor destFloor : elevator.getFloormap().values()){
 				if (destFloor.getFloor() == destination){
 					//Get all players in elevator shaft (at floor of button pusher if possible)
@@ -47,6 +47,8 @@ public class LiftRedstoneListener  extends BlockListener {
 						if (elevator.isInShaftAtFloor(p, startFloor)){
 							elevator.addPassenger(p);
 							SpoutManager.getPlayer(p).setGravityMultiplier(0);
+							if (plugin.debug)
+								System.out.println("Adding as passenger:" + p.getName());
 						}
 					}
 					//Disable all glass inbetween players and destination
@@ -84,7 +86,7 @@ public class LiftRedstoneListener  extends BlockListener {
 					//Restore gravity to normal
 				}
 			}
-			long tt = System.currentTimeMillis() - totalTime;
+			long tt = System.currentTimeMillis() - startTime;
 			if (plugin.debug)
 				System.out.println("Total time: " + tt);
 		}
