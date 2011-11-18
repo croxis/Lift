@@ -57,12 +57,12 @@ public class Elevator implements Runnable {
 			while (true){
 				y1 = y1 + 1;
 				Block testBlock = b.getWorld().getBlockAt(x, y1, z);
-				if (plugin.debug)
-					System.out.println("Is valid block: " + isValidBlock(testBlock) + " at " + testBlock.getLocation());
+				//if (plugin.debug)
+				//	System.out.println("Is valid block: " + isValidBlock(testBlock) + " at " + testBlock.getLocation());
 				if (!isValidBlock(testBlock))
 					break;
-				if (plugin.debug)
-					System.out.println("Yes I did make it this far");
+				//if (plugin.debug)
+				//	System.out.println("Yes I did make it this far");
 				if (testBlock.getType() == Material.STONE_BUTTON){
 					if (plugin.debug)
 						System.out.println("Button found at: " + testBlock.getLocation());
@@ -175,7 +175,11 @@ public class Elevator implements Runnable {
 	}
 
 	public void run() {
+		if (plugin.debug)
+			System.out.println("Passenger location: " + passengers.get(0).getLocation().getY());
 		if(passengers.get(0).getLocation().getY() < destinationY && passengers.get(0).getLocation().getY() > destinationY-2){
+			if (plugin.debug)
+				System.out.println("Halting lift");
 			for (Player p : passengers){
 				p.setVelocity(new Vector(0,0,0));
 			}

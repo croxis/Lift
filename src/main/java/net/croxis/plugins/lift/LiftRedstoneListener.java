@@ -49,7 +49,7 @@ public class LiftRedstoneListener  extends BlockListener {
 							elevator.addPassenger(p);
 							SpoutManager.getPlayer(p).setGravityMultiplier(0);
 							if (plugin.debug)
-								System.out.println("Adding as passenger:" + p.getName());
+								System.out.println("Adding as passenger: " + p.getName());
 						}
 					}
 					//Disable all glass inbetween players and destination
