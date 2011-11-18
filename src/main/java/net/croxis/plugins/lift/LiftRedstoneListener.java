@@ -28,6 +28,7 @@ public class LiftRedstoneListener  extends BlockListener {
 			
 			int y = block.getY();
 			Floor startFloor = elevator.getFloormap().get(y);
+			elevator.startFloor = startFloor;
 			//Sign is:
 			//Current Floor:
 			//5
@@ -43,7 +44,7 @@ public class LiftRedstoneListener  extends BlockListener {
 				if (destFloor.getFloor() == destination){
 					//Get all players in elevator shaft (at floor of button pusher if possible)
 					//And set their gravity to 0
-					//ArrayList<Player> players = new ArrayList<Player>();
+					elevator.destFloor = destFloor;
 					for (Player p : block.getWorld().getPlayers()){
 						if (elevator.isInShaftAtFloor(p, startFloor)){
 							elevator.addPassenger(p);
@@ -76,11 +77,11 @@ public class LiftRedstoneListener  extends BlockListener {
 					//Apply impulse to players
 					for (Player p : elevator.getPassengers()){
 						if (destFloor.getY() > startFloor.getY())
-							p.setVelocity(new Vector(0.0D, 0.5D, 0.0D));
+							p.setVelocity(new Vector(0.0D, 0.4D, 0.0D));
 						else
-							p.setVelocity(new Vector(0.0D, -0.5D, 0.0D));
+							p.setVelocity(new Vector(0.0D, -0.4D, 0.0D));
 					}
-					elevator.taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, elevator, 10, 10);
+					elevator.taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, elevator, 5, 5);
 					//Identify when button pusher is at desination
 					//Reenable all glass
 					//Remove impulse

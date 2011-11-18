@@ -20,6 +20,8 @@ public class Elevator implements Runnable {
 	public int destinationY = 0;//Destination y coordinate
 	public ArrayList<Block> glassBlocks = new ArrayList<Block>();
 	public int taskid = 0;
+	public Floor destFloor = null;
+	public Floor startFloor = null;
 	private Lift plugin;
 
 	public Elevator(Lift plugin, Block block) {
@@ -177,6 +179,14 @@ public class Elevator implements Runnable {
 	public void run() {
 		if (plugin.debug)
 			System.out.println("Passenger location: " + passengers.get(0).getLocation().getY());
+		//Re apply impulse as it does seem to run out
+		for (Player p : getPassengers()){
+			if (destFloor.getY() > startFloor.getY())
+				p.setVelocity(new Vector(0.0D, 0.4D, 0.0D));
+			else
+				p.setVelocity(new Vector(0.0D, -0.4D, 0.0D));
+		}
+		
 		if(passengers.get(0).getLocation().getY() < destinationY && passengers.get(0).getLocation().getY() > destinationY-2){
 			if (plugin.debug)
 				System.out.println("Halting lift");
