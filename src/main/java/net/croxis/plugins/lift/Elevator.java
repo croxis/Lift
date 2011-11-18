@@ -25,11 +25,11 @@ public class Elevator implements Runnable {
 	public Elevator(Lift plugin, Block block) {
 		this.plugin = plugin;
 		//ID the iron base block. 
-		int y=2;
-		while(block.getY() - y >= 0){
-			if (block.getY() - y == 0) //Gone too far with no base abort!
+		int yd = 2;
+		while(block.getY() - yd >= 0){
+			if (block.getY() - yd == 0) //Gone too far with no base abort!
 				return;
-			Block checkBlock = block.getWorld().getBlockAt(block.getX(), block.getY()-y, block.getZ());
+			Block checkBlock = block.getWorld().getBlockAt(block.getX(), block.getY()-yd, block.getZ());
 			if (isValidBlock(checkBlock)){
 				// Do nothing keep going
 			} else if (checkBlock.getType() == Material.IRON_BLOCK) {
@@ -37,10 +37,14 @@ public class Elevator implements Runnable {
 				break;
 			} else {
 				// Something is obstructing the elevator so stop
+				if (plugin.debug)
+					System.out.println("There is an obstruction");
 				return;
 			}
 		}
 		
+		if (plugin.debug)
+			System.out.println("Elevator area: " + floorBlocks.size());
 		
 		//Count all blocks up from base and make sure no obstructions to top floor
 		//Identify floors
@@ -56,6 +60,8 @@ public class Elevator implements Runnable {
 				if (!isValidBlock(testBlock))
 					break;
 				if (b.getType() == Material.STONE_BUTTON){
+					if (plugin.debug)
+						System.out.println("Button found at: " + b.getLocation());
 					if (testBlock.getRelative(BlockFace.DOWN, 2).getType() == Material.GLASS 
 							|| testBlock.getRelative(BlockFace.DOWN, 2).getType() == Material.IRON_BLOCK){
 						Floor floor = new Floor();
@@ -64,10 +70,13 @@ public class Elevator implements Runnable {
 							floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN)).getLine(1));
 						if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
 							floormap.put(y1, floor);
+						if (plugin.debug)
+							System.out.println("Floor added: " + b.getLocation());
 					}
 				}
 			}
 		}
+		
 		//Count all floors and order them -- Not needed due to treemap?
 		int floorNumber = 1;
 		for (Floor floor : floormap.values()){

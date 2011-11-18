@@ -35,6 +35,7 @@ public class LiftRedstoneListener  extends BlockListener {
 			//10
 			int destination = Integer.parseInt(((Sign) block.getRelative(BlockFace.UP).getState()).getLine(3));	
 			if (plugin.debug){
+				//STARTFLOOR IS NULL
 				System.out.println("Elevator start floor:" + startFloor.getFloor());
 				System.out.println("Elevator destination floor:" + destination);
 			}
