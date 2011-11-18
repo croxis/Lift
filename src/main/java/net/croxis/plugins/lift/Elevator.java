@@ -182,12 +182,12 @@ public class Elevator implements Runnable {
 		//Re apply impulse as it does seem to run out
 		for (Player p : getPassengers()){
 			if (destFloor.getY() > startFloor.getY())
-				p.setVelocity(new Vector(0.0D, 0.4D, 0.0D));
+				p.setVelocity(new Vector(0.0D, 0.35D, 0.0D));
 			else
-				p.setVelocity(new Vector(0.0D, -0.4D, 0.0D));
+				p.setVelocity(new Vector(0.0D, -0.35D, 0.0D));
 		}
 		
-		if(passengers.get(0).getLocation().getY() < destinationY && passengers.get(0).getLocation().getY() > destinationY-2){
+		if(passengers.get(0).getLocation().getY() < destFloor.getY()+1 && passengers.get(0).getLocation().getY() > destFloor.getY()-2){
 			if (plugin.debug)
 				System.out.println("Halting lift");
 			for (Player p : passengers){

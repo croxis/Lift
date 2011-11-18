@@ -35,16 +35,19 @@ public class LiftRedstoneListener  extends BlockListener {
 			//Destination Floor:
 			//10
 			int destination = Integer.parseInt(((Sign) block.getRelative(BlockFace.UP).getState()).getLine(3));	
-			if (plugin.debug){
-				//STARTFLOOR IS NULL
-				System.out.println("Elevator start floor:" + startFloor.getFloor());
-				System.out.println("Elevator destination floor:" + destination);
-			}
+			
 			for (Floor destFloor : elevator.getFloormap().values()){
 				if (destFloor.getFloor() == destination){
 					//Get all players in elevator shaft (at floor of button pusher if possible)
 					//And set their gravity to 0
 					elevator.destFloor = destFloor;
+					
+					if (plugin.debug){
+						System.out.println("Elevator start floor:" + startFloor.getFloor());
+						System.out.println("Elevator destination floor:" + destination);
+						System.out.println("Elevator destination y:" + destination);
+					}
+					
 					for (Player p : block.getWorld().getPlayers()){
 						if (elevator.isInShaftAtFloor(p, startFloor)){
 							elevator.addPassenger(p);
@@ -77,11 +80,12 @@ public class LiftRedstoneListener  extends BlockListener {
 					//Apply impulse to players
 					for (Player p : elevator.getPassengers()){
 						if (destFloor.getY() > startFloor.getY())
-							p.setVelocity(new Vector(0.0D, 0.4D, 0.0D));
+							p.setVelocity(new Vector(0.0D, 0.35D, 0.0D));
 						else
-							p.setVelocity(new Vector(0.0D, -0.4D, 0.0D));
+							p.setVelocity(new Vector(0.0D, -0.35D, 0.0D));
 					}
-					elevator.taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, elevator, 5, 5);
+					elevator.taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, elevator, 2, 2);
+					
 					//Identify when button pusher is at desination
 					//Reenable all glass
 					//Remove impulse
