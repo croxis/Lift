@@ -57,6 +57,8 @@ public class Elevator implements Runnable {
 			while (true){
 				y1 = y1 + 1;
 				Block testBlock = b.getWorld().getBlockAt(x, y1, z);
+				if (plugin.debug)
+					System.out.println("Is valid block: " + isValidBlock(testBlock) + " at " + testBlock.getLocation());
 				if (!isValidBlock(testBlock))
 					break;
 				if (b.getType() == Material.STONE_BUTTON){
