@@ -61,9 +61,11 @@ public class Elevator implements Runnable {
 					System.out.println("Is valid block: " + isValidBlock(testBlock) + " at " + testBlock.getLocation());
 				if (!isValidBlock(testBlock))
 					break;
-				if (b.getType() == Material.STONE_BUTTON){
+				if (plugin.debug)
+					System.out.println("Yes I did make it this far");
+				if (testBlock.getType() == Material.STONE_BUTTON){
 					if (plugin.debug)
-						System.out.println("Button found at: " + b.getLocation());
+						System.out.println("Button found at: " + testBlock.getLocation());
 					if (testBlock.getRelative(BlockFace.DOWN, 2).getType() == Material.GLASS 
 							|| testBlock.getRelative(BlockFace.DOWN, 2).getType() == Material.IRON_BLOCK){
 						Floor floor = new Floor();
