@@ -19,7 +19,7 @@ public class LiftPlayerListener extends PlayerListener{
 		if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
 			if (event.getClickedBlock().getType().equals(Material.WALL_SIGN) 
 					&& event.getClickedBlock().getRelative(BlockFace.DOWN).getType().equals(Material.STONE_BUTTON)){
-				Sign sign = (Sign)event.getClickedBlock().getState();
+				Sign sign = (Sign) event.getClickedBlock().getState();
 				elevator = new Elevator(this.plugin, event.getClickedBlock().getRelative(BlockFace.DOWN));
 				
 				if (elevator.getTotalFloors() < 2){
@@ -27,7 +27,6 @@ public class LiftPlayerListener extends PlayerListener{
 					return;
 				}
 				
-				int currentFloorInt;
 				int currentDestinationInt = 1;
 				Floor currentFloor = elevator.getFloorFromY(event.getClickedBlock().getRelative(BlockFace.DOWN).getY());
 				String sign1 = "Current Floor:";
