@@ -78,7 +78,7 @@ public class Elevator implements Runnable {
 						Floor floor = new Floor();
 						floor.setY(y1);
 						if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
-							floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
+							floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(2));
 						if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
 							floormap.put(y1, floor);
 						if (plugin.debug)
