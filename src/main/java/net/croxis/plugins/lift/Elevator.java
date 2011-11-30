@@ -110,8 +110,6 @@ public class Elevator implements Runnable {
 	
 	//Recursive function that constructs our list of blocks
 	public void scanFloorBlocks(Block block){
-		//NASTY DEBUG!
-		System.out.println("Floor check");
 		if (floorBlocks.size() >= 15)
 			return; //5x5 max, prevents infinite loops
 		else if (floorBlocks.contains(block))
@@ -203,7 +201,7 @@ public class Elevator implements Runnable {
 				p.setVelocity(new Vector(0.0D, -0.35D, 0.0D));
 		}
 		
-		if(passengers.get(0).getLocation().getY() < destFloor.getY()+0.9 && passengers.get(0).getLocation().getY() > destFloor.getY()-1){
+		if(passengers.get(0).getLocation().getY() < destFloor.getY()+0.7 && passengers.get(0).getLocation().getY() > destFloor.getY()-1){
 			if (plugin.debug)
 				System.out.println("Halting lift");
 			for (Player p : passengers){

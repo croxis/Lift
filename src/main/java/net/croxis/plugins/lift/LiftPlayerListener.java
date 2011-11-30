@@ -55,6 +55,7 @@ public class LiftPlayerListener extends PlayerListener{
 				sign.setLine(1, sign1);
 				sign.setLine(2, sign2);
 				sign.setLine(3, sign3);
+				sign.update();
 			}
 	}
 
