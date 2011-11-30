@@ -27,8 +27,12 @@ public class Elevator implements Runnable {
 	public Elevator(Lift plugin, Block block) {
 		this.plugin = plugin;
 		//ID the iron base block. 
+		if (plugin.debug)
+			System.out.println("Starting elevator gen");
 		int yd = 2;
 		while(block.getY() - yd >= 0){
+			if (plugin.debug)
+				System.out.println("Scanning: " + (block.getY() - yd));
 			if (block.getY() - yd == 0) //Gone too far with no base abort!
 				return;
 			Block checkBlock = block.getWorld().getBlockAt(block.getX(), block.getY()-yd, block.getZ());
@@ -43,6 +47,7 @@ public class Elevator implements Runnable {
 					System.out.println("There is an obstruction");
 				return;
 			}
+			yd = yd + 1;
 		}
 		
 		if (plugin.debug)
@@ -187,7 +192,7 @@ public class Elevator implements Runnable {
 				p.setVelocity(new Vector(0.0D, -0.35D, 0.0D));
 		}
 		
-		if(passengers.get(0).getLocation().getY() < destFloor.getY()+1 && passengers.get(0).getLocation().getY() > destFloor.getY()-2){
+		if(passengers.get(0).getLocation().getY() < destFloor.getY()+1 && passengers.get(0).getLocation().getY() > destFloor.getY()-1){
 			if (plugin.debug)
 				System.out.println("Halting lift");
 			for (Player p : passengers){
