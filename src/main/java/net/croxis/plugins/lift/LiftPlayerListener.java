@@ -38,7 +38,7 @@ public class LiftPlayerListener extends PlayerListener{
 					currentDestinationInt = 0;
 				//If the current line isn't valid number
 				try{
-					currentDestinationInt = Integer.parseInt(sign.getLine(4));
+					currentDestinationInt = Integer.parseInt(sign.getLine(3));
 				} catch (NumberFormatException e){
 					currentDestinationInt = 0;
 				}
