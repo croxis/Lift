@@ -1,7 +1,7 @@
 package net.croxis.plugins.lift;
 
 public class Floor {
-	private String name;
+	private String name = "";
 	private int y;
 	private int floor;
 	public String getName() {
@@ -9,6 +9,8 @@ public class Floor {
 	}
 	public void setName(String name) {
 		this.name = name;
+		if (name == null)
+			this.name = "";
 	}
 	public int getY() {
 		return y;

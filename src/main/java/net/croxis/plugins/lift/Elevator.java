@@ -25,14 +25,13 @@ public class Elevator implements Runnable {
 	private Lift plugin;
 
 	public Elevator(Lift plugin, Block block) {
+		long startTime = System.currentTimeMillis();
 		this.plugin = plugin;
 		//ID the iron base block. 
 		if (plugin.debug)
 			System.out.println("Starting elevator gen");
 		int yd = 2;
 		while(block.getY() - yd >= 0){
-			if (plugin.debug)
-				System.out.println("Scanning: " + (block.getY() - yd));
 			if (block.getY() - yd == 0) //Gone too far with no base abort!
 				return;
 			Block checkBlock = block.getWorld().getBlockAt(block.getX(), block.getY()-yd, block.getZ());
@@ -71,8 +70,6 @@ public class Elevator implements Runnable {
 				//if (plugin.debug)
 				//	System.out.println("Yes I did make it this far");
 				if (testBlock.getType() == Material.STONE_BUTTON){
-					if (plugin.debug)
-						System.out.println("Button found at: " + testBlock.getLocation());
 					if (testBlock.getRelative(BlockFace.DOWN, 2).getType() == Material.GLASS 
 							|| testBlock.getRelative(BlockFace.DOWN, 2).getType() == Material.IRON_BLOCK){
 						Floor floor = new Floor();
@@ -96,6 +93,8 @@ public class Elevator implements Runnable {
 			floorNumber = floorNumber + 1;
 		}
 		//Elevator is constructed, pass off to check signs for floor destination, collect all people and move them
+		if (plugin.debug)
+			System.out.println("Elevator gen took: " + (System.currentTimeMillis() - startTime) + " ms.");
 	}
 	
 	//Checks if block is a valid elevator block SANS iron
@@ -191,8 +190,6 @@ public class Elevator implements Runnable {
 	}
 
 	public void run() {
-		if (plugin.debug)
-			System.out.println("Passenger location: " + passengers.get(0).getLocation().getY());
 		//Re apply impulse as it does seem to run out
 		for (Player p : getPassengers()){
 			if (destFloor.getY() > startFloor.getY())
@@ -201,7 +198,7 @@ public class Elevator implements Runnable {
 				p.setVelocity(new Vector(0.0D, -0.35D, 0.0D));
 		}
 		
-		if(passengers.get(0).getLocation().getY() < destFloor.getY()+0.7 && passengers.get(0).getLocation().getY() > destFloor.getY()-1){
+		if(passengers.get(0).getLocation().getY() < destFloor.getY()+0.5 && passengers.get(0).getLocation().getY() > destFloor.getY()-1){
 			if (plugin.debug)
 				System.out.println("Halting lift");
 			for (Player p : passengers){

@@ -5,7 +5,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Lift extends JavaPlugin {
-	boolean debug = false;
+	boolean debug = true;
 	private final LiftRedstoneListener redstoneListener = new LiftRedstoneListener(this);
 	private final LiftPlayerListener playerListener = new LiftPlayerListener(this);
     public void onDisable() {

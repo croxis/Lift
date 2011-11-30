@@ -23,8 +23,6 @@ public class LiftRedstoneListener  extends BlockListener {
 		if ((block.getType() == Material.STONE_BUTTON) && (!block.isBlockIndirectlyPowered())){
 			long startTime = System.currentTimeMillis();
 			elevator = new Elevator(this.plugin, block);
-			if (plugin.debug)
-				System.out.println("Elevator gen took: " + (System.currentTimeMillis() - startTime));
 			
 			if (elevator.getTotalFloors() < 2)
 				return;
