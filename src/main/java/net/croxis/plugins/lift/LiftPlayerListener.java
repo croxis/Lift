@@ -29,12 +29,12 @@ public class LiftPlayerListener extends PlayerListener{
 				
 				int currentDestinationInt = 1;
 				Floor currentFloor = elevator.getFloorFromY(event.getClickedBlock().getRelative(BlockFace.DOWN).getY());
-				String sign1 = "Current Floor:";
-				String sign2 = Integer.toString(currentFloor.getFloor());
-				String sign3;
-				String sign4;
+				String sign0 = "Current Floor:";
+				String sign1 = Integer.toString(currentFloor.getFloor());
+				String sign2 = "";
+				String sign3 = "";
 				
-				if(sign.getLine(4).isEmpty())
+				if(sign.getLine(3).isEmpty())
 					currentDestinationInt = 0;
 				//If the current line isn't valid number
 				try{
@@ -49,12 +49,12 @@ public class LiftPlayerListener extends PlayerListener{
 				if (currentDestinationInt > elevator.getTotalFloors())
 					currentDestinationInt = 1;
 				
-				sign3 = "Dest: " + elevator.getFloorFromN(currentDestinationInt).getName();
-				sign4 = Integer.toString(currentDestinationInt);
+				sign2 = "Dest: " + elevator.getFloorFromN(currentDestinationInt).getName();
+				sign3 = Integer.toString(currentDestinationInt);
+				sign.setLine(0, sign0);
 				sign.setLine(1, sign1);
 				sign.setLine(2, sign2);
 				sign.setLine(3, sign3);
-				sign.setLine(4, sign4);
 			}
 	}
 
