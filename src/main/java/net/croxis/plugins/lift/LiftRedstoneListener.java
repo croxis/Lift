@@ -26,6 +26,9 @@ public class LiftRedstoneListener  extends BlockListener {
 			if (plugin.debug)
 				System.out.println("Elevator gen took: " + (System.currentTimeMillis() - startTime));
 			
+			if (elevator.getTotalFloors() < 2)
+				return;
+			
 			int y = block.getY();
 			Floor startFloor = elevator.getFloormap().get(y);
 			elevator.startFloor = startFloor;

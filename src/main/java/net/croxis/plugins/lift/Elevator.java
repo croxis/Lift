@@ -95,8 +95,7 @@ public class Elevator implements Runnable {
 			floormap2.put(floorNumber, floor);
 			floorNumber = floorNumber + 1;
 		}
-		//Elevator is contructed, pass off to check signs for floor desitnation, collect all people and move them
-		
+		//Elevator is constructed, pass off to check signs for floor destination, collect all people and move them
 	}
 	
 	//Checks if block is a valid elevator block SANS iron
@@ -141,6 +140,14 @@ public class Elevator implements Runnable {
 		return floormap2;
 	}
 	
+	public Floor getFloorFromY(int y){
+		return floormap.get(y);
+	}
+	
+	public Floor getFloorFromN(int n){
+		return floormap2.get(n);
+	}
+	
 	public boolean isInShaft(Player player){
 		for (Block block : floorBlocks){
 			Location inside = block.getLocation();
@@ -179,6 +186,10 @@ public class Elevator implements Runnable {
 	
 	public ArrayList<Player> getPassengers(){
 		return passengers;
+	}
+	
+	public int getTotalFloors(){
+		return floormap2.lastKey();
 	}
 
 	public void run() {
