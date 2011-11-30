@@ -10,7 +10,7 @@ import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.util.Vector;
 import org.bukkit.block.Sign;
-import org.getspout.spoutapi.SpoutManager;
+//import org.getspout.spoutapi.SpoutManager;
 
 public class LiftRedstoneListener  extends BlockListener {
 	private final Lift plugin; 
@@ -52,7 +52,7 @@ public class LiftRedstoneListener  extends BlockListener {
 					for (Player p : block.getWorld().getPlayers()){
 						if (elevator.isInShaftAtFloor(p, startFloor)){
 							elevator.addPassenger(p);
-							SpoutManager.getPlayer(p).setGravityMultiplier(0);
+							//SpoutManager.getPlayer(p).setGravityMultiplier(0);
 							if (plugin.debug)
 								System.out.println("Adding as passenger: " + p.getName());
 						}
