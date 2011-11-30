@@ -202,7 +202,7 @@ public class Elevator implements Runnable {
 			if (plugin.debug)
 				System.out.println("Halting lift");
 			for (Player p : passengers){
-				p.setVelocity(new Vector(0,0.01,0));
+				p.setVelocity(new Vector(0,0,0));
 			}
 			for (Block b : glassBlocks){
 				b.setType(Material.GLASS);

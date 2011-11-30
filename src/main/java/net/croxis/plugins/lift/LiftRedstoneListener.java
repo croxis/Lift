@@ -82,8 +82,10 @@ public class LiftRedstoneListener  extends BlockListener {
 					for (Player p : elevator.getPassengers()){
 						if (destFloor.getY() > startFloor.getY())
 							p.setVelocity(new Vector(0.0D, 0.35D, 0.0D));
-						else
+						else{
 							p.setVelocity(new Vector(0.0D, -0.35D, 0.0D));
+							plugin.fallers.add(p);
+						}
 					}
 					elevator.taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, elevator, 2, 2);
 					
