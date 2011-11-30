@@ -75,6 +75,8 @@ public class LiftPlayerListener extends PlayerListener{
 				// The following line MAY be what causes a potetal bug for max floors
 				if (currentDestinationInt > elevator.getTotalFloors()){
 					currentDestinationInt = 1;
+					if (currentFloor.getFloor() == 1)
+						currentDestinationInt = 2;
 					if (plugin.debug){
 						System.out.println("Rotating back to first floor");
 					}

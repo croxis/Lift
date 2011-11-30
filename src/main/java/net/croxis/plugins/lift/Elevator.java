@@ -10,7 +10,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-//import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.SpoutManager;
 
 public class Elevator implements Runnable {
 	private ArrayList<Block> floorBlocks = new ArrayList<Block>();
@@ -75,7 +75,7 @@ public class Elevator implements Runnable {
 						Floor floor = new Floor();
 						floor.setY(y1);
 						if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
-							floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(2));
+							floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
 						if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
 							floormap.put(y1, floor);
 						if (plugin.debug)
@@ -207,9 +207,9 @@ public class Elevator implements Runnable {
 			for (Block b : glassBlocks){
 				b.setType(Material.GLASS);
 			}
-			//for (Player p : passengers){
-			//	SpoutManager.getPlayer(p).setGravityMultiplier(1);
-			//}
+			for (Player p : passengers){
+				SpoutManager.getPlayer(p).setGravityMultiplier(1);
+			}
 			plugin.getServer().getScheduler().cancelTask(taskid);
 		}
 	}
