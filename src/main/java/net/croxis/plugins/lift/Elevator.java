@@ -42,15 +42,10 @@ public class Elevator implements Runnable {
 				break;
 			} else {
 				// Something is obstructing the elevator so stop
-				if (plugin.debug)
-					System.out.println("There is an obstruction");
 				return;
 			}
 			yd = yd + 1;
 		}
-		
-		if (plugin.debug)
-			System.out.println("Elevator area: " + floorBlocks.size());
 		
 		//Count all blocks up from base and make sure no obstructions to top floor
 		//Identify floors
@@ -186,7 +181,7 @@ public class Elevator implements Runnable {
 	}
 	
 	public int getTotalFloors(){
-		return floormap2.lastKey();
+		return floormap2.size();
 	}
 
 	public void run() {
@@ -207,9 +202,6 @@ public class Elevator implements Runnable {
 			for (Block b : glassBlocks){
 				b.setType(Material.GLASS);
 			}
-			//for (Player p : passengers){
-				//SpoutManager.getPlayer(p).setGravityMultiplier(1);
-			//}
 			plugin.getServer().getScheduler().cancelTask(taskid);
 		}
 	}

@@ -21,14 +21,6 @@ public class LiftPlayerListener extends PlayerListener{
 					&& event.getClickedBlock().getRelative(BlockFace.DOWN).getType().equals(Material.STONE_BUTTON)){
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				
-				if (plugin.debug){
-					System.out.println("Current Sign");
-					System.out.println(sign.getLine(0));
-					System.out.println(sign.getLine(1));
-					System.out.println(sign.getLine(2));
-					System.out.println(sign.getLine(3));
-				}
-				
 				elevator = new Elevator(this.plugin, event.getClickedBlock().getRelative(BlockFace.DOWN));
 				
 				if (elevator.getTotalFloors() < 2){
@@ -38,9 +30,6 @@ public class LiftPlayerListener extends PlayerListener{
 				
 				int currentDestinationInt = 1;
 				Floor currentFloor = elevator.getFloorFromY(event.getClickedBlock().getRelative(BlockFace.DOWN).getY());
-				if (plugin.debug){
-					System.out.println("Current Floor: " + currentFloor.getFloor());
-				}
 				
 				String sign0 = "Current Floor:";
 				String sign1 = Integer.toString(currentFloor.getFloor());
@@ -49,16 +38,10 @@ public class LiftPlayerListener extends PlayerListener{
 				
 				if(sign.getLine(3).isEmpty()){
 					currentDestinationInt = 0;
-					if (plugin.debug){
-						System.out.println("No previous destination");
-					}
 				}
 				//If the current line isn't valid number
 				try{
 					currentDestinationInt = Integer.parseInt(sign.getLine(3));
-					if (plugin.debug){
-						System.out.println("PreMod Destination: " + currentDestinationInt);
-					}
 				} catch (NumberFormatException e){
 					currentDestinationInt = 0;
 					if (plugin.debug){
