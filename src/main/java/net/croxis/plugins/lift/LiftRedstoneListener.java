@@ -22,7 +22,7 @@ public class LiftRedstoneListener  extends BlockListener {
 		Elevator elevator = null;
 		if ((block.getType() == Material.STONE_BUTTON) 
 				&& (!block.isBlockIndirectlyPowered())
-				&& block.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN){
+				&& block.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
 			long startTime = System.currentTimeMillis();
 			elevator = new Elevator(this.plugin, block);
 			
