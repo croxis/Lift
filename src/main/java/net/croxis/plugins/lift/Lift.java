@@ -6,6 +6,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityListener;
+import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -16,7 +18,9 @@ public class Lift extends JavaPlugin {
 	private final LiftRedstoneListener redstoneListener = new LiftRedstoneListener(this);
 	private final LiftPlayerListener playerListener = new LiftPlayerListener(this);
 	public ArrayList<Player> fallers = new ArrayList<Player>();
+	public ArrayList<Elevator> lifts = new ArrayList<Elevator>();
     public void onDisable() {
+    	lifts.clear();
         System.out.println(this + " is now disabled!");
     }
 
@@ -36,11 +40,24 @@ public class Lift extends JavaPlugin {
     			}
     		}
 		};
+		
+		PlayerListener playerListener = new PlayerListener(){
+			@Override
+			public void onPlayerQuit(PlayerQuitEvent e){
+				for (Elevator elevator : lifts){
+					if (elevator.passengers.contains(e.getPlayer())){
+						elevator.passengers.remove(e.getPlayer());
+					}
+				}
+			}
+		};
+		//playerListener.onPlayerQuit(event)
     	
     	PluginManager pm = getServer().getPluginManager();
     	pm.registerEvent(Event.Type.REDSTONE_CHANGE, this.redstoneListener, Event.Priority.Low, this);
     	pm.registerEvent(Event.Type.PLAYER_INTERACT, this.playerListener, Event.Priority.Low, this);
     	pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Event.Priority.High, this);
+    	pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal, this);
         System.out.println(this + " is now enabled!");
     }
 }

@@ -16,13 +16,14 @@ public class Elevator implements Runnable {
 	private ArrayList<Block> floorBlocks = new ArrayList<Block>();
 	private TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
 	private TreeMap <Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
-	private ArrayList<Player> passengers = new ArrayList<Player>();
+	public ArrayList<Player> passengers = new ArrayList<Player>();
 	public int destinationY = 0;//Destination y coordinate
 	public ArrayList<Block> glassBlocks = new ArrayList<Block>();
 	public int taskid = 0;
 	public Floor destFloor = null;
 	public Floor startFloor = null;
 	private Lift plugin;
+	public boolean goingUp = false;
 
 	public Elevator(Lift plugin, Block block) {
 		long startTime = System.currentTimeMillis();
@@ -188,12 +189,39 @@ public class Elevator implements Runnable {
 		//Re apply impulse as it does seem to run out
 		for (Player p : getPassengers()){
 			if (destFloor.getY() > startFloor.getY())
-				p.setVelocity(new Vector(0.0D, 0.35D, 0.0D));
+				p.setVelocity(new Vector(0.0D, 0.4D, 0.0D));
 			else
-				p.setVelocity(new Vector(0.0D, -0.35D, 0.0D));
+				p.setVelocity(new Vector(0.0D, -0.4D, 0.0D));
 		}
 		
-		if(passengers.get(0).getLocation().getY() < destFloor.getY()-0.1 && passengers.get(0).getLocation().getY() > destFloor.getY()-1){
+		if(passengers.isEmpty())
+			plugin.getServer().getScheduler().cancelTask(taskid);
+		
+		int count = 0;
+		for (Player passenger : passengers){
+			Location pLoc = passenger.getLocation();
+			if((goingUp && pLoc.getY() > destFloor.getY()-1)
+					|| (!goingUp && pLoc.getY() < destFloor.getY()-0.1)){
+				count++;
+				passenger.setVelocity(new Vector(0,0,0));
+				pLoc.setY(destFloor.getY()-0.5);
+				passenger.teleport(pLoc);
+			}
+		}
+		
+		if (count >= passengers.size()){
+			if (plugin.debug)
+				System.out.println("Halting lift");
+			for (Block b : glassBlocks){
+				b.setType(Material.GLASS);
+			}
+			plugin.getServer().getScheduler().cancelTask(taskid);
+			plugin.lifts.remove(this);
+		}
+		
+		//if(passengers.get(0).getLocation().getY() < destFloor.getY()-0.1 && passengers.get(0).getLocation().getY() > destFloor.getY()-1){
+		/*if((goingUp && passengers.get(0).getLocation().getY() > destFloor.getY()-1 && passengers.get(0).getLocation().getY() > destFloor.getY()-1)
+				|| (!goingUp && passengers.get(0).getLocation().getY() < destFloor.getY()-0.1)){
 			if (plugin.debug)
 				System.out.println("Halting lift");
 			for (Player p : passengers){
@@ -203,7 +231,7 @@ public class Elevator implements Runnable {
 				b.setType(Material.GLASS);
 			}
 			plugin.getServer().getScheduler().cancelTask(taskid);
-		}
+		}*/
 	}
 
 }
