@@ -105,7 +105,7 @@ public class Elevator implements Runnable {
 	
 	//Recursive function that constructs our list of blocks
 	public void scanFloorBlocks(Block block){
-		if (floorBlocks.size() >= 15)
+		if (floorBlocks.size() >= plugin.liftArea)
 			return; //5x5 max, prevents infinite loops
 		else if (floorBlocks.contains(block))
 			return; // We have that block already
@@ -189,9 +189,9 @@ public class Elevator implements Runnable {
 		//Re apply impulse as it does seem to run out
 		for (Player p : getPassengers()){
 			if (destFloor.getY() > startFloor.getY())
-				p.setVelocity(new Vector(0.0D, 0.4D, 0.0D));
+				p.setVelocity(new Vector(0.0D, plugin.liftSpeed, 0.0D));
 			else
-				p.setVelocity(new Vector(0.0D, -0.4D, 0.0D));
+				p.setVelocity(new Vector(0.0D, -plugin.liftSpeed, 0.0D));
 		}
 		
 		if(passengers.isEmpty())
@@ -204,7 +204,7 @@ public class Elevator implements Runnable {
 					|| (!goingUp && pLoc.getY() < destFloor.getY()-0.1)){
 				count++;
 				passenger.setVelocity(new Vector(0,0,0));
-				pLoc.setY(destFloor.getY()-0.5);
+				pLoc.setY(destFloor.getY()-0.6);
 				passenger.teleport(pLoc);
 			}
 		}

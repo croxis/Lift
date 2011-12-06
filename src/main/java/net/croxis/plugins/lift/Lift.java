@@ -19,6 +19,8 @@ public class Lift extends JavaPlugin {
 	private final LiftPlayerListener playerListener = new LiftPlayerListener(this);
 	public ArrayList<Player> fallers = new ArrayList<Player>();
 	public ArrayList<Elevator> lifts = new ArrayList<Elevator>();
+	public double liftSpeed = 0.5;
+	public int liftArea = 16;
     public void onDisable() {
     	lifts.clear();
         System.out.println(this + " is now disabled!");
@@ -58,6 +60,10 @@ public class Lift extends JavaPlugin {
     	pm.registerEvent(Event.Type.PLAYER_INTERACT, this.playerListener, Event.Priority.Low, this);
     	pm.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Event.Priority.High, this);
     	pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal, this);
+    	liftSpeed = this.getConfig().getDouble("liftSpeed");
+    	liftArea = this.getConfig().getInt("maxLiftArea");
+    	this.getConfig().options().copyDefaults(true);
+        saveConfig();
         System.out.println(this + " is now enabled!");
     }
 }
