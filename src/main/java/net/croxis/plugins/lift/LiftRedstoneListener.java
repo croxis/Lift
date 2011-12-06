@@ -37,10 +37,13 @@ public class LiftRedstoneListener  extends BlockListener {
 			//5
 			//Destination Floor:
 			//10
-			String line = ((Sign) block.getRelative(BlockFace.UP).getState()).getLine(3);
+			String line = ((Sign) block.getRelative(BlockFace.UP).getState()).getLine(2);
 			if (line.isEmpty())
 				return;
-			int destination = Integer.parseInt(line);	
+			String[] splits = line.split(":");
+			if (splits.length != 2)
+				return;
+			int destination = Integer.parseInt(splits[1]);	
 			
 			Floor destFloor = elevator.getFloorFromN(destination);
 

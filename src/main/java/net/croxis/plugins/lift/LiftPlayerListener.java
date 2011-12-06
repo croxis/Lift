@@ -64,8 +64,10 @@ public class LiftPlayerListener extends PlayerListener{
 						System.out.println("Rotating back to first floor");
 					}
 				}
-				sign2 = "Dest: " + elevator.getFloorFromN(currentDestinationInt).getName();
-				sign3 = Integer.toString(currentDestinationInt);
+				//sign2 = "Dest: " + elevator.getFloorFromN(currentDestinationInt).getName();
+				//sign3 = Integer.toString(currentDestinationInt);
+				sign2 = "Dest: " + Integer.toString(currentDestinationInt);
+				sign3 = elevator.getFloorFromN(currentDestinationInt).getName();
 				sign.setLine(0, sign0);
 				sign.setLine(1, sign1);
 				sign.setLine(2, sign2);
