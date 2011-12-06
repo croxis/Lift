@@ -56,6 +56,7 @@ public class LiftRedstoneListener  extends BlockListener {
 			
 			for (Player p : block.getWorld().getPlayers()){
 				if (elevator.isInShaftAtFloor(p, startFloor)){
+					
 					elevator.addPassenger(p);
 					//SpoutManager.getPlayer(p).setGravityMultiplier(0);
 					if (plugin.debug)

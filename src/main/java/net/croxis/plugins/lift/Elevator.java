@@ -233,6 +233,10 @@ public class Elevator implements Runnable {
 			plugin.getServer().getScheduler().cancelTask(taskid);
 		}*/
 	}
+	
+	public boolean isInLift(Player player){
+		return passengers.contains(player);
+	}
 
 }
 
