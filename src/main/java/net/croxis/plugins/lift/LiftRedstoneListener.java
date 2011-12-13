@@ -7,7 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.util.Vector;
@@ -42,7 +41,7 @@ public class LiftRedstoneListener  extends BlockListener {
 			String line = ((Sign) block.getRelative(BlockFace.UP).getState()).getLine(2);
 			if (line.isEmpty())
 				return;
-			String[] splits = line.split(":");
+			String[] splits = line.split(": ");
 			if (splits.length != 2)
 				return;
 			int destination = Integer.parseInt(splits[1]);	
