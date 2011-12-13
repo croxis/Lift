@@ -36,14 +36,14 @@ public class LiftPlayerListener extends PlayerListener{
 				String sign2 = "";
 				String sign3 = "";
 				
-				if(sign.getLine(2).isEmpty()){
-					currentDestinationInt = 0;
-				}
+				//if(sign.getLine(2).isEmpty()){
+				//	currentDestinationInt = 0;
+				//} 
 				//If the current line isn't valid number
 				try{
 					String[] splits = sign.getLine(2).split(": ");
 					currentDestinationInt = Integer.parseInt(splits[1]);	
-				} catch (NumberFormatException e){
+				} catch (Exception e){
 					currentDestinationInt = 0;
 					if (plugin.debug){
 						System.out.println("non Valid previous destination");
