@@ -190,8 +190,22 @@ public class Elevator implements Runnable {
 	public int getTotalFloors(){
 		return floormap2.size();
 	}
+	
+	public void endLift(){
+		if (plugin.debug)
+			System.out.println("Halting lift");
+		plugin.getServer().getScheduler().cancelTask(taskid);
+		for (Block b : glassBlocks)
+			b.setType(Material.GLASS);
+		plugin.lifts.remove(this);
+	}
 
 	public void run() {
+		if(passengers.isEmpty()){
+			endLift();
+			return;
+		}
+			
 		//Re apply impulse as it does seem to run out
 		for (Entity p : getPassengers()){
 			if (destFloor.getY() > startFloor.getY())
@@ -200,9 +214,6 @@ public class Elevator implements Runnable {
 				p.setVelocity(new Vector(0.0D, -plugin.liftSpeed, 0.0D));
 		}
 		
-		if(passengers.isEmpty())
-			plugin.getServer().getScheduler().cancelTask(taskid);
-		
 		int count = 0;
 		for (Entity passenger : passengers){
 			Location pLoc = passenger.getLocation();
@@ -210,34 +221,13 @@ public class Elevator implements Runnable {
 					|| (!goingUp && pLoc.getY() < destFloor.getY()-0.1)){
 				count++;
 				passenger.setVelocity(new Vector(0,0,0));
-				pLoc.setY(destFloor.getY()-0.6);
+				pLoc.setY(destFloor.getY()-0.7);
 				passenger.teleport(pLoc);
 			}
 		}
 		
-		if (count >= passengers.size()){
-			if (plugin.debug)
-				System.out.println("Halting lift");
-			for (Block b : glassBlocks){
-				b.setType(Material.GLASS);
-			}
-			plugin.getServer().getScheduler().cancelTask(taskid);
-			plugin.lifts.remove(this);
-		}
-		
-		//if(passengers.get(0).getLocation().getY() < destFloor.getY()-0.1 && passengers.get(0).getLocation().getY() > destFloor.getY()-1){
-		/*if((goingUp && passengers.get(0).getLocation().getY() > destFloor.getY()-1 && passengers.get(0).getLocation().getY() > destFloor.getY()-1)
-				|| (!goingUp && passengers.get(0).getLocation().getY() < destFloor.getY()-0.1)){
-			if (plugin.debug)
-				System.out.println("Halting lift");
-			for (Player p : passengers){
-				p.setVelocity(new Vector(0,0,0));
-			}
-			for (Block b : glassBlocks){
-				b.setType(Material.GLASS);
-			}
-			plugin.getServer().getScheduler().cancelTask(taskid);
-		}*/
+		if (count >= passengers.size())
+			endLift();
 	}
 	
 	public boolean isInLift(Player player){
