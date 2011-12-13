@@ -17,7 +17,7 @@ public class Lift extends JavaPlugin {
 	boolean debug = false;
 	private final LiftRedstoneListener redstoneListener = new LiftRedstoneListener(this);
 	private final LiftPlayerListener playerListener = new LiftPlayerListener(this);
-	public ArrayList<Player> fallers = new ArrayList<Player>();
+	public ArrayList<Entity> fallers = new ArrayList<Entity>();
 	public ArrayList<Elevator> lifts = new ArrayList<Elevator>();
 	public double liftSpeed = 0.5;
 	public int liftArea = 16;

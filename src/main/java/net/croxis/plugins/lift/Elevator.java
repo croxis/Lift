@@ -3,11 +3,13 @@ package net.croxis.plugins.lift;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 //import org.getspout.spoutapi.SpoutManager;
@@ -16,7 +18,7 @@ public class Elevator implements Runnable {
 	private ArrayList<Block> floorBlocks = new ArrayList<Block>();
 	private TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
 	private TreeMap <Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
-	public ArrayList<Player> passengers = new ArrayList<Player>();
+	public ArrayList<Entity> passengers = new ArrayList<Entity>();
 	public int destinationY = 0;//Destination y coordinate
 	public ArrayList<Block> glassBlocks = new ArrayList<Block>();
 	public int taskid = 0;
@@ -24,6 +26,7 @@ public class Elevator implements Runnable {
 	public Floor startFloor = null;
 	private Lift plugin;
 	public boolean goingUp = false;
+	public ArrayList<Chunk> chunks = new ArrayList<Chunk>();
 
 	public Elevator(Lift plugin, Block block) {
 		long startTime = System.currentTimeMillis();
@@ -111,6 +114,9 @@ public class Elevator implements Runnable {
 			return; // We have that block already
 		floorBlocks.add(block);
 		
+		if (!chunks.contains(block.getChunk()))
+			chunks.add(block.getChunk());
+		
 		Block checkBlock = block.getRelative(BlockFace.NORTH, 1);
 		if (checkBlock.getType() == Material.IRON_BLOCK)
 			scanFloorBlocks(checkBlock);
@@ -141,10 +147,10 @@ public class Elevator implements Runnable {
 		return floormap2.get(n);
 	}
 	
-	public boolean isInShaft(Player player){
+	public boolean isInShaft(Entity entity){
 		for (Block block : floorBlocks){
 			Location inside = block.getLocation();
-			Location loc = player.getLocation();
+			Location loc = entity.getLocation();
 			if ((loc.getX() < inside.getX() + 1.0D) && 
 					(loc.getX() > inside.getX() - 1.0D) && 
 					(loc.getY() >= inside.getY() - 1.0D) && 
@@ -156,9 +162,9 @@ public class Elevator implements Runnable {
 		return false;
 	}
 	
-	public boolean isInShaftAtFloor(Player player, Floor floor){
-		if (isInShaft(player)){
-			if (player.getLocation().getY() >= floor.getY() - 1 && player.getLocation().getY() <= floor.getY())
+	public boolean isInShaftAtFloor(Entity entity, Floor floor){
+		if (isInShaft(entity)){
+			if (entity.getLocation().getY() >= floor.getY() - 1 && entity.getLocation().getY() <= floor.getY())
 				return true;
 		}
 		return false;
@@ -168,16 +174,16 @@ public class Elevator implements Runnable {
 		return floorBlocks;
 	}
 	
-	public void addPassenger(Player entity){
+	public void addPassenger(Entity entity){
 		passengers.add(entity);
 	}
 	
-	public void setPassengers(ArrayList<Player> entities){
+	public void setPassengers(ArrayList<Entity> entities){
 		passengers.clear();
 		passengers.addAll(entities);
 	}
 	
-	public ArrayList<Player> getPassengers(){
+	public ArrayList<Entity> getPassengers(){
 		return passengers;
 	}
 	
@@ -187,7 +193,7 @@ public class Elevator implements Runnable {
 
 	public void run() {
 		//Re apply impulse as it does seem to run out
-		for (Player p : getPassengers()){
+		for (Entity p : getPassengers()){
 			if (destFloor.getY() > startFloor.getY())
 				p.setVelocity(new Vector(0.0D, plugin.liftSpeed, 0.0D));
 			else
@@ -198,7 +204,7 @@ public class Elevator implements Runnable {
 			plugin.getServer().getScheduler().cancelTask(taskid);
 		
 		int count = 0;
-		for (Player passenger : passengers){
+		for (Entity passenger : passengers){
 			Location pLoc = passenger.getLocation();
 			if((goingUp && pLoc.getY() > destFloor.getY()-1)
 					|| (!goingUp && pLoc.getY() < destFloor.getY()-0.1)){

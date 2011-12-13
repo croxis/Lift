@@ -2,9 +2,11 @@ package net.croxis.plugins.lift;
 
 import java.util.ArrayList;
 
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockRedstoneEvent;
@@ -57,7 +59,7 @@ public class LiftRedstoneListener  extends BlockListener {
 				System.out.println("Elevator destination y:" + destination);
 			}
 			
-			for (Player p : block.getWorld().getPlayers()){
+			/*for (Player p : block.getWorld().getPlayers()){
 				if (elevator.isInShaftAtFloor(p, startFloor)){
 					
 					elevator.addPassenger(p);
@@ -65,7 +67,15 @@ public class LiftRedstoneListener  extends BlockListener {
 					if (plugin.debug)
 						System.out.println("Adding as passenger: " + p.getName());
 				}
+			}*/
+			
+			for(Chunk chunk : elevator.chunks){
+				for(Entity e : chunk.getEntities()){
+					if (elevator.isInShaftAtFloor(e, startFloor))
+						elevator.addPassenger(e);
+				}
 			}
+			
 			//Disable all glass inbetween players and destination
 			ArrayList<Floor> glassfloors = new ArrayList<Floor>();
 			//Going up
@@ -88,7 +98,7 @@ public class LiftRedstoneListener  extends BlockListener {
 				}
 			}
 			//Apply impulse to players
-			for (Player p : elevator.getPassengers()){
+			for (Entity p : elevator.getPassengers()){
 				if (destFloor.getY() > startFloor.getY()){
 					p.setVelocity(new Vector(0.0D, 0.4D, 0.0D));
 					elevator.goingUp = true;
