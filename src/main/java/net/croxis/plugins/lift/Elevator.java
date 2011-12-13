@@ -15,7 +15,7 @@ import org.bukkit.util.Vector;
 //import org.getspout.spoutapi.SpoutManager;
 
 public class Elevator implements Runnable {
-	private ArrayList<Block> floorBlocks = new ArrayList<Block>();
+	public ArrayList<Block> floorBlocks = new ArrayList<Block>();
 	private TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
 	private TreeMap <Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
 	public ArrayList<Entity> passengers = new ArrayList<Entity>();
@@ -168,10 +168,6 @@ public class Elevator implements Runnable {
 				return true;
 		}
 		return false;
-	}
-
-	public ArrayList<Block> getFloorBlocks() {
-		return floorBlocks;
 	}
 	
 	public void addPassenger(Entity entity){

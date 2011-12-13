@@ -90,7 +90,7 @@ public class LiftRedstoneListener  extends BlockListener {
 				}
 			}
 			for (Floor f : glassfloors){
-				for (Block b : elevator.getFloorBlocks()){
+				for (Block b : elevator.floorBlocks){
 					Block gb = block.getWorld().getBlockAt(b.getX(), f.getY()-2, b.getZ());
 					gb.setType(Material.AIR);
 					elevator.glassBlocks.add(gb);
