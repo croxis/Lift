@@ -1,3 +1,4 @@
 # Note: Smaller values result in less lag.
 maxLiftArea: 16
 liftSpeed: 0.5
+debug: false

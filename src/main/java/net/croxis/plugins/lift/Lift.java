@@ -62,6 +62,7 @@ public class Lift extends JavaPlugin {
     	pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal, this);
     	liftSpeed = this.getConfig().getDouble("liftSpeed");
     	liftArea = this.getConfig().getInt("maxLiftArea");
+    	this.debug = this.getConfig().getBoolean("debug");
     	this.getConfig().options().copyDefaults(true);
         saveConfig();
         System.out.println(this + " is now enabled!");
