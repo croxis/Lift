@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.util.Vector;
@@ -70,8 +71,8 @@ public class LiftRedstoneListener  extends BlockListener {
 			
 			for(Chunk chunk : elevator.chunks){
 				for(Entity e : chunk.getEntities()){
-					if (elevator.isInShaftAtFloor(e, startFloor))
-						elevator.addPassenger(e);
+					if (elevator.isInShaftAtFloor(e, startFloor) && e instanceof LivingEntity)
+						elevator.addPassenger((LivingEntity) e);
 				}
 			}
 			

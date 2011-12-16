@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 //import org.getspout.spoutapi.SpoutManager;
@@ -18,7 +19,7 @@ public class Elevator implements Runnable {
 	public ArrayList<Block> floorBlocks = new ArrayList<Block>();
 	private TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
 	private TreeMap <Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
-	public ArrayList<Entity> passengers = new ArrayList<Entity>();
+	public ArrayList<LivingEntity> passengers = new ArrayList<LivingEntity>();
 	public int destinationY = 0;//Destination y coordinate
 	public ArrayList<Block> glassBlocks = new ArrayList<Block>();
 	public int taskid = 0;
@@ -170,16 +171,16 @@ public class Elevator implements Runnable {
 		return false;
 	}
 	
-	public void addPassenger(Entity entity){
+	public void addPassenger(LivingEntity entity){
 		passengers.add(entity);
 	}
 	
-	public void setPassengers(ArrayList<Entity> entities){
+	public void setPassengers(ArrayList<LivingEntity> entities){
 		passengers.clear();
 		passengers.addAll(entities);
 	}
 	
-	public ArrayList<Entity> getPassengers(){
+	public ArrayList<LivingEntity> getPassengers(){
 		return passengers;
 	}
 	
@@ -190,10 +191,10 @@ public class Elevator implements Runnable {
 	public void endLift(){
 		if (plugin.debug)
 			System.out.println("Halting lift");
-		plugin.getServer().getScheduler().cancelTask(taskid);
 		for (Block b : glassBlocks)
 			b.setType(Material.GLASS);
 		plugin.lifts.remove(this);
+		plugin.getServer().getScheduler().cancelTask(taskid);
 	}
 
 	public void run() {
