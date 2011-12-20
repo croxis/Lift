@@ -11,7 +11,7 @@
         </repository>
         <repository>
             <id>spout-repo</id>
-            <url>http://spout.artifactoryonline.com/spout/repo</url>
+            <url>http://repo.getspout.org</url>
         </repository>
     </repositories>
     <build>
