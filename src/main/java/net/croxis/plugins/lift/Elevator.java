@@ -14,6 +14,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 //import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.SpoutManager;
 
 public class Elevator implements Runnable {
 	public ArrayList<Block> floorBlocks = new ArrayList<Block>();
@@ -101,7 +102,7 @@ public class Elevator implements Runnable {
 	public boolean isValidBlock(Block checkBlock){
 		if (checkBlock.getType() == Material.AIR || checkBlock.getType() == Material.GLASS 
 				|| checkBlock.getType() == Material.TORCH || checkBlock.getType() == Material.WALL_SIGN
-				|| checkBlock.getType() == Material.STONE_BUTTON)
+				|| checkBlock.getType() == Material.STONE_BUTTON || checkBlock.getType() == Material.VINE)
 			return true;
 		return false;
 	}
@@ -193,6 +194,14 @@ public class Elevator implements Runnable {
 			System.out.println("Halting lift");
 		for (Block b : glassBlocks)
 			b.setType(Material.GLASS);
+		for (Entity p : this.passengers){
+			if (plugin.useSpout){
+				if (p instanceof Player){
+					SpoutManager.getPlayer((Player) p).setGravityMultiplier(0);
+				}
+					
+			}
+		}
 		plugin.lifts.remove(this);
 		plugin.getServer().getScheduler().cancelTask(taskid);
 	}

@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.croxis.plugins.lift</groupId>
     <artifactId>Lift</artifactId>
-    <version>3</version>
+    <version>4</version>
     <name>Lift</name>
     <repositories>
         <repository>
@@ -35,12 +35,12 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <!-- <dependency>
+        <dependency>
             <groupId>org.getspout</groupId>
-            <artifactId>spoutapi</artifactId>
+            <artifactId>spoutpluginapi</artifactId>
             <version>dev-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
-        </dependency> -->
+        </dependency>
     </dependencies>
 </project>

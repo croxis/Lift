@@ -8,11 +8,13 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.util.Vector;
 import org.bukkit.block.Sign;
 //import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.SpoutManager;
 
 public class LiftRedstoneListener  extends BlockListener {
 	private final Lift plugin; 
@@ -99,11 +101,17 @@ public class LiftRedstoneListener  extends BlockListener {
 			}
 			//Apply impulse to players
 			for (Entity p : elevator.getPassengers()){
+				if (plugin.useSpout){
+					if (p instanceof Player){
+						SpoutManager.getPlayer((Player) p).setGravityMultiplier(0);
+					}
+						
+				}
 				if (destFloor.getY() > startFloor.getY()){
-					p.setVelocity(new Vector(0.0D, 0.4D, 0.0D));
+					//p.setVelocity(new Vector(0.0D, 0.4D, 0.0D));
 					elevator.goingUp = true;
 				} else {
-					p.setVelocity(new Vector(0.0D, -0.4D, 0.0D));
+					//p.setVelocity(new Vector(0.0D, -0.4D, 0.0D));
 					plugin.fallers.add(p);
 				}
 			}

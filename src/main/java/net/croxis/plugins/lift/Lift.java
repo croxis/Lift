@@ -10,11 +10,13 @@ import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Lift extends JavaPlugin {
 	boolean debug = false;
+	boolean useSpout = false;
 	private final LiftRedstoneListener redstoneListener = new LiftRedstoneListener(this);
 	private final LiftPlayerListener playerListener = new LiftPlayerListener(this);
 	public ArrayList<Entity> fallers = new ArrayList<Entity>();
@@ -53,7 +55,6 @@ public class Lift extends JavaPlugin {
 				}
 			}
 		};
-		//playerListener.onPlayerQuit(event)
     	
     	PluginManager pm = getServer().getPluginManager();
     	pm.registerEvent(Event.Type.REDSTONE_CHANGE, this.redstoneListener, Event.Priority.Low, this);
@@ -65,6 +66,9 @@ public class Lift extends JavaPlugin {
     	this.debug = this.getConfig().getBoolean("debug");
     	this.getConfig().options().copyDefaults(true);
         saveConfig();
+        Plugin test = getServer().getPluginManager().getPlugin("spout");
+        if(test != null)
+        	useSpout = true;
         System.out.println(this + " is now enabled!");
     }
 }
