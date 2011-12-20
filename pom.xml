@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.getspout</groupId>
             <artifactId>spoutpluginapi</artifactId>
-            <version>dev-SNAPSHOT</version>
+            <version>dev-20111219.220517-2</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
