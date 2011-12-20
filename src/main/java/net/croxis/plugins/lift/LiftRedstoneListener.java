@@ -11,9 +11,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.util.Vector;
 import org.bukkit.block.Sign;
-//import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.SpoutManager;
 
 public class LiftRedstoneListener  extends BlockListener {
@@ -36,11 +34,6 @@ public class LiftRedstoneListener  extends BlockListener {
 			int y = block.getY();
 			Floor startFloor = elevator.getFloormap().get(y);
 			elevator.startFloor = startFloor;
-			//Sign is:
-			//Current Floor:
-			//5
-			//Destination Floor:
-			//10
 			String line = ((Sign) block.getRelative(BlockFace.UP).getState()).getLine(2);
 			if (line.isEmpty())
 				return;
@@ -60,16 +53,6 @@ public class LiftRedstoneListener  extends BlockListener {
 				System.out.println("Elevator destination floor:" + destination);
 				System.out.println("Elevator destination y:" + destination);
 			}
-			
-			/*for (Player p : block.getWorld().getPlayers()){
-				if (elevator.isInShaftAtFloor(p, startFloor)){
-					
-					elevator.addPassenger(p);
-					//SpoutManager.getPlayer(p).setGravityMultiplier(0);
-					if (plugin.debug)
-						System.out.println("Adding as passenger: " + p.getName());
-				}
-			}*/
 			
 			for(Chunk chunk : elevator.chunks){
 				for(Entity e : chunk.getEntities()){
@@ -108,19 +91,12 @@ public class LiftRedstoneListener  extends BlockListener {
 						
 				}
 				if (destFloor.getY() > startFloor.getY()){
-					//p.setVelocity(new Vector(0.0D, 0.4D, 0.0D));
 					elevator.goingUp = true;
 				} else {
-					//p.setVelocity(new Vector(0.0D, -0.4D, 0.0D));
 					plugin.fallers.add(p);
 				}
 			}
 			elevator.taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, elevator, 2, 2);
-			
-			//Identify when button pusher is at desination
-			//Reenable all glass
-			//Remove impulse
-			//Restore gravity to normal
 
 			long tt = System.currentTimeMillis() - startTime;
 			if (plugin.debug)
