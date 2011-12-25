@@ -197,7 +197,8 @@ public class Elevator implements Runnable {
 		for (Entity p : this.passengers){
 			if (plugin.useSpout){
 				if (p instanceof Player){
-					SpoutManager.getPlayer((Player) p).setGravityMultiplier(0);
+					SpoutManager.getPlayer((Player) p).setGravityMultiplier(1);
+					SpoutManager.getPlayer((Player) p).setCanFly(false);
 				}
 					
 			}

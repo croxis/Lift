@@ -11,7 +11,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.util.Vector;
 import org.bukkit.block.Sign;
 //import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.SpoutManager;
@@ -104,6 +103,7 @@ public class LiftRedstoneListener  extends BlockListener {
 				if (plugin.useSpout){
 					if (p instanceof Player){
 						SpoutManager.getPlayer((Player) p).setGravityMultiplier(0);
+						SpoutManager.getPlayer((Player) p).setCanFly(true);
 					}
 						
 				}
