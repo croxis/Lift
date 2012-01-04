@@ -66,9 +66,10 @@ public class Lift extends JavaPlugin {
     	this.debug = this.getConfig().getBoolean("debug");
     	this.getConfig().options().copyDefaults(true);
         saveConfig();
-        Plugin test = getServer().getPluginManager().getPlugin("spout");
-        if(test != null)
+        Plugin test = getServer().getPluginManager().getPlugin("Spout");
+        if(test != null) {
         	useSpout = true;
+        }
         System.out.println(this + " is now enabled!");
     }
 }

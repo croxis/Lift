@@ -87,6 +87,7 @@ public class LiftRedstoneListener  extends BlockListener {
 				if (plugin.useSpout){
 					if (p instanceof Player){
 						SpoutManager.getPlayer((Player) p).setGravityMultiplier(0);
+						SpoutManager.getPlayer((Player) p).setCanFly(true);
 					}
 						
 				}
