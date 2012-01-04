@@ -1,6 +1,7 @@
 package net.croxis.plugins.lift;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -19,8 +20,8 @@ public class Lift extends JavaPlugin {
 	boolean useSpout = false;
 	private final LiftRedstoneListener redstoneListener = new LiftRedstoneListener(this);
 	private final LiftPlayerListener playerListener = new LiftPlayerListener(this);
-	public ArrayList<Entity> fallers = new ArrayList<Entity>();
-	public ArrayList<Elevator> lifts = new ArrayList<Elevator>();
+	public HashSet<Entity> fallers = new HashSet<Entity>();
+	public HashSet<Elevator> lifts = new HashSet<Elevator>();
 	public double liftSpeed = 0.5;
 	public int liftArea = 16;
     public void onDisable() {

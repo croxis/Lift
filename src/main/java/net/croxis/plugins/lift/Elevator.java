@@ -1,6 +1,7 @@
 package net.croxis.plugins.lift;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.TreeMap;
 
 import org.bukkit.Chunk;
@@ -17,18 +18,18 @@ import org.bukkit.util.Vector;
 import org.getspout.spoutapi.SpoutManager;
 
 public class Elevator implements Runnable {
-	public ArrayList<Block> floorBlocks = new ArrayList<Block>();
+	public HashSet<Block> floorBlocks = new HashSet<Block>();
 	private TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
 	private TreeMap <Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
-	public ArrayList<LivingEntity> passengers = new ArrayList<LivingEntity>();
+	public HashSet<LivingEntity> passengers = new HashSet<LivingEntity>();
 	public int destinationY = 0;//Destination y coordinate
-	public ArrayList<Block> glassBlocks = new ArrayList<Block>();
+	public HashSet<Block> glassBlocks = new HashSet<Block>();
 	public int taskid = 0;
 	public Floor destFloor = null;
 	public Floor startFloor = null;
 	private Lift plugin;
 	public boolean goingUp = false;
-	public ArrayList<Chunk> chunks = new ArrayList<Chunk>();
+	public HashSet<Chunk> chunks = new HashSet<Chunk>();
 
 	public Elevator(Lift plugin, Block block) {
 		long startTime = System.currentTimeMillis();
@@ -181,7 +182,7 @@ public class Elevator implements Runnable {
 		passengers.addAll(entities);
 	}
 	
-	public ArrayList<LivingEntity> getPassengers(){
+	public HashSet<LivingEntity> getPassengers(){
 		return passengers;
 	}
 	

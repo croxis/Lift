@@ -5,4 +5,4 @@ generator: http://dinnerbone.com/minecraft/tools/pluginator/
 main: net.croxis.plugins.lift.Lift
 name: Lift
 startup: postworld
-version: '4'
+version: '5'
