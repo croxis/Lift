@@ -57,7 +57,7 @@ public class LiftRedstoneListener  extends BlockListener {
 			if (plugin.debug){
 				System.out.println("Elevator start floor:" + startFloor.getFloor());
 				System.out.println("Elevator destination floor:" + destination);
-				System.out.println("Elevator destination y:" + destination);
+				System.out.println("Elevator destination y:" + destFloor.getY());
 			}
 			
 			for(Chunk chunk : elevator.chunks){
