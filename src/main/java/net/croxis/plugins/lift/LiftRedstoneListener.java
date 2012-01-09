@@ -28,6 +28,12 @@ public class LiftRedstoneListener  extends BlockListener {
 			long startTime = System.currentTimeMillis();
 			elevator = new Elevator(this.plugin, block);
 			
+			//See if lift is in use
+			for (Elevator e : plugin.lifts){
+				if (e.floorBlocks.contains(elevator.floorBlocks.toArray()[0]))
+					return;
+			}
+			
 			if (elevator.getTotalFloors() < 2)
 				return;
 			
@@ -98,10 +104,10 @@ public class LiftRedstoneListener  extends BlockListener {
 				}
 			}
 			elevator.taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, elevator, 2, 2);
+			plugin.lifts.add(elevator);
 
-			long tt = System.currentTimeMillis() - startTime;
 			if (plugin.debug)
-				System.out.println("Total time: " + tt);
+				System.out.println("Total time: " + Long.toString(System.currentTimeMillis() - startTime));
 		}
 		
 	}
