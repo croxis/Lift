@@ -2,3 +2,4 @@
 maxLiftArea: 16
 liftSpeed: 0.5
 debug: false
+baseBlock: IRON_BLOCK

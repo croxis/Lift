@@ -2,6 +2,7 @@ package net.croxis.plugins.lift;
 
 import java.util.HashSet;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,6 +14,7 @@ public class Lift extends JavaPlugin {
 	public HashSet<Elevator> lifts = new HashSet<Elevator>();
 	public double liftSpeed = 0.5;
 	public int liftArea = 16;
+	public Material baseMaterial = Material.IRON_BLOCK;
     public void onDisable() {
     	lifts.clear();
         System.out.println(this + " is now disabled!");
@@ -24,7 +26,8 @@ public class Lift extends JavaPlugin {
     	
     	liftSpeed = this.getConfig().getDouble("liftSpeed");
     	liftArea = this.getConfig().getInt("maxLiftArea");
-    	this.debug = this.getConfig().getBoolean("debug");
+    	debug = this.getConfig().getBoolean("debug");
+    	baseMaterial = Material.valueOf(this.getConfig().getString("baseBlock", "IRON_BLOCK"));
     	this.getConfig().options().copyDefaults(true);
         saveConfig();
         Plugin test = getServer().getPluginManager().getPlugin("Spout");

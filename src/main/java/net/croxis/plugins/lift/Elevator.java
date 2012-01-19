@@ -44,7 +44,7 @@ public class Elevator implements Runnable {
 			Block checkBlock = block.getWorld().getBlockAt(block.getX(), block.getY()-yd, block.getZ());
 			if (isValidBlock(checkBlock)){
 				// Do nothing keep going
-			} else if (checkBlock.getType() == Material.IRON_BLOCK) {
+			} else if (checkBlock.getType() == plugin.baseMaterial) {
 				scanFloorBlocks(checkBlock);
 				break;
 			} else {
@@ -73,7 +73,7 @@ public class Elevator implements Runnable {
 				//	System.out.println("Yes I did make it this far");
 				if (testBlock.getType() == Material.STONE_BUTTON){
 					if (testBlock.getRelative(BlockFace.DOWN, 2).getType() == Material.GLASS 
-							|| testBlock.getRelative(BlockFace.DOWN, 2).getType() == Material.IRON_BLOCK){
+							|| testBlock.getRelative(BlockFace.DOWN, 2).getType() == plugin.baseMaterial){
 						Floor floor = new Floor();
 						floor.setY(y1);
 						if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
@@ -121,16 +121,16 @@ public class Elevator implements Runnable {
 			chunks.add(block.getChunk());
 		
 		Block checkBlock = block.getRelative(BlockFace.NORTH, 1);
-		if (checkBlock.getType() == Material.IRON_BLOCK)
+		if (checkBlock.getType() == plugin.baseMaterial)
 			scanFloorBlocks(checkBlock);
 		checkBlock = block.getRelative(BlockFace.EAST, 1);
-		if (checkBlock.getType() == Material.IRON_BLOCK)
+		if (checkBlock.getType() == plugin.baseMaterial)
 			scanFloorBlocks(checkBlock);
 		checkBlock = block.getRelative(BlockFace.SOUTH, 1);
-		if (checkBlock.getType() == Material.IRON_BLOCK)
+		if (checkBlock.getType() == plugin.baseMaterial)
 			scanFloorBlocks(checkBlock);
 		checkBlock = block.getRelative(BlockFace.WEST, 1);
-		if (checkBlock.getType() == Material.IRON_BLOCK)
+		if (checkBlock.getType() == plugin.baseMaterial)
 			scanFloorBlocks(checkBlock);
 	}
 	
