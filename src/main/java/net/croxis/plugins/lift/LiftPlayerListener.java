@@ -1,19 +1,28 @@
 package net.croxis.plugins.lift;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
-public class LiftPlayerListener extends PlayerListener{
+public class LiftPlayerListener implements Listener{
 	private Lift plugin;
 
 	public LiftPlayerListener(Lift plugin){
+		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 		this.plugin = plugin;
 	}
 	
+	@EventHandler()
 	public void onPlayerInteract(PlayerInteractEvent event){
 		Elevator elevator = null;
 		if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
@@ -78,6 +87,29 @@ public class LiftPlayerListener extends PlayerListener{
 					System.out.println("Completed sign update");
 				}
 			}
+	}
+	
+	@EventHandler()
+	public void onEntityDamage(EntityDamageEvent e){
+		if(e.getCause() == DamageCause.FALL){
+			Entity fallerE = e.getEntity();
+			if (fallerE instanceof Player){
+				Player faller = (Player) fallerE;
+				if(plugin.fallers.contains(faller)){
+					e.setCancelled(true);
+					plugin.fallers.remove(faller);
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent e){
+		for (Elevator elevator : plugin.lifts){
+			if (elevator.passengers.contains(e.getPlayer())){
+				elevator.passengers.remove(e.getPlayer());
+			}
+		}
 	}
 
 }
