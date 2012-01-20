@@ -22,7 +22,7 @@ public class LiftPlayerListener implements Listener{
 		this.plugin = plugin;
 	}
 	
-	@EventHandler()
+	@EventHandler(event = PlayerInteractEvent.class)
 	public void onPlayerInteract(PlayerInteractEvent event){
 		Elevator elevator = null;
 		if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
@@ -89,7 +89,7 @@ public class LiftPlayerListener implements Listener{
 			}
 	}
 	
-	@EventHandler()
+	@EventHandler(event = EntityDamageEvent.class)
 	public void onEntityDamage(EntityDamageEvent e){
 		if(e.getCause() == DamageCause.FALL){
 			Entity fallerE = e.getEntity();
@@ -103,7 +103,7 @@ public class LiftPlayerListener implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(event = PlayerQuitEvent.class)
 	public void onPlayerQuit(PlayerQuitEvent e){
 		for (Elevator elevator : plugin.lifts){
 			if (elevator.passengers.contains(e.getPlayer())){
