@@ -196,6 +196,7 @@ public class Elevator implements Runnable {
 		for (Block b : glassBlocks)
 			b.setType(Material.GLASS);
 		for (Entity p : this.passengers){
+			plugin.fallers.remove(p);
 			if (plugin.useSpout){
 				if (p instanceof Player){
 					SpoutManager.getPlayer((Player) p).setGravityMultiplier(1);

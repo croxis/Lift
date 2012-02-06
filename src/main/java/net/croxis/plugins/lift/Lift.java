@@ -38,4 +38,8 @@ public class Lift extends JavaPlugin {
         }
         System.out.println(this + " is now enabled!");
     }
+    
+    public void removeLift(Elevator elevator){
+    	
+    }
 }
