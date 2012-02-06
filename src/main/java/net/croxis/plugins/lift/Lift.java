@@ -15,6 +15,7 @@ public class Lift extends JavaPlugin {
 	public double liftSpeed = 0.5;
 	public int liftArea = 16;
 	public Material baseMaterial = Material.IRON_BLOCK;
+	public boolean autoPlace = false;
     public void onDisable() {
     	lifts.clear();
         System.out.println(this + " is now disabled!");
@@ -28,6 +29,7 @@ public class Lift extends JavaPlugin {
     	liftArea = this.getConfig().getInt("maxLiftArea");
     	debug = this.getConfig().getBoolean("debug");
     	baseMaterial = Material.valueOf(this.getConfig().getString("baseBlock", "IRON_BLOCK"));
+    	autoPlace = this.getConfig().getBoolean("autoPlace");
     	this.getConfig().options().copyDefaults(true);
         saveConfig();
         Plugin test = getServer().getPluginManager().getPlugin("Spout");

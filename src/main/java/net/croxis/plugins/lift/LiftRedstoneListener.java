@@ -73,7 +73,7 @@ public class LiftRedstoneListener implements Listener {
 				for(Entity e : chunk.getEntities()){
 					if (elevator.isInShaftAtFloor(e, startFloor) && e instanceof LivingEntity){
 						elevator.addPassenger((LivingEntity) e);
-						if (iterator.hasNext()){
+						if (iterator.hasNext() && plugin.autoPlace){
 							Location loc = iterator.next().getLocation();
 							e.teleport(new Location(e.getWorld(), loc.getX() + 0.5D, loc.getY() + 1.5D, loc.getZ() + 0.5D, e.getLocation().getYaw(), e.getLocation().getPitch()));
 						}

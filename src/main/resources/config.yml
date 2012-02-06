@@ -1,5 +1,6 @@
-# Note: Smaller values result in less lag.
+# Note: Smaller values result in less lag. Lift speed less than 0.4 may not work well for non spout servers.
 maxLiftArea: 16
 liftSpeed: 0.5
 debug: false
 baseBlock: IRON_BLOCK
+autoPlace: false
