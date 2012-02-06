@@ -1,6 +1,7 @@
 package net.croxis.plugins.lift;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 
@@ -30,6 +31,7 @@ public class Elevator implements Runnable {
 	private Lift plugin;
 	public boolean goingUp = false;
 	public HashSet<Chunk> chunks = new HashSet<Chunk>();
+	public HashMap<LivingEntity, Location> holders = new HashMap<LivingEntity, Location>();
 
 	public Elevator(Lift plugin, Block block) {
 		long startTime = System.currentTimeMillis();
@@ -233,6 +235,10 @@ public class Elevator implements Runnable {
 				pLoc.setY(destFloor.getY()-0.7);
 				passenger.teleport(pLoc);
 			}
+		}
+		
+		for (LivingEntity holder : holders.keySet()){
+			holder.teleport(holders.get(holder));
 		}
 		
 		if (count >= passengers.size())
