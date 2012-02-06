@@ -23,7 +23,7 @@ public class LiftRedstoneListener implements Listener {
 		this.plugin = plugin;
 	} 
 	
-	@EventHandler(event = BlockRedstoneEvent.class)
+	@EventHandler
 	public void onBlockRedstoneChange(BlockRedstoneEvent event){
 		Block block = event.getBlock();
 		Elevator elevator = null;
