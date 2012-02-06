@@ -1,9 +1,11 @@
 package net.croxis.plugins.lift;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -15,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.block.Sign;
 import org.getspout.spoutapi.SpoutManager;
+
 
 public class LiftRedstoneListener implements Listener {
 	private final Lift plugin; 
@@ -65,10 +68,16 @@ public class LiftRedstoneListener implements Listener {
 				System.out.println("Elevator destination y:" + destFloor.getY());
 			}
 			
+			Iterator<Block> iterator = elevator.floorBlocks.iterator();
 			for(Chunk chunk : elevator.chunks){
 				for(Entity e : chunk.getEntities()){
-					if (elevator.isInShaftAtFloor(e, startFloor) && e instanceof LivingEntity)
+					if (elevator.isInShaftAtFloor(e, startFloor) && e instanceof LivingEntity){
 						elevator.addPassenger((LivingEntity) e);
+						if (iterator.hasNext()){
+							Location loc = iterator.next().getLocation();
+							e.teleport(new Location(e.getWorld(), loc.getX() + 0.5D, loc.getY() + 1.5D, loc.getZ() + 0.5D, e.getLocation().getYaw(), e.getLocation().getPitch()));
+						}
+					}
 				}
 			}
 			
