@@ -223,6 +223,7 @@ public class Elevator implements Runnable {
 				p.setVelocity(new Vector(0.0D, plugin.liftSpeed, 0.0D));
 			else
 				p.setVelocity(new Vector(0.0D, -plugin.liftSpeed, 0.0D));
+			p.setFallDistance(0.0F);
 		}
 		
 		int count = 0;
@@ -239,6 +240,7 @@ public class Elevator implements Runnable {
 		
 		for (LivingEntity holder : holders.keySet()){
 			holder.teleport(holders.get(holder));
+			holder.setFallDistance(0.0F);
 		}
 		
 		if (count >= passengers.size())
