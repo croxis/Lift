@@ -71,14 +71,16 @@ public class LiftRedstoneListener implements Listener {
 			Iterator<Block> iterator = elevator.floorBlocks.iterator();
 			for(Chunk chunk : elevator.chunks){
 				for(Entity e : chunk.getEntities()){
-					if (elevator.isInShaftAtFloor(e, startFloor) && e instanceof LivingEntity){
-						elevator.addPassenger((LivingEntity) e);
-						if (iterator.hasNext() && plugin.autoPlace){
-							Location loc = iterator.next().getLocation();
-							e.teleport(new Location(e.getWorld(), loc.getX() + 0.5D, e.getLocation().getY(), loc.getZ() + 0.5D, e.getLocation().getYaw(), e.getLocation().getPitch()));
-						}
-					} else if (!elevator.isInShaftAtFloor(e, startFloor) && elevator.isInShaft(e))
-						elevator.holders.put((LivingEntity) e, e.getLocation());
+					if (e instanceof LivingEntity){
+						if (elevator.isInShaftAtFloor(e, startFloor)){
+							elevator.addPassenger((LivingEntity) e);
+							if (iterator.hasNext() && plugin.autoPlace){
+								Location loc = iterator.next().getLocation();
+								e.teleport(new Location(e.getWorld(), loc.getX() + 0.5D, e.getLocation().getY(), loc.getZ() + 0.5D, e.getLocation().getYaw(), e.getLocation().getPitch()));
+							}
+						} else if (!elevator.isInShaftAtFloor(e, startFloor) && elevator.isInShaft(e))
+							elevator.holders.put((LivingEntity) e, e.getLocation());
+					}
 				}
 			}
 			
