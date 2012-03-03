@@ -7,6 +7,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.V10lator.V10verlap.V10verlap;
+import de.V10lator.V10verlap.V10verlap_API;
+
 public class Lift extends JavaPlugin {
 	boolean debug = false;
 	boolean useSpout = false;
@@ -16,6 +19,9 @@ public class Lift extends JavaPlugin {
 	public int liftArea = 16;
 	public Material baseMaterial = Material.IRON_BLOCK;
 	public boolean autoPlace = false;
+	public boolean useV10 = false;
+	public V10verlap_API v10verlap_API = null;
+	
     public void onDisable() {
     	lifts.clear();
         System.out.println(this + " is now disabled!");
@@ -35,6 +41,21 @@ public class Lift extends JavaPlugin {
         Plugin test = getServer().getPluginManager().getPlugin("Spout");
         if(test != null) {
         	useSpout = true;
+        	System.out.println(this + " detected Spout!");
+        }
+        
+        test = getServer().getPluginManager().getPlugin("V10verlap");
+        if(test != null) {
+        	V10verlap v10verlap = (V10verlap) test;
+        	v10verlap_API = v10verlap.getAPI();
+        	System.out.println(this + " detected V10verlap!");
+            if(v10verlap_API.getVersion() >= 2.0D){ // Check for an API breakage, this is important!
+              v10verlap_API = null;
+              System.out.println("Wrong V10verlap version. Disabled integration");
+            } else {
+            	useV10 = true;
+            }
+            
         }
         System.out.println(this + " is now enabled!");
     }

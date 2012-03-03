@@ -1,9 +1,12 @@
 package net.croxis.plugins.lift;
 
+import org.bukkit.World;
+
 public class Floor {
 	private String name = "";
 	private int y;
 	private int floor;
+	private World world;
 	public String getName() {
 		return name;
 	}
@@ -23,6 +26,12 @@ public class Floor {
 	}
 	public void setFloor(int floor) {
 		this.floor = floor;
+	}
+	public World getWorld() {
+		return world;
+	}
+	public void setWorld(World world) {
+		this.world = world;
 	}
 
 }

@@ -5,4 +5,5 @@ generator: http://dinnerbone.com/minecraft/tools/pluginator/
 main: net.croxis.plugins.lift.Lift
 name: Lift
 startup: postworld
-version: '9'
+version: '10'
+softdepend: [Spout, V10verlap]

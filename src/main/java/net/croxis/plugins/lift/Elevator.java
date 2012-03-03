@@ -3,11 +3,13 @@ package net.croxis.plugins.lift;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.TreeMap;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -22,6 +24,7 @@ public class Elevator implements Runnable {
 	public HashSet<Block> floorBlocks = new HashSet<Block>();
 	private TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
 	private TreeMap <Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
+	private TreeMap <World, TreeMap<Integer, Floor>> worldFloorMap= new TreeMap <World, TreeMap<Integer, Floor>>();
 	public HashSet<LivingEntity> passengers = new HashSet<LivingEntity>();
 	public int destinationY = 0;//Destination y coordinate
 	public HashSet<Block> glassBlocks = new HashSet<Block>();
@@ -39,63 +42,169 @@ public class Elevator implements Runnable {
 		//ID the iron base block. 
 		if (plugin.debug)
 			System.out.println("Starting elevator gen");
-		int yd = 2;
-		while(block.getY() - yd >= 0){
-			if (block.getY() - yd == 0) //Gone too far with no base abort!
-				return;
-			Block checkBlock = block.getWorld().getBlockAt(block.getX(), block.getY()-yd, block.getZ());
-			if (isValidBlock(checkBlock)){
-				// Do nothing keep going
-			} else if (checkBlock.getType() == plugin.baseMaterial) {
-				scanFloorBlocks(checkBlock);
-				break;
-			} else {
-				// Something is obstructing the elevator so stop
-				return;
+		//int yd = 2;
+		int yscan = block.getY() - 1;
+		if (plugin.useV10){
+			World currentWorld = block.getWorld();
+			while(yscan >= plugin.v10verlap_API.getMinY(currentWorld)){
+				if (yscan == plugin.v10verlap_API.getMinY(currentWorld)){
+					currentWorld = plugin.v10verlap_API.getLowerWorld(block.getWorld());
+					if (currentWorld == null) //Gone too far with no base abort!
+						return;
+					yscan = plugin.v10verlap_API.getMaxY(currentWorld);
+					Block checkBlock = currentWorld.getBlockAt(block.getX(), yscan, block.getZ());
+					if (isValidBlock(checkBlock)){
+						// Do nothing keep going
+					} else if (checkBlock.getType() == plugin.baseMaterial) {
+						scanFloorBlocks(checkBlock);
+						break;
+					} else {
+						// Something is obstructing the elevator so stop
+						return;
+					}
+					yscan--;
+				}
 			}
-			yd = yd + 1;
+		} else {
+			while(yscan >= 0){
+				if (yscan == 0) //Gone too far with no base abort!
+					return;
+				Block checkBlock = block.getWorld().getBlockAt(block.getX(), yscan, block.getZ());
+				if (isValidBlock(checkBlock)){
+					// Do nothing keep going
+				} else if (checkBlock.getType() == plugin.baseMaterial) {
+					scanFloorBlocks(checkBlock);
+					break;
+				} else {
+					// Something is obstructing the elevator so stop
+					return;
+				}
+				yscan--;
+			}
 		}
 		
 		//Count all blocks up from base and make sure no obstructions to top floor
 		//Identify floors
+		
+		
 		
 		for (Block b : floorBlocks){
 			int x = b.getX();
 			int z = b.getZ();
 			int y1 = b.getY();
 			
-			while (true){
-				y1 = y1 + 1;
-				Block testBlock = b.getWorld().getBlockAt(x, y1, z);
-				//if (plugin.debug)
-				//	System.out.println("Is valid block: " + isValidBlock(testBlock) + " at " + testBlock.getLocation());
-				if (!isValidBlock(testBlock))
-					break;
-				//if (plugin.debug)
-				//	System.out.println("Yes I did make it this far");
-				if (testBlock.getType() == Material.STONE_BUTTON){
-					if (testBlock.getRelative(BlockFace.DOWN, 2).getType() == Material.GLASS 
-							|| testBlock.getRelative(BlockFace.DOWN, 2).getType() == plugin.baseMaterial){
-						Floor floor = new Floor();
-						floor.setY(y1);
-						if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
-							floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
-						if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
-							floormap.put(y1, floor);
-						if (plugin.debug)
-							System.out.println("Floor added: " + b.getLocation());
+			yscan = b.getY();
+			World currentWorld = b.getWorld();
+			if (plugin.useV10){
+				while (true){
+					yscan++;
+					if (yscan > plugin.v10verlap_API.getMaxY(currentWorld)){
+						if (plugin.v10verlap_API.getUpperWorld(currentWorld) == null)
+							break;
+						currentWorld = plugin.v10verlap_API.getUpperWorld(currentWorld);
+						Block testBlock = currentWorld.getBlockAt(x, yscan, z);
+						//if (plugin.debug)
+						//	System.out.println("Is valid block: " + isValidBlock(testBlock) + " at " + testBlock.getLocation());
+						if (!isValidBlock(testBlock))
+							break;
+						//if (plugin.debug)
+						//	System.out.println("Yes I did make it this far");
+						if (testBlock.getType() == Material.STONE_BUTTON){
+							if (testBlock.getRelative(BlockFace.DOWN, 2).getType() == Material.GLASS 
+									|| testBlock.getRelative(BlockFace.DOWN, 2).getType() == plugin.baseMaterial){
+								Floor floor = new Floor();
+								floor.setY(yscan);
+								floor.setWorld(currentWorld);
+								if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
+									floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
+								if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
+									if (worldFloorMap.containsKey(currentWorld)){
+										worldFloorMap.get(currentWorld).put(yscan, floor);
+									} else {
+										TreeMap<Integer, Floor> map = new TreeMap<Integer, Floor>();
+										map.put(y1, floor);
+										worldFloorMap.put(currentWorld, map);
+									}
+								}
+								if (plugin.debug)
+									System.out.println("Floor added: " + b.getLocation());
+							}
+						}
+					}
+				}
+			} else {		
+				while (true){
+					y1 = y1 + 1;
+					Block testBlock = b.getWorld().getBlockAt(x, y1, z);
+					//if (plugin.debug)
+					//	System.out.println("Is valid block: " + isValidBlock(testBlock) + " at " + testBlock.getLocation());
+					if (!isValidBlock(testBlock))
+						break;
+					//if (plugin.debug)
+					//	System.out.println("Yes I did make it this far");
+					if (testBlock.getType() == Material.STONE_BUTTON){
+						if (testBlock.getRelative(BlockFace.DOWN, 2).getType() == Material.GLASS 
+								|| testBlock.getRelative(BlockFace.DOWN, 2).getType() == plugin.baseMaterial){
+							Floor floor = new Floor();
+							floor.setY(y1);
+							if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
+								floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
+							if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
+								floormap.put(y1, floor);
+							if (plugin.debug)
+								System.out.println("Floor added: " + b.getLocation());
+						}
 					}
 				}
 			}
 		}
 		
-		//Count all floors and order them -- Not needed due to treemap?
-		int floorNumber = 1;
-		for (Floor floor : floormap.values()){
-			floor.setFloor(floorNumber);
-			floormap2.put(floorNumber, floor);
-			floorNumber = floorNumber + 1;
+		//Count all floors and order them
+		
+		if(plugin.useV10){
+			int floorNumber = 1;
+			// First order the worlds from bottom to top in array/list
+			// Then cycle through worlds in order to build floor order
+			ArrayList<World> worlds = new ArrayList<World>();
+			World currentWorld = block.getWorld();
+			worlds.add(currentWorld);
+			while(true){
+				currentWorld = plugin.v10verlap_API.getLowerWorld(currentWorld);
+				if (currentWorld == null)
+					break;
+				if (worlds.contains(currentWorld))
+					break;
+				worlds.add(0, currentWorld);
+			}
+			currentWorld = block.getWorld();
+			while(true){
+				currentWorld = plugin.v10verlap_API.getUpperWorld(currentWorld);
+				if (currentWorld == null)
+					break;
+				if (worlds.contains(currentWorld))
+					break;
+				worlds.add(currentWorld);
+			}
+			for (World world : worlds){
+				if (worldFloorMap.containsKey(world)){
+					for (Floor floor : worldFloorMap.get(world).values()){
+						floor.setFloor(floorNumber);
+						floormap2.put(floorNumber, floor);
+						floorNumber++;
+					}
+				}
+			}
+			
+		} else {
+			int floorNumber = 1;
+			for (Floor floor : floormap.values()){
+				floor.setFloor(floorNumber);
+				floormap2.put(floorNumber, floor);
+				floorNumber = floorNumber + 1;
+			}
 		}
+		
+		
 		//Elevator is constructed, pass off to check signs for floor destination, collect all people and move them
 		if (plugin.debug)
 			System.out.println("Elevator gen took: " + (System.currentTimeMillis() - startTime) + " ms.");
@@ -216,35 +325,62 @@ public class Elevator implements Runnable {
 			endLift();
 			return;
 		}
-			
+		
 		//Re apply impulse as it does seem to run out
 		for (Entity p : getPassengers()){
-			if (destFloor.getY() > startFloor.getY())
+			//if (destFloor.getY() > startFloor.getY())
+			if(destFloor.getFloor() > startFloor.getFloor())
 				p.setVelocity(new Vector(0.0D, plugin.liftSpeed, 0.0D));
 			else
 				p.setVelocity(new Vector(0.0D, -plugin.liftSpeed, 0.0D));
 			p.setFallDistance(0.0F);
 		}
 		
-		int count = 0;
-		for (Entity passenger : passengers){
-			Location pLoc = passenger.getLocation();
-			if((goingUp && pLoc.getY() > destFloor.getY()-1)
-					|| (!goingUp && pLoc.getY() < destFloor.getY()-0.1)){
-				count++;
-				passenger.setVelocity(new Vector(0,0,0));
-				pLoc.setY(destFloor.getY()-0.7);
-				passenger.teleport(pLoc);
+		if(plugin.useV10){
+			
+			int count = 0;
+			for (Entity passenger : passengers){
+				Location pLoc = passenger.getLocation();
+				if(passenger.getWorld() == destFloor.getWorld())
+					if((goingUp && pLoc.getY() > destFloor.getY()-1)
+							|| (!goingUp && pLoc.getY() < destFloor.getY()-0.1)){
+						count++;
+						passenger.setVelocity(new Vector(0,0,0));
+						pLoc.setY(destFloor.getY()-0.7);
+						passenger.teleport(pLoc);
+					}
 			}
+			
+			for (LivingEntity holder : holders.keySet()){
+				holder.teleport(holders.get(holder));
+				holder.setFallDistance(0.0F);
+			}
+			
+			if (count >= passengers.size())
+				endLift();
+			
+		} else {
+			
+			int count = 0;
+			for (Entity passenger : passengers){
+				Location pLoc = passenger.getLocation();
+				if((goingUp && pLoc.getY() > destFloor.getY()-1)
+						|| (!goingUp && pLoc.getY() < destFloor.getY()-0.1)){
+					count++;
+					passenger.setVelocity(new Vector(0,0,0));
+					pLoc.setY(destFloor.getY()-0.7);
+					passenger.teleport(pLoc);
+				}
+			}
+			
+			for (LivingEntity holder : holders.keySet()){
+				holder.teleport(holders.get(holder));
+				holder.setFallDistance(0.0F);
+			}
+			
+			if (count >= passengers.size())
+				endLift();
 		}
-		
-		for (LivingEntity holder : holders.keySet()){
-			holder.teleport(holders.get(holder));
-			holder.setFallDistance(0.0F);
-		}
-		
-		if (count >= passengers.size())
-			endLift();
 	}
 	
 	public boolean isInLift(Player player){
