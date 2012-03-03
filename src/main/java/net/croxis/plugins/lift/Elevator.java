@@ -3,7 +3,6 @@ package net.croxis.plugins.lift;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.TreeMap;
 
 import org.bukkit.Chunk;
@@ -35,6 +34,8 @@ public class Elevator implements Runnable {
 	public boolean goingUp = false;
 	public HashSet<Chunk> chunks = new HashSet<Chunk>();
 	public HashMap<LivingEntity, Location> holders = new HashMap<LivingEntity, Location>();
+	public Material baseBlockType = Material.IRON_BLOCK;
+	public double speed = 0.5;
 
 	public Elevator(Lift plugin, Block block) {
 		long startTime = System.currentTimeMillis();
@@ -55,7 +56,7 @@ public class Elevator implements Runnable {
 					Block checkBlock = currentWorld.getBlockAt(block.getX(), yscan, block.getZ());
 					if (isValidBlock(checkBlock)){
 						// Do nothing keep going
-					} else if (checkBlock.getType() == plugin.baseMaterial) {
+					} else if (isBaseBlock(checkBlock)) {
 						scanFloorBlocks(checkBlock);
 						break;
 					} else {
@@ -72,7 +73,7 @@ public class Elevator implements Runnable {
 				Block checkBlock = block.getWorld().getBlockAt(block.getX(), yscan, block.getZ());
 				if (isValidBlock(checkBlock)){
 					// Do nothing keep going
-				} else if (checkBlock.getType() == plugin.baseMaterial) {
+				} else if (isBaseBlock(checkBlock)) {
 					scanFloorBlocks(checkBlock);
 					break;
 				} else {
@@ -223,6 +224,8 @@ public class Elevator implements Runnable {
 	
 	//Recursive function that constructs our list of blocks
 	public void scanFloorBlocks(Block block){
+		this.baseBlockType = block.getType();
+		this.speed = plugin.blockSpeeds.get(baseBlockType);
 		if (floorBlocks.size() >= plugin.liftArea)
 			return; //5x5 max, prevents infinite loops
 		else if (floorBlocks.contains(block))
@@ -233,16 +236,16 @@ public class Elevator implements Runnable {
 			chunks.add(block.getChunk());
 		
 		Block checkBlock = block.getRelative(BlockFace.NORTH, 1);
-		if (checkBlock.getType() == plugin.baseMaterial)
+		if (checkBlock.getType() == baseBlockType)
 			scanFloorBlocks(checkBlock);
 		checkBlock = block.getRelative(BlockFace.EAST, 1);
-		if (checkBlock.getType() == plugin.baseMaterial)
+		if (checkBlock.getType() == baseBlockType)
 			scanFloorBlocks(checkBlock);
 		checkBlock = block.getRelative(BlockFace.SOUTH, 1);
-		if (checkBlock.getType() == plugin.baseMaterial)
+		if (checkBlock.getType() == baseBlockType)
 			scanFloorBlocks(checkBlock);
 		checkBlock = block.getRelative(BlockFace.WEST, 1);
-		if (checkBlock.getType() == plugin.baseMaterial)
+		if (checkBlock.getType() == baseBlockType)
 			scanFloorBlocks(checkBlock);
 	}
 	
@@ -331,9 +334,9 @@ public class Elevator implements Runnable {
 		for (Entity p : getPassengers()){
 			//if (destFloor.getY() > startFloor.getY())
 			if(destFloor.getFloor() > startFloor.getFloor())
-				p.setVelocity(new Vector(0.0D, plugin.liftSpeed, 0.0D));
+				p.setVelocity(new Vector(0.0D, speed, 0.0D));
 			else
-				p.setVelocity(new Vector(0.0D, -plugin.liftSpeed, 0.0D));
+				p.setVelocity(new Vector(0.0D, -speed, 0.0D));
 			p.setFallDistance(0.0F);
 		}
 		
@@ -386,6 +389,12 @@ public class Elevator implements Runnable {
 	
 	public boolean isInLift(Player player){
 		return passengers.contains(player);
+	}
+	
+	public boolean isBaseBlock(Block block){
+		if (plugin.blockSpeeds.containsKey(block.getType()))
+			return true;
+		return false;
 	}
 
 }
