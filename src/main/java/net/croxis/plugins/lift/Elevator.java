@@ -103,32 +103,28 @@ public class Elevator implements Runnable {
 							break;
 						currentWorld = plugin.v10verlap_API.getUpperWorld(currentWorld);
 						Block testBlock = currentWorld.getBlockAt(x, yscan, z);
-						//if (plugin.debug)
-						//	System.out.println("Is valid block: " + isValidBlock(testBlock) + " at " + testBlock.getLocation());
 						if (!isValidBlock(testBlock))
 							break;
-						//if (plugin.debug)
-						//	System.out.println("Yes I did make it this far");
 						if (testBlock.getType() == Material.STONE_BUTTON){
-							if (testBlock.getRelative(BlockFace.DOWN, 2).getType() == Material.GLASS 
-									|| testBlock.getRelative(BlockFace.DOWN, 2).getType() == plugin.baseMaterial){
-								Floor floor = new Floor();
-								floor.setY(yscan);
-								floor.setWorld(currentWorld);
-								if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
-									floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
-								if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
-									if (worldFloorMap.containsKey(currentWorld)){
-										worldFloorMap.get(currentWorld).put(yscan, floor);
-									} else {
-										TreeMap<Integer, Floor> map = new TreeMap<Integer, Floor>();
-										map.put(y1, floor);
-										worldFloorMap.put(currentWorld, map);
-									}
+							if (plugin.checkGlass)
+								if (!scanGlassAtY(currentWorld, testBlock.getY() - 2))
+									break;
+							Floor floor = new Floor();
+							floor.setY(yscan);
+							floor.setWorld(currentWorld);
+							if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
+								floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
+							if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
+								if (worldFloorMap.containsKey(currentWorld)){
+									worldFloorMap.get(currentWorld).put(yscan, floor);
+								} else {
+									TreeMap<Integer, Floor> map = new TreeMap<Integer, Floor>();
+									map.put(y1, floor);
+									worldFloorMap.put(currentWorld, map);
 								}
-								if (plugin.debug)
-									System.out.println("Floor added: " + b.getLocation());
 							}
+							if (plugin.debug)
+								System.out.println("Floor added: " + b.getLocation());
 						}
 					}
 				}
@@ -136,24 +132,21 @@ public class Elevator implements Runnable {
 				while (true){
 					y1 = y1 + 1;
 					Block testBlock = b.getWorld().getBlockAt(x, y1, z);
-					//if (plugin.debug)
-					//	System.out.println("Is valid block: " + isValidBlock(testBlock) + " at " + testBlock.getLocation());
 					if (!isValidBlock(testBlock))
 						break;
-					//if (plugin.debug)
-					//	System.out.println("Yes I did make it this far");
 					if (testBlock.getType() == Material.STONE_BUTTON){
-						if (testBlock.getRelative(BlockFace.DOWN, 2).getType() == Material.GLASS 
-								|| testBlock.getRelative(BlockFace.DOWN, 2).getType() == plugin.baseMaterial){
-							Floor floor = new Floor();
-							floor.setY(y1);
-							if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
-								floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
-							if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
-								floormap.put(y1, floor);
-							if (plugin.debug)
-								System.out.println("Floor added: " + b.getLocation());
-						}
+						if (plugin.checkGlass)
+							if (!scanGlassAtY(currentWorld, testBlock.getY() - 2))
+								break;
+						Floor floor = new Floor();
+						floor.setY(y1);
+						if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
+							floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
+						if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
+							floormap.put(y1, floor);
+						if (plugin.debug)
+							System.out.println("Floor added: " + b.getLocation());
+						
 					}
 				}
 			}
@@ -217,6 +210,14 @@ public class Elevator implements Runnable {
 				|| checkBlock.getType() == Material.STONE_BUTTON || checkBlock.getType() == Material.VINE)
 			return true;
 		return false;
+	}
+	
+	public boolean scanGlassAtY(World world, int y){
+		for (Block block : this.floorBlocks){
+			if (world.getBlockAt(block.getX(), y, block.getZ()).getType() != Material.GLASS)
+				return false;	
+		}
+		return true;
 	}
 	
 	

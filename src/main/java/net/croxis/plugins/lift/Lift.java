@@ -19,6 +19,7 @@ public class Lift extends JavaPlugin {
 	public int liftArea = 16;
 	public Material baseMaterial = Material.IRON_BLOCK;
 	public boolean autoPlace = false;
+	public boolean checkGlass = false;
 	public boolean useV10 = false;
 	public V10verlap_API v10verlap_API = null;
 	
@@ -36,6 +37,7 @@ public class Lift extends JavaPlugin {
     	debug = this.getConfig().getBoolean("debug");
     	baseMaterial = Material.valueOf(this.getConfig().getString("baseBlock", "IRON_BLOCK"));
     	autoPlace = this.getConfig().getBoolean("autoPlace");
+    	checkGlass = this.getConfig().getBoolean("checkGlass");
     	this.getConfig().options().copyDefaults(true);
         saveConfig();
         Plugin test = getServer().getPluginManager().getPlugin("Spout");
