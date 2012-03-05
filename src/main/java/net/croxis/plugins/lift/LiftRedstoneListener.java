@@ -38,7 +38,7 @@ public class LiftRedstoneListener implements Listener {
 			
 			//See if lift is in use
 			for (Elevator e : plugin.lifts){
-				if (e.floorBlocks.contains(elevator.floorBlocks.toArray()[0]))
+				if (e.floorBlocks.contains(elevator.floorBlocks.iterator().next()))
 					return;
 			}
 			
