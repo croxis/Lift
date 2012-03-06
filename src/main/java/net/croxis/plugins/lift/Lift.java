@@ -48,6 +48,7 @@ public class Lift extends JavaPlugin {
     	
     	this.getConfig().options().copyDefaults(true);
         saveConfig();
+        
         Plugin test = getServer().getPluginManager().getPlugin("Spout");
         if(test != null) {
         	useSpout = true;
@@ -67,6 +68,13 @@ public class Lift extends JavaPlugin {
             }
             
         }
+        
+        if (debug){
+			System.out.println("maxArea: " + Integer.toString(liftArea));
+			System.out.println("autoPlace: " + Boolean.toString(autoPlace));
+			System.out.println("checkGlass: " + Boolean.toString(checkGlass));
+		}
+        
         System.out.println(this + " is now enabled!");
     }
     
