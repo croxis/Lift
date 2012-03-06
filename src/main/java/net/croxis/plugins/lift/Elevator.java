@@ -272,7 +272,7 @@ public class Elevator implements Runnable {
 			if ((loc.getX() < inside.getX() + 1.0D) && 
 					(loc.getX() > inside.getX() - 1.0D) && 
 					(loc.getY() >= inside.getY() - 1.0D) && 
-					(loc.getY() <= floormap.get(floormap.lastKey()).getY()) && 
+					(loc.getY() <= floormap2.get(floormap2.lastKey()).getY()) && 
 					(loc.getZ() < inside.getZ() + 1.0D) && 
 					(loc.getZ() > inside.getZ() - 1.0D))
 				return true;

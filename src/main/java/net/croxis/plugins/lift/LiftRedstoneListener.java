@@ -121,10 +121,11 @@ public class LiftRedstoneListener implements Listener {
 			elevator.taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, elevator, 2, 2);
 			plugin.lifts.add(elevator);
 
-			if (plugin.debug)
+			if (plugin.debug){
 				System.out.println("Going Up: " + Boolean.toString(elevator.goingUp));
 				System.out.println("Number of passengers: " + Integer.toString(elevator.passengers.size()));
 				System.out.println("Total generation time: " + Long.toString(System.currentTimeMillis() - startTime));
+			}
 		}
 		
 	}
