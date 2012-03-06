@@ -69,6 +69,9 @@ public class LiftRedstoneListener implements Listener {
 			
 			Iterator<Block> iterator = elevator.floorBlocks.iterator();
 			for(Chunk chunk : elevator.chunks){
+				if (plugin.debug){
+					System.out.println("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().length));
+				}
 				for(Entity e : chunk.getEntities()){
 					if (e instanceof LivingEntity){
 						if (elevator.isInShaftAtFloor(e, startFloor)){
@@ -124,6 +127,7 @@ public class LiftRedstoneListener implements Listener {
 			if (plugin.debug){
 				System.out.println("Going Up: " + Boolean.toString(elevator.goingUp));
 				System.out.println("Number of passengers: " + Integer.toString(elevator.passengers.size()));
+				System.out.println("Elevator chunks: " + Integer.toString(elevator.chunks.size()));
 				System.out.println("Total generation time: " + Long.toString(System.currentTimeMillis() - startTime));
 			}
 		}
