@@ -55,17 +55,16 @@ public class LiftRedstoneListener implements Listener {
 			if (splits.length != 2)
 				return;
 			int destination = Integer.parseInt(splits[1]);	
-			
-			Floor destFloor = elevator.getFloorFromN(destination);
 
 			//Get all players in elevator shaft (at floor of button pusher if possible)
 			//And set their gravity to 0
-			elevator.destFloor = destFloor;
+			elevator.destFloor = elevator.getFloorFromN(destination);
 			
 			if (plugin.debug){
 				System.out.println("Elevator start floor:" + startFloor.getFloor());
+				System.out.println("Elevator start floor y:" + startFloor.getY());
 				System.out.println("Elevator destination floor:" + destination);
-				System.out.println("Elevator destination y:" + destFloor.getY());
+				System.out.println("Elevator destination y:" + elevator.destFloor.getY());
 			}
 			
 			Iterator<Block> iterator = elevator.floorBlocks.iterator();
@@ -87,14 +86,14 @@ public class LiftRedstoneListener implements Listener {
 			//Disable all glass inbetween players and destination
 			ArrayList<Floor> glassfloors = new ArrayList<Floor>();
 			//Going up
-			if (startFloor.getY() < destFloor.getY()){
-				for(int i = startFloor.getFloor() + 1; i<= destFloor.getFloor(); i++){
+			if (startFloor.getY() < elevator.destFloor.getY()){
+				for(int i = startFloor.getFloor() + 1; i<= elevator.destFloor.getFloor(); i++){
 					glassfloors.add(elevator.getFloormap2().get(i));
 				}
 			}
 			//Going down
 			else {
-				for(int i = destFloor.getFloor() + 1; i<= startFloor.getFloor(); i++){
+				for(int i = elevator.destFloor.getFloor() + 1; i<= startFloor.getFloor(); i++){
 					glassfloors.add(elevator.getFloormap2().get(i));
 				}
 			}
@@ -111,10 +110,9 @@ public class LiftRedstoneListener implements Listener {
 					if (p instanceof Player){
 						SpoutManager.getPlayer((Player) p).setGravityMultiplier(0);
 						SpoutManager.getPlayer((Player) p).setCanFly(true);
-					}
-						
+					}						
 				}
-				if (destFloor.getY() > startFloor.getY()){
+				if (elevator.destFloor.getY() > startFloor.getY()){
 					elevator.goingUp = true;
 				} else {
 					plugin.fallers.add(p);
@@ -124,7 +122,9 @@ public class LiftRedstoneListener implements Listener {
 			plugin.lifts.add(elevator);
 
 			if (plugin.debug)
-				System.out.println("Total time: " + Long.toString(System.currentTimeMillis() - startTime));
+				System.out.println("Going Up: " + Boolean.toString(elevator.goingUp));
+				System.out.println("Number of passengers: " + Integer.toString(elevator.passengers.size()));
+				System.out.println("Total generation time: " + Long.toString(System.currentTimeMillis() - startTime));
 		}
 		
 	}
