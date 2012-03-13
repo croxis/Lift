@@ -216,9 +216,12 @@ public class Elevator implements Runnable {
 	
 	public boolean scanGlassAtY(World world, int y){
 		for (Block block : floorBlocks){
-			if (plugin.debug)
+			if (plugin.debug){
 				System.out.println("Scan glass block type: " + world.getBlockAt(block.getX(), y, block.getZ()).getType().toString());
-			if (world.getBlockAt(block.getX(), y, block.getZ()).getType() != Material.GLASS && plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())){
+				System.out.println("Is not glass?: " + Boolean.toString(world.getBlockAt(block.getX(), y, block.getZ()).getType() != Material.GLASS));
+				System.out.println("Is not base?: " + Boolean.toString(!plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())));
+			}
+			if (world.getBlockAt(block.getX(), y, block.getZ()).getType() != Material.GLASS && !plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())){
 				if (plugin.debug)
 					System.out.println("Invalid block type");
 				return false;	
