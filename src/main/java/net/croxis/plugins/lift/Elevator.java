@@ -87,7 +87,8 @@ public class Elevator implements Runnable {
 		//Count all blocks up from base and make sure no obstructions to top floor
 		//Identify floors
 		
-		
+		if (plugin.debug)
+			System.out.println("Base size: " + Integer.toString(floorBlocks.size()));
 		
 		for (Block b : floorBlocks){
 			int x = b.getX();
@@ -214,9 +215,14 @@ public class Elevator implements Runnable {
 	}
 	
 	public boolean scanGlassAtY(World world, int y){
-		for (Block block : this.floorBlocks){
-			if (world.getBlockAt(block.getX(), y, block.getZ()).getType() != Material.GLASS && plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType()))
+		for (Block block : floorBlocks){
+			if (plugin.debug)
+				System.out.println("Scan glass block type: " + world.getBlockAt(block.getX(), y, block.getZ()).getType().toString());
+			if (world.getBlockAt(block.getX(), y, block.getZ()).getType() != Material.GLASS && plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())){
+				if (plugin.debug)
+					System.out.println("Invalid block type");
 				return false;	
+			}
 		}
 		return true;
 	}
