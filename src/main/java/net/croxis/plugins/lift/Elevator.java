@@ -215,7 +215,7 @@ public class Elevator implements Runnable {
 	
 	public boolean scanGlassAtY(World world, int y){
 		for (Block block : this.floorBlocks){
-			if (world.getBlockAt(block.getX(), y, block.getZ()).getType() != Material.GLASS)
+			if (world.getBlockAt(block.getX(), y, block.getZ()).getType() != Material.GLASS && plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType()))
 				return false;	
 		}
 		return true;
