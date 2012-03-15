@@ -55,7 +55,7 @@ public class Lift extends JavaPlugin {
         	System.out.println(this + " detected Spout!");
         }
         
-        test = getServer().getPluginManager().getPlugin("V10verlap");
+        /*test = getServer().getPluginManager().getPlugin("V10verlap");
         if(test != null) {
         	V10verlap v10verlap = (V10verlap) test;
         	v10verlap_API = v10verlap.getAPI();
@@ -67,7 +67,7 @@ public class Lift extends JavaPlugin {
             	useV10 = true;
             }
             
-        }
+        }*/
         
         if (debug){
 			System.out.println("maxArea: " + Integer.toString(liftArea));
