@@ -23,8 +23,8 @@ public class Lift extends JavaPlugin {
 	public HashMap<Material, Double> blockSpeeds = new HashMap<Material, Double>();
 	public boolean autoPlace = false;
 	public boolean checkGlass = false;
-	public boolean useV10 = false;
-	public V10verlap_API v10verlap_API = null;
+	//public boolean useV10 = false;
+	//public V10verlap_API v10verlap_API = null;
 	
     public void onDisable() {
     	lifts.clear();
@@ -36,6 +36,7 @@ public class Lift extends JavaPlugin {
     	new LiftPlayerListener(this);
     	
     	//liftSpeed = this.getConfig().getDouble("liftSpeed");
+    	this.getConfig().options().copyDefaults(true);
     	liftArea = this.getConfig().getInt("maxLiftArea");
     	debug = this.getConfig().getBoolean("debug");
     	//baseMaterial = Material.valueOf(this.getConfig().getString("baseBlock", "IRON_BLOCK"));
@@ -46,7 +47,7 @@ public class Lift extends JavaPlugin {
     		blockSpeeds.put(Material.valueOf(key), this.getConfig().getDouble("baseBlockSpeeds." + key));
     	}
     	
-    	this.getConfig().options().copyDefaults(true);
+    	
         saveConfig();
         
         Plugin test = getServer().getPluginManager().getPlugin("Spout");
@@ -73,6 +74,7 @@ public class Lift extends JavaPlugin {
 			System.out.println("maxArea: " + Integer.toString(liftArea));
 			System.out.println("autoPlace: " + Boolean.toString(autoPlace));
 			System.out.println("checkGlass: " + Boolean.toString(checkGlass));
+			System.out.println("baseBlocks: " + blockSpeeds.toString());
 		}
         
         System.out.println(this + " is now enabled!");

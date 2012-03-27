@@ -32,10 +32,15 @@ public class LiftPlayerListener implements Listener{
 				
 				elevator = new Elevator(this.plugin, event.getClickedBlock().getRelative(BlockFace.DOWN));
 				
-				if (elevator.getTotalFloors() < 2){
+				if (elevator.getTotalFloors() < 1){
+					event.getPlayer().sendMessage("There was an error in the code please report bug, conditions, and debug log if possible.");
+					return;
+				} else if (elevator.getTotalFloors() < 2){
 					event.getPlayer().sendMessage("There is only one floor silly.");
 					return;
 				}
+				
+				event.setCancelled(true);
 				
 				int currentDestinationInt = 1;
 				Floor currentFloor = elevator.getFloorFromY(event.getClickedBlock().getRelative(BlockFace.DOWN).getY());

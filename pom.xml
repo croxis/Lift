@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.croxis.plugins.lift</groupId>
     <artifactId>Lift</artifactId>
-    <version>10</version>
+    <version>12</version>
     <name>Lift</name>
     <repositories>
         <repository>
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.2.3-R0.2-SNAPSHOT</version>
+            <version>1.2.3-R0.3-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
