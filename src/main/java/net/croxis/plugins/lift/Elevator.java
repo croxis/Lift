@@ -218,7 +218,7 @@ public class Elevator implements Runnable {
 	public boolean isValidBlock(Block checkBlock){
 		if (checkBlock.getType() == Material.AIR || checkBlock.getType() == Material.GLASS 
 				|| checkBlock.getType() == Material.TORCH || checkBlock.getType() == Material.WALL_SIGN
-				|| checkBlock.getType() == Material.STONE_BUTTON || checkBlock.getType() == Material.VINE)
+				|| checkBlock.getType() == Material.STONE_BUTTON || checkBlock.getType() == Material.VINE || checkBlock.getType() == Material.LADDER)
 			return true;
 		return false;
 	}
