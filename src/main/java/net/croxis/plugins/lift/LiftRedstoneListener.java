@@ -38,8 +38,14 @@ public class LiftRedstoneListener implements Listener {
 			
 			//See if lift is in use
 			for (Elevator e : plugin.lifts){
-				if (e.floorBlocks.contains(elevator.floorBlocks.iterator().next()))
-					return;
+				//if (e.floorBlocks.contains(elevator.floorBlocks.iterator().next()))
+					//return;
+				Iterator<Block> iterator = elevator.floorBlocks.iterator();
+				while (iterator.hasNext()){
+					if (e.floorBlocks.contains(iterator.next()))
+						return;
+				}
+					
 			}
 			
 			if (elevator.getTotalFloors() < 2)
