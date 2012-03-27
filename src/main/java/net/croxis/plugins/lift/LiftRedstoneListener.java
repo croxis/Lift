@@ -115,6 +115,10 @@ public class LiftRedstoneListener implements Listener {
 			}
 			//Apply impulse to players
 			for (Entity p : elevator.getPassengers()){
+				if (p instanceof Player){
+					((Player) p).setAllowFlight(true);
+				}
+				
 				if (plugin.useSpout){
 					if (p instanceof Player){
 						SpoutManager.getPlayer((Player) p).setGravityMultiplier(0);

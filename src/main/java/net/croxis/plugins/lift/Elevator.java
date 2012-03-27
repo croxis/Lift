@@ -330,6 +330,9 @@ public class Elevator implements Runnable {
 			b.setType(Material.GLASS);
 		for (Entity p : this.passengers){
 			plugin.fallers.remove(p);
+			if (p instanceof Player){
+				((Player) p).setAllowFlight(plugin.serverFlight);
+			}
 			if (plugin.useSpout){
 				if (p instanceof Player){
 					SpoutManager.getPlayer((Player) p).setGravityMultiplier(1);

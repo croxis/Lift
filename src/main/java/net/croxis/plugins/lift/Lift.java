@@ -23,6 +23,7 @@ public class Lift extends JavaPlugin {
 	public HashMap<Material, Double> blockSpeeds = new HashMap<Material, Double>();
 	public boolean autoPlace = false;
 	public boolean checkGlass = false;
+	public boolean serverFlight = false;
 	//public boolean useV10 = false;
 	//public V10verlap_API v10verlap_API = null;
 	
@@ -49,6 +50,8 @@ public class Lift extends JavaPlugin {
     	
     	
         saveConfig();
+        
+        serverFlight = this.getServer().getAllowFlight();
         
         Plugin test = getServer().getPluginManager().getPlugin("Spout");
         if(test != null) {
