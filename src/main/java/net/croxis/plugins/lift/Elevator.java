@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.TreeMap;
 
 import org.bukkit.Chunk;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -331,7 +332,10 @@ public class Elevator implements Runnable {
 		for (Entity p : this.passengers){
 			plugin.fallers.remove(p);
 			if (p instanceof Player){
-				((Player) p).setAllowFlight(plugin.serverFlight);
+				Player pl = (Player) p;
+				if (pl.getGameMode() == GameMode.SURVIVAL)
+					pl.setAllowFlight(false);
+				//((Player) p).setAllowFlight(plugin.serverFlight);
 			}
 			if (plugin.useSpout){
 				if (p instanceof Player){
