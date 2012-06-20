@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.croxis.plugins.lift</groupId>
     <artifactId>Lift</artifactId>
-    <version>13</version>
+    <version>14</version>
     <name>Lift</name>
     <repositories>
         <repository>
@@ -31,21 +31,14 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.2.4-R1.0</version>
+            <version>1.2.5-R4.0</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.getspout</groupId>
-            <artifactId>spoutpluginapi</artifactId>
+            <artifactId>spoutplugin</artifactId>
             <version>dev-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.V10verlap</groupId>
-            <artifactId>V10verlap</artifactId>
-            <version>0.6</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

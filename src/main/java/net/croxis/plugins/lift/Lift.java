@@ -9,9 +9,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import de.V10lator.V10verlap.V10verlap;
-import de.V10lator.V10verlap.V10verlap_API;
-
 public class Lift extends JavaPlugin {
 	boolean debug = false;
 	boolean useSpout = false;
