@@ -10,6 +10,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -113,6 +114,15 @@ public class LiftPlayerListener implements Listener{
 		for (Elevator elevator : plugin.lifts){
 			if (elevator.passengers.contains(e.getPlayer())){
 				elevator.passengers.remove(e.getPlayer());
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerKick(PlayerKickEvent event){
+		for (Elevator elevator : plugin.lifts){
+			if (elevator.passengers.contains(event.getPlayer())){
+				event.setCancelled(true);
 			}
 		}
 	}
