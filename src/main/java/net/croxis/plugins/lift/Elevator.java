@@ -339,7 +339,8 @@ public class Elevator implements Runnable {
 				if (pl.getGameMode() == GameMode.SURVIVAL)
 					pl.setAllowFlight(false);
 				//((Player) p).setAllowFlight(plugin.serverFlight);
-				AnticheatAPI.unexemptPlayer((Player) p, CheckType.FLY);
+				if (plugin.useAntiCheat)
+					AnticheatAPI.unexemptPlayer((Player) p, CheckType.FLY);
 			}
 			if (plugin.useSpout){
 				if (p instanceof Player){
