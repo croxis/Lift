@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 
+import net.h31ix.anticheat.api.AnticheatAPI;
+import net.h31ix.anticheat.manage.CheckType;
+
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -336,6 +339,7 @@ public class Elevator implements Runnable {
 				if (pl.getGameMode() == GameMode.SURVIVAL)
 					pl.setAllowFlight(false);
 				//((Player) p).setAllowFlight(plugin.serverFlight);
+				AnticheatAPI.unexemptPlayer((Player) p, CheckType.FLY);
 			}
 			if (plugin.useSpout){
 				if (p instanceof Player){

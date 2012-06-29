@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.h31ix.anticheat.api.AnticheatAPI;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
@@ -23,6 +25,8 @@ public class Lift extends JavaPlugin {
 	public boolean serverFlight = false;
 	//public boolean useV10 = false;
 	//public V10verlap_API v10verlap_API = null;
+	public boolean useAntiCheat = false;
+	public AnticheatAPI anticheat = null;
 	
     public void onDisable() {
     	lifts.clear();
@@ -54,6 +58,11 @@ public class Lift extends JavaPlugin {
         if(test != null) {
         	useSpout = true;
         	System.out.println(this + " detected Spout!");
+        }
+        
+        if(getServer().getPluginManager().getPlugin("AntiCheat") != null)
+        {
+          useAntiCheat = true;
         }
         
         /*test = getServer().getPluginManager().getPlugin("V10verlap");

@@ -3,6 +3,9 @@ package net.croxis.plugins.lift;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import net.h31ix.anticheat.api.AnticheatAPI;
+import net.h31ix.anticheat.manage.CheckType;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -117,6 +120,8 @@ public class LiftRedstoneListener implements Listener {
 			for (Entity p : elevator.getPassengers()){
 				if (p instanceof Player){
 					((Player) p).setAllowFlight(true);
+					if (plugin.useAntiCheat)
+						AnticheatAPI.exemptPlayer((Player) p, CheckType.FLY);
 				}
 				
 				if (plugin.useSpout){
