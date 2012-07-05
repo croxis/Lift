@@ -26,6 +26,8 @@ public class LiftPlayerListener implements Listener{
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event){
 		Elevator elevator = null;
+		if (event.isCancelled())
+			return;
 		if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
 			if (event.getClickedBlock().getType().equals(Material.WALL_SIGN) 
 					&& event.getClickedBlock().getRelative(BlockFace.DOWN).getType().equals(Material.STONE_BUTTON)){
