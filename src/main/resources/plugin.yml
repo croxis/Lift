@@ -5,5 +5,5 @@ generator: http://dinnerbone.com/minecraft/tools/pluginator/
 main: net.croxis.plugins.lift.Lift
 name: Lift
 startup: postworld
-version: '15'
+version: '16'
 softdepend: [Spout,AntiCheat]
