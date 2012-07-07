@@ -89,6 +89,11 @@ public class LiftRedstoneListener implements Listener {
 								Location loc = iterator.next().getLocation();
 								e.teleport(new Location(e.getWorld(), loc.getX() + 0.5D, e.getLocation().getY(), loc.getZ() + 0.5D, e.getLocation().getYaw(), e.getLocation().getPitch()));
 							}
+							if (e instanceof Player){
+								Player player = (Player) e;
+								if (player.getAllowFlight())
+									plugin.flyers.add(player);
+							}
 						} else if (!elevator.isInShaftAtFloor(e, startFloor) && elevator.isInShaft(e))
 							elevator.holders.put((LivingEntity) e, e.getLocation());
 					}

@@ -8,6 +8,7 @@ import net.h31ix.anticheat.api.AnticheatAPI;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,6 +16,7 @@ public class Lift extends JavaPlugin {
 	boolean debug = false;
 	boolean useSpout = false;
 	public HashSet<Entity> fallers = new HashSet<Entity>();
+	public HashSet<Player> flyers = new HashSet<Player>();
 	public HashSet<Elevator> lifts = new HashSet<Elevator>();
 	//public double liftSpeed = 0.5;
 	public int liftArea = 16;

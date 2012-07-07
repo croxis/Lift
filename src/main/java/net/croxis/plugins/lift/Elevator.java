@@ -337,7 +337,7 @@ public class Elevator implements Runnable {
 			plugin.fallers.remove(p);
 			if (p instanceof Player){
 				Player pl = (Player) p;
-				if (pl.getGameMode() == GameMode.SURVIVAL && !pl.isOp())
+				if (!plugin.flyers.contains(pl))
 					pl.setAllowFlight(false);
 				//((Player) p).setAllowFlight(plugin.serverFlight);
 				if (plugin.useAntiCheat)
