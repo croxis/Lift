@@ -223,7 +223,8 @@ public class Elevator implements Runnable {
 		if (checkBlock.getType() == Material.AIR || checkBlock.getType() == Material.GLASS 
 				|| checkBlock.getType() == Material.TORCH || checkBlock.getType() == Material.WALL_SIGN
 				|| checkBlock.getType() == Material.STONE_BUTTON || checkBlock.getType() == Material.VINE 
-				|| checkBlock.getType() == Material.LADDER || checkBlock.getType() == Material.WATER)
+				|| checkBlock.getType() == Material.LADDER || checkBlock.getType() == Material.WATER
+				|| checkBlock.getType() == Material.STATIONARY_WATER)
 			return true;
 		return false;
 	}
