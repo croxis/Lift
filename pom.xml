@@ -13,14 +13,6 @@
             <id>spout-repo</id>
             <url>http://repo.spout.org</url>
         </repository>
-        <repository>
-            <id>local-repo</id>
-            <url>http://localhost:8080/plugin/repository/project/AntiCheat/LastSuccessful/repository</url>
-        </repository>
-        <repository>
-            <id>local-repo</id>
-            <url>http://localhost:8080/plugin/repository</url>
-        </repository>
     </repositories>
     <build>
         <plugins>
