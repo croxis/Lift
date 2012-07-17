@@ -3,5 +3,6 @@ maxLiftArea: 16
 debug: false
 autoPlace: false
 checkGlass: false
+floorBlock: GLASS
 baseBlockSpeeds:
   IRON_BLOCK: 0.5

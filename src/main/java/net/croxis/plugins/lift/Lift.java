@@ -22,6 +22,7 @@ public class Lift extends JavaPlugin {
 	public int liftArea = 16;
 	//public Material baseMaterial = Material.IRON_BLOCK;
 	public HashMap<Material, Double> blockSpeeds = new HashMap<Material, Double>();
+	public Material floorBlock = Material.GLASS;
 	public boolean autoPlace = false;
 	public boolean checkGlass = false;
 	public boolean serverFlight = false;
@@ -50,7 +51,7 @@ public class Lift extends JavaPlugin {
     	for (String key : baseBlockKeys){
     		blockSpeeds.put(Material.valueOf(key), this.getConfig().getDouble("baseBlockSpeeds." + key));
     	}
-    	
+    	floorBlock = Material.valueOf(getConfig().getString("floorBlock"));
     	
         saveConfig();
         

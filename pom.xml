@@ -13,6 +13,10 @@
             <id>spout-repo</id>
             <url>http://repo.spout.org</url>
         </repository>
+        <repository>
+        	<id>croxis</id>
+        	<url>http://repository-croxis.forge.cloudbees.com/release/</url>
+        </repository>
     </repositories>
     <build>
         <plugins>
