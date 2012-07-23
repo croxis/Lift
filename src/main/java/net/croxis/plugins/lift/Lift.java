@@ -1,5 +1,6 @@
 package net.croxis.plugins.lift;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -88,6 +89,13 @@ public class Lift extends JavaPlugin {
 			System.out.println("checkGlass: " + Boolean.toString(checkGlass));
 			System.out.println("baseBlocks: " + blockSpeeds.toString());
 		}
+        
+        try {
+            Metrics metrics = new Metrics(this);
+            metrics.start();
+        } catch (IOException e) {
+            // Failed to submit the stats :-(
+        }
         
         System.out.println(this + " is now enabled!");
     }
