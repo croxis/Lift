@@ -6,3 +6,6 @@ checkGlass: false
 floorBlock: GLASS
 baseBlockSpeeds:
   IRON_BLOCK: 0.5
+STRING_oneFloor: "There is only one floor silly."
+STRING_currentFloor: "Current Floor:"
+STRING_dest: "Dest:"

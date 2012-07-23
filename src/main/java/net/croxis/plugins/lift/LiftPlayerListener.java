@@ -39,7 +39,7 @@ public class LiftPlayerListener implements Listener{
 					event.getPlayer().sendMessage("There was an error in the code please report bug, conditions, and debug log if possible.");
 					return;
 				} else if (elevator.getTotalFloors() < 2){
-					event.getPlayer().sendMessage("There is only one floor silly.");
+					event.getPlayer().sendMessage(Lift.stringOneFloor);
 					return;
 				}
 				
@@ -48,15 +48,10 @@ public class LiftPlayerListener implements Listener{
 				int currentDestinationInt = 1;
 				Floor currentFloor = elevator.getFloorFromY(event.getClickedBlock().getRelative(BlockFace.DOWN).getY());
 				
-				String sign0 = "Current Floor:";
+				String sign0 = Lift.stringCurrentFloor;
 				String sign1 = Integer.toString(currentFloor.getFloor());
 				String sign2 = "";
 				String sign3 = "";
-				
-				//if(sign.getLine(2).isEmpty()){
-				//	currentDestinationInt = 0;
-				//} 
-				//If the current line isn't valid number
 				try{
 					String[] splits = sign.getLine(2).split(": ");
 					currentDestinationInt = Integer.parseInt(splits[1]);	
@@ -82,9 +77,7 @@ public class LiftPlayerListener implements Listener{
 						System.out.println("Rotating back to first floor");
 					}
 				}
-				//sign2 = "Dest: " + elevator.getFloorFromN(currentDestinationInt).getName();
-				//sign3 = Integer.toString(currentDestinationInt);
-				sign2 = "Dest: " + Integer.toString(currentDestinationInt);
+				sign2 = Lift.stringDestination + " " + Integer.toString(currentDestinationInt);
 				sign3 = elevator.getFloorFromN(currentDestinationInt).getName();
 				sign.setLine(0, sign0);
 				sign.setLine(1, sign1);

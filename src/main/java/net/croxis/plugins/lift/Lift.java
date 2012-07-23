@@ -31,6 +31,9 @@ public class Lift extends JavaPlugin {
 	//public V10verlap_API v10verlap_API = null;
 	public boolean useAntiCheat = false;
 	public AnticheatAPI anticheat = null;
+	public static String stringDestination;
+	public static String stringCurrentFloor;
+	public static String stringOneFloor;
 	
     public void onDisable() {
     	lifts.clear();
@@ -53,6 +56,9 @@ public class Lift extends JavaPlugin {
     		blockSpeeds.put(Material.valueOf(key), this.getConfig().getDouble("baseBlockSpeeds." + key));
     	}
     	floorBlock = Material.valueOf(getConfig().getString("floorBlock"));
+    	stringOneFloor = getConfig().getString("STRING_oneFloor", "There is only one floor silly.");
+    	stringCurrentFloor = getConfig().getString("STRING_currentFloor", "Current Floor:");
+    	stringDestination = getConfig().getString("STRING_dest", "Dest:");
     	
         saveConfig();
         
@@ -68,21 +74,6 @@ public class Lift extends JavaPlugin {
         {
           useAntiCheat = true;
         }
-        
-        /*test = getServer().getPluginManager().getPlugin("V10verlap");
-        if(test != null) {
-        	V10verlap v10verlap = (V10verlap) test;
-        	v10verlap_API = v10verlap.getAPI();
-        	System.out.println(this + " detected V10verlap!");
-            if(v10verlap_API.getVersion() >= 2.0D){ // Check for an API breakage, this is important!
-              v10verlap_API = null;
-              System.out.println("Wrong V10verlap version. Disabled integration");
-            } else {
-            	useV10 = true;
-            }
-            
-        }*/
-        
         if (debug){
 			System.out.println("maxArea: " + Integer.toString(liftArea));
 			System.out.println("autoPlace: " + Boolean.toString(autoPlace));

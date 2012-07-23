@@ -44,62 +44,33 @@ public class Elevator implements Runnable {
 	public Elevator(Lift plugin, Block block) {
 		long startTime = System.currentTimeMillis();
 		this.plugin = plugin;
-		//ID the iron base block. 
 		if (plugin.debug)
 			System.out.println("Starting elevator gen");
-		//int yd = 2;
 		int yscan = block.getY() - 1;
-		/*if (plugin.useV10){
-			World currentWorld = block.getWorld();
-			while(yscan >= plugin.v10verlap_API.getMinY(currentWorld)){
-				if (yscan == plugin.v10verlap_API.getMinY(currentWorld)){
-					currentWorld = plugin.v10verlap_API.getLowerWorld(block.getWorld());
-					if (currentWorld == null) //Gone too far with no base abort!
-						return;
-					yscan = plugin.v10verlap_API.getMaxY(currentWorld);
-					Block checkBlock = currentWorld.getBlockAt(block.getX(), yscan, block.getZ());
-					if (isValidBlock(checkBlock)){
-						// Do nothing keep going
-					} else if (isBaseBlock(checkBlock)) {
-						scanFloorBlocks(checkBlock);
-						break;
-					} else {
-						// Something is obstructing the elevator so stop
-						return;
-					}
-					yscan--;
-				}
+		while(yscan >= 0){
+			if (yscan == 0){ //Gone too far with no base abort!
+				System.out.println("yscan was 0");
+				return;
 			}
-		} else {*/
-			while(yscan >= 0){
-				if (yscan == 0){ //Gone too far with no base abort!
-					System.out.println("yscan was 0");
-					return;
+			Block checkBlock = block.getWorld().getBlockAt(block.getX(), yscan, block.getZ());
+			if (isValidBlock(checkBlock)){
+				// Do nothing keep going
+			} else if (isBaseBlock(checkBlock)) {
+				scanFloorBlocks(checkBlock);
+				break;
+			} else {
+				// Something is obstructing the elevator so stop
+				if (plugin.debug){
+					System.out.println("==Unknown Error==");
+					System.out.println("Yscan: " + Integer.toString(yscan));
+					System.out.println("Block: " + checkBlock.getType().toString());
+					System.out.println("Is Valid Block: " + Boolean.toString(isValidBlock(checkBlock)));
+					System.out.println("Is Base Block: " + Boolean.toString(isBaseBlock(checkBlock)));
 				}
-				Block checkBlock = block.getWorld().getBlockAt(block.getX(), yscan, block.getZ());
-				if (isValidBlock(checkBlock)){
-					// Do nothing keep going
-				} else if (isBaseBlock(checkBlock)) {
-					scanFloorBlocks(checkBlock);
-					break;
-				} else {
-					// Something is obstructing the elevator so stop
-					if (plugin.debug){
-						System.out.println("==Unknown Error==");
-						System.out.println("Yscan: " + Integer.toString(yscan));
-						System.out.println("Block: " + checkBlock.getType().toString());
-						System.out.println("Is Valid Block: " + Boolean.toString(isValidBlock(checkBlock)));
-						System.out.println("Is Base Block: " + Boolean.toString(isBaseBlock(checkBlock)));
-					}
-					return;
-				}
-				yscan--;
+				return;
 			}
-		//}
-		
-		//Count all blocks up from base and make sure no obstructions to top floor
-		//Identify floors
-		
+			yscan--;
+		}
 		if (plugin.debug)
 			System.out.println("Base size: " + Integer.toString(floorBlocks.size()));
 		
