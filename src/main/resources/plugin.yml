@@ -5,5 +5,9 @@ generator: http://dinnerbone.com/minecraft/tools/pluginator/
 main: net.croxis.plugins.lift.Lift
 name: Lift
 startup: postworld
-version: '18'
+version: '19'
 softdepend: [Spout,AntiCheat]
+permissions:
+  lift:
+    description: Can ride in a lift
+    default: true

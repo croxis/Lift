@@ -93,9 +93,15 @@ public class LiftRedstoneListener implements Listener {
 								Player player = (Player) e;
 								if (player.getAllowFlight())
 									plugin.flyers.add(player);
+								if (!player.hasPermission("lift")){
+									elevator.holders.put((LivingEntity) e, e.getLocation());
+									elevator.passengers.remove((LivingEntity) e);
+								}
 							}
-						} else if (!elevator.isInShaftAtFloor(e, startFloor) && elevator.isInShaft(e))
+						} else if (!elevator.isInShaftAtFloor(e, startFloor) && elevator.isInShaft(e)){
 							elevator.holders.put((LivingEntity) e, e.getLocation());
+							elevator.passengers.remove((LivingEntity) e);
+						}
 					}
 				}
 			}
