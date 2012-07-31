@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 
 import net.h31ix.anticheat.api.AnticheatAPI;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -34,6 +34,11 @@ public class Lift extends JavaPlugin {
 	public static String stringDestination;
 	public static String stringCurrentFloor;
 	public static String stringOneFloor;
+	
+	public void logDebug(String message){
+		if (debug)
+			this.getLogger().log(Level.INFO, message);
+	}
 	
     public void onDisable() {
     	lifts.clear();

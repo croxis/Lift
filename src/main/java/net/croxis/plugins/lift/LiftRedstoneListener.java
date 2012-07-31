@@ -31,12 +31,13 @@ public class LiftRedstoneListener implements Listener {
 	
 	@EventHandler
 	public void onBlockRedstoneChange(BlockRedstoneEvent event){
-		//Block block = event.getBlock();
+		plugin.logDebug("Detected current");
 		Elevator elevator = null;
 		if ((event.getBlock().getType() == Material.STONE_BUTTON) 
 				//&& (!block.isBlockIndirectlyPowered())
 				&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
 			long startTime = System.currentTimeMillis();
+			plugin.logDebug("Initial reqs met");
 			elevator = new Elevator(this.plugin, event.getBlock());
 			
 			//See if lift is in use
