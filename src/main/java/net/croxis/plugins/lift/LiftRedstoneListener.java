@@ -31,13 +31,13 @@ public class LiftRedstoneListener implements Listener {
 	
 	@EventHandler
 	public void onBlockRedstoneChange(BlockRedstoneEvent event){
-		Block block = event.getBlock();
+		//Block block = event.getBlock();
 		Elevator elevator = null;
-		if ((block.getType() == Material.STONE_BUTTON) 
+		if ((event.getBlock().getType() == Material.STONE_BUTTON) 
 				//&& (!block.isBlockIndirectlyPowered())
-				&& block.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
+				&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
 			long startTime = System.currentTimeMillis();
-			elevator = new Elevator(this.plugin, block);
+			elevator = new Elevator(this.plugin, event.getBlock());
 			
 			//See if lift is in use
 			for (Elevator e : plugin.lifts){
@@ -48,16 +48,15 @@ public class LiftRedstoneListener implements Listener {
 					if (e.floorBlocks.contains(iterator.next()))
 						return;
 				}
-					
 			}
 			
 			if (elevator.getTotalFloors() < 2)
 				return;
 			
-			int y = block.getY();
+			int y = event.getBlock().getY();
 			Floor startFloor = elevator.getFloormap().get(y);
 			elevator.startFloor = startFloor;
-			String line = ((Sign) block.getRelative(BlockFace.UP).getState()).getLine(2);
+			String line = ((Sign) event.getBlock().getRelative(BlockFace.UP).getState()).getLine(2);
 			if (line.isEmpty())
 				return;
 			String[] splits = line.split(": ");
@@ -122,7 +121,7 @@ public class LiftRedstoneListener implements Listener {
 			}
 			for (Floor f : glassfloors){
 				for (Block b : elevator.floorBlocks){
-					Block gb = block.getWorld().getBlockAt(b.getX(), f.getY()-2, b.getZ());
+					Block gb = event.getBlock().getWorld().getBlockAt(b.getX(), f.getY()-2, b.getZ());
 					gb.setType(Material.AIR);
 					elevator.glassBlocks.add(gb);
 				}
