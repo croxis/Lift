@@ -34,7 +34,7 @@ public class LiftRedstoneListener implements Listener {
 		Block block = event.getBlock();
 		Elevator elevator = null;
 		if ((block.getType() == Material.STONE_BUTTON) 
-				&& (!block.isBlockIndirectlyPowered())
+				//&& (!block.isBlockIndirectlyPowered())
 				&& block.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
 			long startTime = System.currentTimeMillis();
 			elevator = new Elevator(this.plugin, block);
