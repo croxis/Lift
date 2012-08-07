@@ -7,18 +7,24 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import net.h31ix.anticheat.api.AnticheatAPI;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Lift extends JavaPlugin {
+public class Lift extends JavaPlugin implements Listener {
 	boolean debug = false;
 	boolean useSpout = false;
 	public HashSet<Entity> fallers = new HashSet<Entity>();
 	public HashSet<Player> flyers = new HashSet<Player>();
-	public HashSet<Elevator> lifts = new HashSet<Elevator>();
+	public static HashSet<Elevator> lifts = new HashSet<Elevator>();
 	//public double liftSpeed = 0.5;
 	public int liftArea = 16;
 	//public Material baseMaterial = Material.IRON_BLOCK;
@@ -31,9 +37,11 @@ public class Lift extends JavaPlugin {
 	//public V10verlap_API v10verlap_API = null;
 	public boolean useAntiCheat = false;
 	public AnticheatAPI anticheat = null;
+	private boolean preventEntry;
 	public static String stringDestination;
 	public static String stringCurrentFloor;
 	public static String stringOneFloor;
+	public static String stringCantEnter;
 	
 	public void logDebug(String message){
 		if (debug)
@@ -56,6 +64,7 @@ public class Lift extends JavaPlugin {
     	//baseMaterial = Material.valueOf(this.getConfig().getString("baseBlock", "IRON_BLOCK"));
     	autoPlace = this.getConfig().getBoolean("autoPlace");
     	checkGlass = this.getConfig().getBoolean("checkGlass");
+    	preventEntry = this.getConfig().getBoolean("preventEntry", false);
     	Set<String> baseBlockKeys = this.getConfig().getConfigurationSection("baseBlockSpeeds").getKeys(false);
     	for (String key : baseBlockKeys){
     		blockSpeeds.put(Material.valueOf(key), this.getConfig().getDouble("baseBlockSpeeds." + key));
@@ -64,12 +73,18 @@ public class Lift extends JavaPlugin {
     	stringOneFloor = getConfig().getString("STRING_oneFloor", "There is only one floor silly.");
     	stringCurrentFloor = getConfig().getString("STRING_currentFloor", "Current Floor:");
     	stringDestination = getConfig().getString("STRING_dest", "Dest:");
+    	stringCantEnter = getConfig().getString("STRING_cantEnter", "Can't enter elevator in use");
     	
         saveConfig();
         
         serverFlight = this.getServer().getAllowFlight();
         
         Plugin test = getServer().getPluginManager().getPlugin("Spout");
+        
+        if (preventEntry){
+        	Bukkit.getServer().getPluginManager().registerEvents(this, this);
+        }
+        
         if(test != null) {
         	useSpout = true;
         	System.out.println(this + " detected Spout!");
@@ -99,4 +114,21 @@ public class Lift extends JavaPlugin {
     public void removeLift(Elevator elevator){
     	
     }
+    
+
+	
+	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent event){
+		for (Elevator elevator : Lift.lifts){
+			if (elevator.chunks.contains(event.getTo().getChunk())){
+				for (Block block : elevator.floorBlocks){
+					if (block.getX() == event.getTo().getBlockX() &&
+							block.getZ() == event.getTo().getBlockZ()){
+						event.setCancelled(true);
+						event.getPlayer().sendMessage(Lift.stringCantEnter);
+					}
+				}
+			}
+		}
+	}
 }
