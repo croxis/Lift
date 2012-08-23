@@ -40,7 +40,7 @@ public class LiftRedstoneListener implements Listener {
 			elevator = new Elevator(this.plugin, event.getBlock());
 			
 			//See if lift is in use
-			for (Elevator e : plugin.lifts){
+			for (Elevator e : ElevatorManager.lifts){
 				//if (e.floorBlocks.contains(elevator.floorBlocks.iterator().next()))
 					//return;
 				Iterator<Block> iterator = elevator.floorBlocks.iterator();
@@ -149,7 +149,7 @@ public class LiftRedstoneListener implements Listener {
 				}
 			}
 			elevator.taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, elevator, 2, 2);
-			plugin.lifts.add(elevator);
+			ElevatorManager.lifts.add(elevator);
 
 			if (plugin.debug){
 				System.out.println("Going Up: " + Boolean.toString(elevator.goingUp));

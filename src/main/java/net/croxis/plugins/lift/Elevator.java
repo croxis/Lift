@@ -115,6 +115,15 @@ public class Elevator implements Runnable {
 			System.out.println("Elevator gen took: " + (System.currentTimeMillis() - startTime) + " ms.");
 	}
 	
+	public void clear(){
+		floorBlocks.clear();
+		floormap.clear();
+		floormap2.clear();
+		worldFloorMap.clear();
+		passengers.clear();
+		glassBlocks.clear();
+	}
+	
 	//Checks if block is a valid elevator block SANS iron
 	public boolean isValidBlock(Block checkBlock){
 		if (checkBlock.getType() == Material.AIR || checkBlock.getType() == plugin.floorBlock
@@ -225,37 +234,10 @@ public class Elevator implements Runnable {
 	public int getTotalFloors(){
 		return floormap2.size();
 	}
-	
-	public void endLift(){
-		if (plugin.debug)
-			System.out.println("Halting lift");
-		for (Block b : glassBlocks)
-			b.setType(plugin.floorBlock);
-		for (Entity p : this.passengers){
-			plugin.fallers.remove(p);
-			if (p instanceof Player){
-				Player pl = (Player) p;
-				if (!plugin.flyers.contains(pl))
-					pl.setAllowFlight(false);
-				//((Player) p).setAllowFlight(plugin.serverFlight);
-				if (plugin.useAntiCheat)
-					AnticheatAPI.unexemptPlayer((Player) p, CheckType.FLY);
-			}
-			if (plugin.useSpout){
-				if (p instanceof Player){
-					SpoutManager.getPlayer((Player) p).setGravityMultiplier(1);
-					SpoutManager.getPlayer((Player) p).setCanFly(false);
-				}
-					
-			}
-		}
-		plugin.lifts.remove(this);
-		plugin.getServer().getScheduler().cancelTask(taskid);
-	}
 
 	public void run() {
 		if(passengers.isEmpty()){
-			endLift();
+			ElevatorManager.endLift(this);
 			return;
 		}
 		
@@ -286,7 +268,7 @@ public class Elevator implements Runnable {
 		}
 		
 		if (count >= passengers.size())
-			endLift();
+			ElevatorManager.endLift(this);
 	}
 	
 	public boolean isInLift(Player player){
@@ -298,6 +280,8 @@ public class Elevator implements Runnable {
 			return true;
 		return false;
 	}
+
+
 
 }
 

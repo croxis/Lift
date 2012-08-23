@@ -20,11 +20,10 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Lift extends JavaPlugin implements Listener {
-	boolean debug = false;
+	public static boolean debug = false;
 	boolean useSpout = false;
 	public HashSet<Entity> fallers = new HashSet<Entity>();
 	public HashSet<Player> flyers = new HashSet<Player>();
-	public static HashSet<Elevator> lifts = new HashSet<Elevator>();
 	//public double liftSpeed = 0.5;
 	public int liftArea = 16;
 	//public Material baseMaterial = Material.IRON_BLOCK;
@@ -35,6 +34,7 @@ public class Lift extends JavaPlugin implements Listener {
 	public boolean serverFlight = false;
 	//public boolean useV10 = false;
 	//public V10verlap_API v10verlap_API = null;
+	public static ElevatorManager manager;
 	public boolean useAntiCheat = false;
 	public AnticheatAPI anticheat = null;
 	private boolean preventEntry;
@@ -49,13 +49,14 @@ public class Lift extends JavaPlugin implements Listener {
 	}
 	
     public void onDisable() {
-    	lifts.clear();
+    	ElevatorManager.lifts.clear();
         System.out.println(this + " is now disabled!");
     }
 
     public void onEnable() {
     	new LiftRedstoneListener(this);
     	new LiftPlayerListener(this);
+    	manager = new ElevatorManager(this);
     	
     	//liftSpeed = this.getConfig().getDouble("liftSpeed");
     	this.getConfig().options().copyDefaults(true);
@@ -111,15 +112,13 @@ public class Lift extends JavaPlugin implements Listener {
         System.out.println(this + " is now enabled!");
     }
     
-    public void removeLift(Elevator elevator){
+    /*public void removeLift(Elevator elevator){
     	
-    }
-    
-
+    }*/
 	
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event){
-		for (Elevator elevator : Lift.lifts){
+		for (Elevator elevator : ElevatorManager.lifts){
 			if (elevator.chunks.contains(event.getTo().getChunk())){
 				for (Block block : elevator.floorBlocks){
 					if (block.getX() == event.getTo().getBlockX() &&

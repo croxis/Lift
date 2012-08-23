@@ -107,21 +107,13 @@ public class LiftPlayerListener implements Listener{
 	}
 	
 	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent e){
-		for (Elevator elevator : plugin.lifts){
-			if (elevator.passengers.contains(e.getPlayer())){
-				elevator.passengers.remove(e.getPlayer());
-			}
-		}
+	public void onPlayerQuit(PlayerQuitEvent event){
+		ElevatorManager.removePlayer(event.getPlayer());
 	}
 	
 	@EventHandler
 	public void onPlayerKick(PlayerKickEvent event){
-		for (Elevator elevator : plugin.lifts){
-			if (elevator.passengers.contains(event.getPlayer())){
-				event.setCancelled(true);
-			}
-		}
+		ElevatorManager.removePlayer(event.getPlayer());
 	}
 
 }
