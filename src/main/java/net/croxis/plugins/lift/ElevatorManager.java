@@ -55,4 +55,10 @@ public class ElevatorManager {
 		}
 	}
 	
+	public static boolean isBaseBlock(Block block){
+		if (plugin.blockSpeeds.containsKey(block.getType()))
+			return true;
+		return false;
+	}
+	
 }

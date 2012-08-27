@@ -55,7 +55,7 @@ public class Elevator implements Runnable {
 			Block checkBlock = block.getWorld().getBlockAt(block.getX(), yscan, block.getZ());
 			if (isValidBlock(checkBlock)){
 				// Do nothing keep going
-			} else if (isBaseBlock(checkBlock)) {
+			} else if (ElevatorManager.isBaseBlock(checkBlock)) {
 				scanFloorBlocks(checkBlock);
 				break;
 			} else {
@@ -65,7 +65,7 @@ public class Elevator implements Runnable {
 					System.out.println("Yscan: " + Integer.toString(yscan));
 					System.out.println("Block: " + checkBlock.getType().toString());
 					System.out.println("Is Valid Block: " + Boolean.toString(isValidBlock(checkBlock)));
-					System.out.println("Is Base Block: " + Boolean.toString(isBaseBlock(checkBlock)));
+					System.out.println("Is Base Block: " + Boolean.toString(ElevatorManager.isBaseBlock(checkBlock)));
 				}
 				return;
 			}
@@ -274,15 +274,6 @@ public class Elevator implements Runnable {
 	public boolean isInLift(Player player){
 		return passengers.contains(player);
 	}
-	
-	public boolean isBaseBlock(Block block){
-		if (plugin.blockSpeeds.containsKey(block.getType()))
-			return true;
-		return false;
-	}
-
-
-
 }
 
 
