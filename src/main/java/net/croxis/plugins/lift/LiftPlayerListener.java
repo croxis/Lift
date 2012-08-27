@@ -25,22 +25,24 @@ public class LiftPlayerListener implements Listener{
 		this.plugin = plugin;
 	}
 	
-	@EventHandler
+	@EventHandler (ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event){
-		Elevator elevator = null;
-		if (event.isCancelled())
-			return;
-		if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
-			if (event.getClickedBlock().getType().equals(Material.WALL_SIGN) 
-					&& event.getClickedBlock().getRelative(BlockFace.DOWN).getType().equals(Material.STONE_BUTTON)){
-				Sign sign = (Sign) event.getClickedBlock().getState();
-				
-				elevator = new Elevator(this.plugin, event.getClickedBlock().getRelative(BlockFace.DOWN));
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
+			final Block signBlock = event.getClickedBlock();
+			final Block buttonBlock = signBlock.getRelative(BlockFace.DOWN);
+
+			if (signBlock.getType()      == Material.WALL_SIGN
+                            && buttonBlock != null
+			    && buttonBlock.getType() == Material.STONE_BUTTON) {
+
+				Sign sign = (Sign) signBlock.getState();
+		                Elevator elevator = new Elevator(this.plugin, buttonBlock);
 				
 				if (elevator.getTotalFloors() < 1){
-					event.getPlayer().sendMessage("There was an error in the code please report bug, conditions, and debug log if possible.");
+					// This is just a button and sign, not an elevator.
 					return;
-				} else if (elevator.getTotalFloors() < 2){
+				} else if (elevator.getTotalFloors() == 1){
 					event.getPlayer().sendMessage(Lift.stringOneFloor);
 					return;
 				}
@@ -48,7 +50,7 @@ public class LiftPlayerListener implements Listener{
 				event.setCancelled(true);
 				
 				int currentDestinationInt = 1;
-				Floor currentFloor = elevator.getFloorFromY(event.getClickedBlock().getRelative(BlockFace.DOWN).getY());
+				Floor currentFloor = elevator.getFloorFromY(buttonBlock.getY());
 				
 				String sign0 = Lift.stringCurrentFloor;
 				String sign1 = Integer.toString(currentFloor.getFloor());
@@ -70,7 +72,7 @@ public class LiftPlayerListener implements Listener{
 						System.out.println("Skipping current floor");
 					}
 				}
-				// The following line MAY be what causes a potetal bug for max floors
+				// The following line MAY be what causes a potential bug for max floors
 				if (currentDestinationInt > elevator.getTotalFloors()){
 					currentDestinationInt = 1;
 					if (currentFloor.getFloor() == 1)
@@ -90,6 +92,7 @@ public class LiftPlayerListener implements Listener{
 					System.out.println("Completed sign update");
 				}
 			}
+		}
 	}
 	
 	@EventHandler
