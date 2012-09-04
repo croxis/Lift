@@ -41,7 +41,7 @@ public class ElevatorManager implements Runnable {
 			if (isValidShaftBlock(checkBlock)){
 				// Do nothing keep going
 			} else if (ElevatorManager.isBaseBlock(checkBlock)) {
-				elevator.baseBlockType = block.getType();
+				elevator.baseBlockType = checkBlock.getType();
 				elevator.speed = plugin.blockSpeeds.get(elevator.baseBlockType);
 				scanBaseBlocks(checkBlock, elevator);
 				for (Block b : elevator.baseBlocks){
