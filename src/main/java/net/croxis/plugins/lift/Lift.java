@@ -18,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.command.*;
 
 public class Lift extends JavaPlugin implements Listener {
 	public static boolean debug = false;
@@ -134,4 +135,25 @@ public class Lift extends JavaPlugin implements Listener {
 			}
 		}
 	}
+	
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+    	if(cmd.getName().equalsIgnoreCase("lift") && sender instanceof Player){ // If the player typed /basic then do the following...
+    		long time = System.currentTimeMillis();
+    		Player player = (Player) sender;
+    		Elevator elevator = new Elevator();
+    		if (ElevatorManager.isBaseBlock(player.getLocation().getBlock()))
+    			ElevatorManager.scanBaseBlocks(player.getLocation().getBlock(), elevator);
+    		else {
+    			player.sendMessage("Not a valid base block type");
+    			return true;
+    		}
+    		player.sendMessage("Base block type: " + elevator.baseBlockType + " | Size: " + Integer.toString(elevator.baseBlocks.size()));
+    		player.sendMessage("Floor scan reports: " + ElevatorManager.constructFloors(elevator));
+    		player.sendMessage("Total time generating elevator: " + Long.toString(System.currentTimeMillis() - time));
+    		return true;
+    	} //If this has happened the function will break and return true. if this hasn't happened the a value of false will be returned.
+    	return false; 
+    }
+
+
 }

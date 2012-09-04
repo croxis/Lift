@@ -11,3 +11,9 @@ permissions:
   lift:
     description: Can ride in a lift
     default: true
+commands:
+   lift:
+      description: Scans a lift.
+      usage: /<command>
+      permission: lift
+      permission-message: You don't have lift permissions

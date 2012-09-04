@@ -39,11 +39,11 @@ public class LiftRedstoneListener implements Listener {
 			//plugin.logDebug("Initial reqs met");
 			//elevator = new Elevator(this.plugin, event.getBlock());
 			elevator = ElevatorManager.createLift(event.getBlock());
+			if (elevator == null)
+				return;
 			
 			//See if lift is in use
 			for (Elevator e : ElevatorManager.elevators){
-				//if (e.floorBlocks.contains(elevator.floorBlocks.iterator().next()))
-					//return;
 				Iterator<Block> iterator = elevator.baseBlocks.iterator();
 				while (iterator.hasNext()){
 					if (e.baseBlocks.contains(iterator.next()))

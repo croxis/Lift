@@ -32,8 +32,8 @@ public class ElevatorManager implements Runnable {
 		plugin.logDebug("Starting elevator gen");
 		Elevator elevator = new Elevator();
 		int yscan = block.getY() - 1;
-		while(yscan >= 0){
-			if (yscan == 0){ //Gone too far with no base abort!
+		while(yscan >= plugin.lowScan){
+			if (yscan == plugin.lowScan){ //Gone too far with no base abort!
 				plugin.logDebug("yscan was 0");
 				return null;
 			}
@@ -65,41 +65,7 @@ public class ElevatorManager implements Runnable {
 		}
 		plugin.logDebug("Base size: " + Integer.toString(elevator.baseBlocks.size()));
 		
-		// Scanning up to construct the floors
-		
-		for (Block b : elevator.baseBlocks){
-			int x = b.getX();
-			int z = b.getZ();
-			int y1 = b.getY();
-			
-			yscan = b.getY();
-			World currentWorld = b.getWorld();	
-			while (true){
-				y1 = y1 + 1;
-				Block testBlock = b.getWorld().getBlockAt(x, y1, z);
-				if (!isValidShaftBlock(testBlock))
-					//TODO: Return with debug info why we stopped scanning up
-					break;
-				if (testBlock.getType() == Material.STONE_BUTTON){
-					if (plugin.checkGlass)
-						if (!scanGlassAtY(currentWorld, testBlock.getY() - 2, elevator))
-							break;
-					Floor floor = new Floor();
-					floor.setY(y1);
-					if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
-						floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
-					if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
-						elevator.floormap.put(y1, floor);
-					plugin.logDebug("Floor added: " + b.getLocation());
-				}
-			}
-		}
-		int floorNumber = 1;
-		for (Floor floor : elevator.floormap.values()){
-			floor.setFloor(floorNumber);
-			elevator.floormap2.put(floorNumber, floor);
-			floorNumber = floorNumber + 1;
-		}
+		constructFloors(elevator);
 		
 		//Elevator is constructed, pass off to check signs for floor destination, collect all people and move them
 		plugin.logDebug("Elevator gen took: " + (System.currentTimeMillis() - startTime) + " ms.");
@@ -137,7 +103,50 @@ public class ElevatorManager implements Runnable {
 		return;
 	}
 	
-	public static boolean scanGlassAtY(World world, int y, Elevator elevator){
+	public static String constructFloors(Elevator elevator){
+		String message = "";
+		int maxY = 0;
+
+		for (Block b : elevator.baseBlocks){
+			int x = b.getX();
+			int z = b.getZ();
+			int y1 = b.getY();
+			
+			World currentWorld = b.getWorld();
+			
+			while (true){
+				y1 = y1 + 1;
+				Block testBlock = b.getWorld().getBlockAt(x, y1, z);
+				if (!isValidShaftBlock(testBlock)){
+					message += x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString();
+					maxY = y1;
+					break;
+				}
+				if (testBlock.getType() == Material.STONE_BUTTON){
+					if (plugin.checkGlass)
+						if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, elevator)){
+							break;
+						}
+					Floor floor = new Floor();
+					floor.setY(y1);
+					if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
+						floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
+					if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
+						elevator.floormap.put(y1, floor);
+					plugin.logDebug("Floor added: " + b.getLocation());
+				}
+			}
+		}
+		int floorNumber = 1;
+		for (Floor floor : elevator.floormap.values()){
+			floor.setFloor(floorNumber);
+			elevator.floormap2.put(floorNumber, floor);
+			floorNumber = floorNumber + 1;
+		}
+		return message;
+	}
+	
+	public static boolean scanFloorAtY(World world, int y, Elevator elevator){
 		for (Block block : elevator.baseBlocks){
 			if (Lift.debug){
 				System.out.println("Scan glass block type: " + world.getBlockAt(block.getX(), y, block.getZ()).getType().toString());
