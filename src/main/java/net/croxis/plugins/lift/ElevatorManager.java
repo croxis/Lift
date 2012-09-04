@@ -118,7 +118,7 @@ public class ElevatorManager implements Runnable {
 				y1 = y1 + 1;
 				Block testBlock = b.getWorld().getBlockAt(x, y1, z);
 				if (!isValidShaftBlock(testBlock)){
-					message += x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString();
+					message += " | " + x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString();
 					maxY = y1;
 					break;
 				}

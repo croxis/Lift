@@ -9,8 +9,10 @@ import java.util.logging.Level;
 import net.h31ix.anticheat.api.AnticheatAPI;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -140,11 +142,16 @@ public class Lift extends JavaPlugin implements Listener {
     	if(cmd.getName().equalsIgnoreCase("lift") && sender instanceof Player){ // If the player typed /basic then do the following...
     		long time = System.currentTimeMillis();
     		Player player = (Player) sender;
+    		player.sendMessage("Starting scan");
     		Elevator elevator = new Elevator();
-    		if (ElevatorManager.isBaseBlock(player.getLocation().getBlock()))
-    			ElevatorManager.scanBaseBlocks(player.getLocation().getBlock(), elevator);
-    		else {
-    			player.sendMessage("Not a valid base block type");
+    		//Location location = player.getLocation();
+    		//location.setY(location.getY() - 2);
+    		if (ElevatorManager.isBaseBlock(player.getLocation().getBlock().getRelative(BlockFace.DOWN))){
+    			elevator.baseBlockType = player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType();
+    			ElevatorManager.scanBaseBlocks(player.getLocation().getBlock().getRelative(BlockFace.DOWN), elevator);
+    		} else {
+    			player.sendMessage("Not a valid base block type: " + player.getLocation().getBlock().getType().toString());
+    			player.sendMessage("Options are: " + this.blockSpeeds.toString());
     			return true;
     		}
     		player.sendMessage("Base block type: " + elevator.baseBlockType + " | Size: " + Integer.toString(elevator.baseBlocks.size()));
