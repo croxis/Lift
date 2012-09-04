@@ -37,7 +37,8 @@ public class LiftPlayerListener implements Listener{
 			    && buttonBlock.getType() == Material.STONE_BUTTON) {
 
 				Sign sign = (Sign) signBlock.getState();
-		                Elevator elevator = new Elevator(this.plugin, buttonBlock);
+				Elevator elevator = ElevatorManager.createLift(buttonBlock);
+                //Elevator elevator = new Elevator(this.plugin, buttonBlock);
 				
 				if (elevator.getTotalFloors() < 1){
 					// This is just a button and sign, not an elevator.

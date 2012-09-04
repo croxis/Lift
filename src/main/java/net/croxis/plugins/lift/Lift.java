@@ -26,6 +26,8 @@ public class Lift extends JavaPlugin implements Listener {
 	public HashSet<Player> flyers = new HashSet<Player>();
 	//public double liftSpeed = 0.5;
 	public int liftArea = 16;
+	public int lowScan = 0;
+	public int highScan = 255;
 	//public Material baseMaterial = Material.IRON_BLOCK;
 	public HashMap<Material, Double> blockSpeeds = new HashMap<Material, Double>();
 	public Material floorBlock = Material.GLASS;
@@ -49,7 +51,7 @@ public class Lift extends JavaPlugin implements Listener {
 	}
 	
     public void onDisable() {
-    	ElevatorManager.lifts.clear();
+    	ElevatorManager.elevators.clear();
         System.out.println(this + " is now disabled!");
     }
 
@@ -61,6 +63,8 @@ public class Lift extends JavaPlugin implements Listener {
     	//liftSpeed = this.getConfig().getDouble("liftSpeed");
     	this.getConfig().options().copyDefaults(true);
     	liftArea = this.getConfig().getInt("maxLiftArea");
+    	lowScan = this.getConfig().getInt("lowScan");
+    	highScan = this.getConfig().getInt("highScan");
     	debug = this.getConfig().getBoolean("debug");
     	//baseMaterial = Material.valueOf(this.getConfig().getString("baseBlock", "IRON_BLOCK"));
     	autoPlace = this.getConfig().getBoolean("autoPlace");
@@ -118,9 +122,9 @@ public class Lift extends JavaPlugin implements Listener {
 	
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event){
-		for (Elevator elevator : ElevatorManager.lifts){
+		for (Elevator elevator : ElevatorManager.elevators){
 			if (elevator.chunks.contains(event.getTo().getChunk())){
-				for (Block block : elevator.floorBlocks){
+				for (Block block : elevator.baseBlocks){
 					if (block.getX() == event.getTo().getBlockX() &&
 							block.getZ() == event.getTo().getBlockZ()){
 						event.setCancelled(true);

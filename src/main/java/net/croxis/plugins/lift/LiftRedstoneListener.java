@@ -37,15 +37,16 @@ public class LiftRedstoneListener implements Listener {
 				&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
 			long startTime = System.currentTimeMillis();
 			//plugin.logDebug("Initial reqs met");
-			elevator = new Elevator(this.plugin, event.getBlock());
+			//elevator = new Elevator(this.plugin, event.getBlock());
+			elevator = ElevatorManager.createLift(event.getBlock());
 			
 			//See if lift is in use
-			for (Elevator e : ElevatorManager.lifts){
+			for (Elevator e : ElevatorManager.elevators){
 				//if (e.floorBlocks.contains(elevator.floorBlocks.iterator().next()))
 					//return;
-				Iterator<Block> iterator = elevator.floorBlocks.iterator();
+				Iterator<Block> iterator = elevator.baseBlocks.iterator();
 				while (iterator.hasNext()){
-					if (e.floorBlocks.contains(iterator.next()))
+					if (e.baseBlocks.contains(iterator.next()))
 						return;
 				}
 			}
@@ -75,7 +76,7 @@ public class LiftRedstoneListener implements Listener {
 				System.out.println("Elevator destination y:" + elevator.destFloor.getY());
 			}
 			
-			Iterator<Block> iterator = elevator.floorBlocks.iterator();
+			Iterator<Block> iterator = elevator.baseBlocks.iterator();
 			for(Chunk chunk : elevator.chunks){
 				if (plugin.debug){
 					System.out.println("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().length));
@@ -122,7 +123,7 @@ public class LiftRedstoneListener implements Listener {
 				}
 			}
 			for (Floor f : glassfloors){
-				for (Block b : elevator.floorBlocks){
+				for (Block b : elevator.baseBlocks){
 					Block gb = event.getBlock().getWorld().getBlockAt(b.getX(), f.getY()-2, b.getZ());
 					gb.setType(Material.AIR);
 					elevator.glassBlocks.add(gb);
@@ -148,8 +149,8 @@ public class LiftRedstoneListener implements Listener {
 					plugin.fallers.add(p);
 				}
 			}
-			elevator.taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, elevator, 2, 2);
-			ElevatorManager.lifts.add(elevator);
+			
+			ElevatorManager.elevators.add(elevator);
 
 			if (plugin.debug){
 				System.out.println("Going Up: " + Boolean.toString(elevator.goingUp));
