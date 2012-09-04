@@ -40,80 +40,6 @@ public class Elevator implements Runnable {
 	public HashMap<LivingEntity, Location> holders = new HashMap<LivingEntity, Location>();
 	public Material baseBlockType = Material.IRON_BLOCK;
 	public double speed = 0.5;
-
-	public Elevator(Lift plugin, Block block) {
-		long startTime = System.currentTimeMillis();
-		this.plugin = plugin;
-		if (plugin.debug)
-			System.out.println("Starting elevator gen");
-		int yscan = block.getY() - 1;
-		while(yscan >= 0){
-			if (yscan == 0){ //Gone too far with no base abort!
-				System.out.println("yscan was 0");
-				return;
-			}
-			Block checkBlock = block.getWorld().getBlockAt(block.getX(), yscan, block.getZ());
-			if (isValidBlock(checkBlock)){
-				// Do nothing keep going
-			} else if (ElevatorManager.isBaseBlock(checkBlock)) {
-				scanFloorBlocks(checkBlock);
-				break;
-			} else {
-				// Something is obstructing the elevator so stop
-				if (plugin.debug){
-					System.out.println("==Unknown Error==");
-					System.out.println("Yscan: " + Integer.toString(yscan));
-					System.out.println("Block: " + checkBlock.getType().toString());
-					System.out.println("Is Valid Block: " + Boolean.toString(isValidBlock(checkBlock)));
-					System.out.println("Is Base Block: " + Boolean.toString(ElevatorManager.isBaseBlock(checkBlock)));
-				}
-				return;
-			}
-			yscan--;
-		}
-		if (plugin.debug)
-			System.out.println("Base size: " + Integer.toString(floorBlocks.size()));
-		
-		for (Block b : floorBlocks){
-			int x = b.getX();
-			int z = b.getZ();
-			int y1 = b.getY();
-			
-			yscan = b.getY();
-			World currentWorld = b.getWorld();	
-			while (true){
-				y1 = y1 + 1;
-				Block testBlock = b.getWorld().getBlockAt(x, y1, z);
-				if (!isValidBlock(testBlock))
-					break;
-				if (testBlock.getType() == Material.STONE_BUTTON){
-					if (plugin.checkGlass)
-						if (!scanGlassAtY(currentWorld, testBlock.getY() - 2))
-							break;
-					Floor floor = new Floor();
-					floor.setY(y1);
-					if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
-						floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
-					if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
-						floormap.put(y1, floor);
-					if (plugin.debug)
-						System.out.println("Floor added: " + b.getLocation());
-					
-				}
-			}
-		}
-		int floorNumber = 1;
-		for (Floor floor : floormap.values()){
-			floor.setFloor(floorNumber);
-			floormap2.put(floorNumber, floor);
-			floorNumber = floorNumber + 1;
-		}
-		
-		
-		//Elevator is constructed, pass off to check signs for floor destination, collect all people and move them
-		if (plugin.debug)
-			System.out.println("Elevator gen took: " + (System.currentTimeMillis() - startTime) + " ms.");
-	}
 	
 	public void clear(){
 		floorBlocks.clear();
@@ -124,16 +50,7 @@ public class Elevator implements Runnable {
 		glassBlocks.clear();
 	}
 	
-	//Checks if block is a valid elevator block SANS iron
-	public boolean isValidBlock(Block checkBlock){
-		if (checkBlock.getType() == Material.AIR || checkBlock.getType() == plugin.floorBlock
-				|| checkBlock.getType() == Material.TORCH || checkBlock.getType() == Material.WALL_SIGN
-				|| checkBlock.getType() == Material.STONE_BUTTON || checkBlock.getType() == Material.VINE 
-				|| checkBlock.getType() == Material.LADDER || checkBlock.getType() == Material.WATER
-				|| checkBlock.getType() == Material.STATIONARY_WATER)
-			return true;
-		return false;
-	}
+	
 	
 	public boolean scanGlassAtY(World world, int y){
 		for (Block block : floorBlocks){
@@ -152,32 +69,7 @@ public class Elevator implements Runnable {
 	}
 	
 	
-	//Recursive function that constructs our list of blocks
-	public void scanFloorBlocks(Block block){
-		this.baseBlockType = block.getType();
-		this.speed = plugin.blockSpeeds.get(baseBlockType);
-		if (floorBlocks.size() >= plugin.liftArea)
-			return; //5x5 max, prevents infinite loops
-		else if (floorBlocks.contains(block))
-			return; // We have that block already
-		floorBlocks.add(block);
-		
-		if (!chunks.contains(block.getChunk()))
-			chunks.add(block.getChunk());
-		
-		Block checkBlock = block.getRelative(BlockFace.NORTH, 1);
-		if (checkBlock.getType() == baseBlockType)
-			scanFloorBlocks(checkBlock);
-		checkBlock = block.getRelative(BlockFace.EAST, 1);
-		if (checkBlock.getType() == baseBlockType)
-			scanFloorBlocks(checkBlock);
-		checkBlock = block.getRelative(BlockFace.SOUTH, 1);
-		if (checkBlock.getType() == baseBlockType)
-			scanFloorBlocks(checkBlock);
-		checkBlock = block.getRelative(BlockFace.WEST, 1);
-		if (checkBlock.getType() == baseBlockType)
-			scanFloorBlocks(checkBlock);
-	}
+	
 	
 	public TreeMap <Integer, Floor> getFloormap(){
 		return floormap;
