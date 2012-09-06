@@ -32,8 +32,8 @@ public class LiftPlayerListener implements Listener{
 			final Block signBlock = event.getClickedBlock();
 			final Block buttonBlock = signBlock.getRelative(BlockFace.DOWN);
 
-			if (signBlock.getType()      == Material.WALL_SIGN
-                            && buttonBlock != null
+			if (signBlock.getType() == Material.WALL_SIGN
+                && buttonBlock != null
 			    && buttonBlock.getType() == Material.STONE_BUTTON) {
 
 				Sign sign = (Sign) signBlock.getState();

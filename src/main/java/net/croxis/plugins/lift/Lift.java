@@ -129,7 +129,8 @@ public class Lift extends JavaPlugin implements Listener {
 			if (elevator.chunks.contains(event.getTo().getChunk())){
 				for (Block block : elevator.baseBlocks){
 					if (block.getX() == event.getTo().getBlockX() &&
-							block.getZ() == event.getTo().getBlockZ()){
+							block.getZ() == event.getTo().getBlockZ() &&
+							!elevator.isInLift(event.getPlayer())){
 						event.setCancelled(true);
 						event.getPlayer().sendMessage(Lift.stringCantEnter);
 					}
