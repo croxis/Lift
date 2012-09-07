@@ -1,6 +1,7 @@
 package net.croxis.plugins.lift;
 
 import java.util.HashSet;
+import java.util.Iterator;
 
 import net.h31ix.anticheat.api.AnticheatAPI;
 import net.h31ix.anticheat.manage.CheckType;
@@ -183,9 +184,9 @@ public class ElevatorManager implements Runnable {
 				}					
 			}
 		}
-		elevators.remove(elevator);
-		plugin.getServer().getScheduler().cancelTask(elevator.taskid);
 		elevator.clear();
+		//elevators.remove(elevator);
+		plugin.getServer().getScheduler().cancelTask(elevator.taskid);
 	}
 	
 	public static void removePlayer(Player player){
@@ -206,9 +207,14 @@ public class ElevatorManager implements Runnable {
 	}
 	
 	public void run() {
-		for (Elevator e : elevators){
+		//Using while loop iterator so we can remove lifts in a sane way
+		Iterator<Elevator> eleviterator = elevators.iterator();
+		//for (Elevator e : elevators){
+		while (eleviterator.hasNext()){
+			Elevator e = eleviterator.next();
 			if(e.passengers.isEmpty()){
 				ElevatorManager.endLift(e);
+				eleviterator.remove();
 				return;
 			}
 			//Re apply impulse as it does seem to run out
@@ -237,8 +243,10 @@ public class ElevatorManager implements Runnable {
 				holder.setFallDistance(0.0F);
 			}
 			
-			if (count >= e.passengers.size())
+			if (count >= e.passengers.size()){
 				ElevatorManager.endLift(e);
+				eleviterator.remove();
+			}
 		}
 	}
 }
