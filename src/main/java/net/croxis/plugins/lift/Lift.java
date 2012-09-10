@@ -53,6 +53,10 @@ public class Lift extends JavaPlugin implements Listener {
 			this.getLogger().log(Level.INFO, message);
 	}
 	
+	public void logInfo(String message){
+		this.getLogger().log(Level.INFO, message);
+	}
+	
     public void onDisable() {
     	ElevatorManager.elevators.clear();
         System.out.println(this + " is now disabled!");

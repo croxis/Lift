@@ -40,6 +40,11 @@ public class LiftPlayerListener implements Listener{
 				Elevator elevator = ElevatorManager.createLift(buttonBlock);
                 //Elevator elevator = new Elevator(this.plugin, buttonBlock);
 				
+				if (elevator == null){
+					plugin.logInfo("Elevator generation returned a null object. Please report circumstances that generated this error.");
+					return;
+				}
+				
 				if (elevator.getTotalFloors() < 1){
 					// This is just a button and sign, not an elevator.
 					return;
