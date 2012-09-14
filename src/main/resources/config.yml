@@ -8,6 +8,7 @@ highScan: 255
 debug: false
 autoPlace: false
 preventEntry: false
+preventLeave: false
 checkGlass: false
 floorBlock: GLASS
 baseBlockSpeeds:
@@ -16,3 +17,4 @@ STRING_oneFloor: "There is only one floor silly."
 STRING_currentFloor: "Current Floor:"
 STRING_dest: "Dest:"
 STRING_cantEnter: "Can't enter elevator in use"
+STRING_cantLeave: "Can't leave elevator in use"
