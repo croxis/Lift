@@ -92,9 +92,11 @@ public class LiftRedstoneListener implements Listener {
 							if (e instanceof Player){
 								Player player = (Player) e;
 								if (player.getAllowFlight())
-									plugin.flyers.add(player);
-                                                                else
-                                                                        plugin.flyers.remove(player);
+									ElevatorManager.flyers.add(player);
+                                else {
+                                    ElevatorManager.flyers.remove(player);
+                                    player.setAllowFlight(false);
+                                }
 								if (!player.hasPermission("lift")){
 									elevator.holders.put((LivingEntity) e, e.getLocation());
 									elevator.passengers.remove((LivingEntity) e);
@@ -146,13 +148,13 @@ public class LiftRedstoneListener implements Listener {
 				if (elevator.destFloor.getY() > startFloor.getY()){
 					elevator.goingUp = true;
 				} else {
-					plugin.fallers.add(p);
+					ElevatorManager.fallers.add(p);
 				}
 			}
 			
 			ElevatorManager.elevators.add(elevator);
 
-			if (plugin.debug){
+			if (Lift.debug){
 				System.out.println("Going Up: " + Boolean.toString(elevator.goingUp));
 				System.out.println("Number of passengers: " + Integer.toString(elevator.passengers.size()));
 				System.out.println("Elevator chunks: " + Integer.toString(elevator.chunks.size()));

@@ -25,8 +25,6 @@ import org.bukkit.command.*;
 public class Lift extends JavaPlugin implements Listener {
 	public static boolean debug = false;
 	boolean useSpout = false;
-	public HashSet<Entity> fallers = new HashSet<Entity>();
-	public HashSet<Player> flyers = new HashSet<Player>();
 	//public double liftSpeed = 0.5;
 	public int liftArea = 16;
 	public int lowScan = 0;

@@ -94,9 +94,7 @@ public class LiftPlayerListener implements Listener{
 				sign.setLine(2, sign2);
 				sign.setLine(3, sign3);
 				sign.update();
-				if (plugin.debug){
-					System.out.println("Completed sign update");
-				}
+				plugin.logDebug("Completed sign update");
 			}
 		}
 	}
@@ -107,9 +105,9 @@ public class LiftPlayerListener implements Listener{
 			Entity fallerE = e.getEntity();
 			if (fallerE instanceof Player){
 				Player faller = (Player) fallerE;
-				if(plugin.fallers.contains(faller)){
+				if(ElevatorManager.fallers.contains(faller)){
 					e.setCancelled(true);
-					plugin.fallers.remove(faller);
+					ElevatorManager.fallers.remove(faller);
 				}
 			}
 		}

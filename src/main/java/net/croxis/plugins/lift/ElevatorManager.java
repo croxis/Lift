@@ -21,6 +21,8 @@ import org.getspout.spoutapi.SpoutManager;
 public class ElevatorManager implements Runnable {
 	private static Lift plugin;
 	public static HashSet<Elevator> elevators = new HashSet<Elevator>();
+	public static HashSet<Entity> fallers = new HashSet<Entity>();
+	public static HashSet<Player> flyers = new HashSet<Player>();
 	private int taskid;
 
 	public ElevatorManager(Lift plugin) {
@@ -168,10 +170,10 @@ public class ElevatorManager implements Runnable {
 		for (Block b : elevator.glassBlocks)
 			b.setType(plugin.floorBlock);
 		for (Entity p : elevator.passengers){
-			plugin.fallers.remove(p);
+			fallers.remove(p);
 			if (p instanceof Player){
 				Player pl = (Player) p;
-				if (!plugin.flyers.contains(pl))
+				if (!flyers.contains(pl))
 					pl.setAllowFlight(false);
 				//((Player) p).setAllowFlight(plugin.serverFlight);
 				if (plugin.useAntiCheat)
@@ -191,12 +193,15 @@ public class ElevatorManager implements Runnable {
 	
 	public static void removePlayer(Player player){
 		for (Elevator elevator : elevators){
-			if (elevator.passengers.contains(player))
+			if (elevator.passengers.contains(player)){
 				elevator.passengers.remove(player);
-			if (plugin.fallers.contains(player))
-				plugin.fallers.remove(player);
-			if (plugin.flyers.contains(player))
-				plugin.flyers.remove(player);
+				if (fallers.contains(player))
+					fallers.remove(player);
+				if (flyers.contains(player))
+					flyers.remove(player);
+				else
+					player.setAllowFlight(false);
+			}
 		}
 	}
 	
