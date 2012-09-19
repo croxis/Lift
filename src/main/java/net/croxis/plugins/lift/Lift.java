@@ -133,17 +133,16 @@ public class Lift extends JavaPlugin implements Listener {
 	public void onPlayerMove(PlayerMoveEvent event){
 		for (Elevator elevator : ElevatorManager.elevators){
 			if (elevator.chunks.contains(event.getTo().getChunk())){
-				for (Block block : elevator.baseBlocks){
-					if (block.getX() == event.getTo().getBlockX() && block.getZ() == event.getTo().getBlockZ()){
-						if ((!elevator.isInLift(event.getPlayer()) && preventEntry)
-							|| (elevator.isInLift(event.getPlayer()) && preventEntry)){
-							event.setCancelled(true);
-							if (preventEntry)
-								event.getPlayer().sendMessage(Lift.stringCantEnter);
-							else if (preventLeave)
-								event.getPlayer().sendMessage(Lift.stringCantLeave);
-						} 
-					}
+				if (elevator.isInShaft(event.getPlayer()) 
+						&& !elevator.isInLift(event.getPlayer())
+						&& preventEntry){
+					event.setCancelled(true);
+					event.getPlayer().sendMessage(Lift.stringCantEnter);
+				} else if (!elevator.isInShaft(event.getPlayer())
+						&& elevator.isInLift(event.getPlayer())
+						&& preventLeave){
+					event.setCancelled(true);
+					event.getPlayer().sendMessage(Lift.stringCantLeave);
 				}
 			}
 		}
