@@ -211,6 +211,16 @@ public class ElevatorManager implements Runnable {
 		return false;
 	}
 	
+	public static boolean isPassenger(Entity entity){
+		Iterator<Elevator> iterator = elevators.iterator();
+		while (iterator.hasNext()){
+			Elevator elevator = iterator.next();
+			if (elevator.passengers.contains(entity))
+				return true;
+		}
+		return false;
+	}
+	
 	public void run() {
 		//Using while loop iterator so we can remove lifts in a sane way
 		Iterator<Elevator> eleviterator = elevators.iterator();

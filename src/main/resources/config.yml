@@ -8,7 +8,7 @@ highScan: 255
 debug: false
 autoPlace: false
 preventEntry: false
-preventLeave: false
+preventLeave: true
 checkGlass: false
 floorBlock: GLASS
 baseBlockSpeeds:

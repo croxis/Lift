@@ -84,6 +84,11 @@ public class LiftRedstoneListener implements Listener {
 				for(Entity e : chunk.getEntities()){
 					if (e instanceof LivingEntity){
 						if (elevator.isInShaftAtFloor(e, startFloor)){
+							if (ElevatorManager.isPassenger(e)){
+								if (e instanceof Player)
+									((Player) e).sendMessage("You are already in a lift. Relog in case this is an error.");
+								continue;
+							}
 							elevator.addPassenger((LivingEntity) e);
 							if (iterator.hasNext() && plugin.autoPlace){
 								Location loc = iterator.next().getLocation();

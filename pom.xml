@@ -2,7 +2,6 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.croxis.plugins.lift</groupId>
     <artifactId>Lift</artifactId>
-    <version>25</version>
     <name>Lift</name>
     <repositories>
         <repository>
@@ -71,4 +70,5 @@
 	        <scope>compile</scope>
 	    </dependency>
     </dependencies>
+    <version>26</version>
 </project>
