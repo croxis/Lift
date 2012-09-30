@@ -70,5 +70,5 @@
 	        <scope>compile</scope>
 	    </dependency>
     </dependencies>
-    <version>26</version>
+    <version>27</version>
 </project>

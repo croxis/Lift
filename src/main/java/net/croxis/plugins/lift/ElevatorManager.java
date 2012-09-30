@@ -232,9 +232,13 @@ public class ElevatorManager implements Runnable {
 				eleviterator.remove();
 				return;
 			}
+			//Check if passengers have left the shaft
+			for (Entity p : e.getPassengers()){
+				if (!e.isInShaft(p))
+					removePlayer((Player) p);
+			}
 			//Re apply impulse as it does seem to run out
 			for (Entity p : e.getPassengers()){
-				//if (destFloor.getY() > startFloor.getY())
 				if(e.destFloor.getFloor() > e.startFloor.getFloor())
 					p.setVelocity(new Vector(0.0D, e.speed, 0.0D));
 				else
