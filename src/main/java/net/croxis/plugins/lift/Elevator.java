@@ -60,13 +60,6 @@ public class Elevator {
 		for (Block block : baseBlocks){
 			Location inside = block.getLocation();
 			Location loc = entity.getLocation();
-			/*if ((loc.getX() < inside.getX() + 1.0D) && 
-					(loc.getX() > inside.getX() - 1.0D) && 
-					(loc.getY() >= inside.getY() - 1.0D) && 
-					(loc.getY() <= floormap2.get(floormap2.lastKey()).getY()) && 
-					(loc.getZ() < inside.getZ() + 1.0D) && 
-					(loc.getZ() > inside.getZ() - 1.0D))
-				return true;*/
 			if (loc.getBlockX() == block.getX() && 
 					(loc.getY() >= inside.getY() - 1.0D) && 
 					(loc.getY() <= floormap2.get(floormap2.lastKey()).getY()) && 

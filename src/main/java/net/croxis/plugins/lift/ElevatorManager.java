@@ -237,6 +237,7 @@ public class ElevatorManager implements Runnable {
 				if (!e.isInShaft(p))
 					removePlayer((Player) p);
 			}
+			
 			//Re apply impulse as it does seem to run out
 			for (Entity p : e.getPassengers()){
 				if(e.destFloor.getFloor() > e.startFloor.getFloor())
