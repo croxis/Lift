@@ -169,7 +169,7 @@ public class ElevatorManager implements Runnable {
 		plugin.logDebug("Halting lift");
 		for (Block b : elevator.glassBlocks)
 			b.setType(plugin.floorBlock);
-		for (Entity p : elevator.passengers){
+		for (LivingEntity p : elevator.passengers){
 			fallers.remove(p);
 			if (p instanceof Player){
 				Player pl = (Player) p;
@@ -188,7 +188,22 @@ public class ElevatorManager implements Runnable {
 		}
 		elevator.clear();
 		//elevators.remove(elevator);
-		plugin.getServer().getScheduler().cancelTask(elevator.taskid);
+		//plugin.getServer().getScheduler().cancelTask(elevator.taskid);
+	}
+	
+	public static void removePlayer(Player player, Iterator<LivingEntity> passengers){
+		for (Elevator elevator : elevators){
+			if (elevator.passengers.contains(player)){
+				//elevator.passengers.remove(player);
+				passengers.remove();
+				if (fallers.contains(player))
+					fallers.remove(player);
+				if (flyers.contains(player))
+					flyers.remove(player);
+				else
+					player.setAllowFlight(false);
+			}
+		}
 	}
 	
 	public static void removePlayer(Player player){
@@ -230,12 +245,7 @@ public class ElevatorManager implements Runnable {
 			if(e.passengers.isEmpty()){
 				ElevatorManager.endLift(e);
 				eleviterator.remove();
-				return;
-			}
-			//Check if passengers have left the shaft
-			for (Entity p : e.getPassengers()){
-				if (!e.isInShaft(p))
-					removePlayer((Player) p);
+				continue;
 			}
 			
 			//Re apply impulse as it does seem to run out
@@ -246,26 +256,32 @@ public class ElevatorManager implements Runnable {
 					p.setVelocity(new Vector(0.0D, -e.speed, 0.0D));
 				p.setFallDistance(0.0F);
 			}
-			int count = 0;
-			for (Entity passenger : e.passengers){
-				Location pLoc = passenger.getLocation();
-				if((e.goingUp && pLoc.getY() > e.destFloor.getY()-1)
-						|| (!e.goingUp && pLoc.getY() < e.destFloor.getY()-0.1)){
-					count++;
+			
+			Iterator<LivingEntity> passengers = e.passengers.iterator();
+			while (passengers.hasNext()){
+				LivingEntity passenger = passengers.next();
+				
+				//Check if passengers have left the shaft
+				if (!e.isInShaft(passenger) && e instanceof Player)
+					removePlayer((Player) passenger, passengers);
+				
+				if((e.goingUp && passenger.getLocation().getY() > e.destFloor.getY()-1)
+						|| (!e.goingUp && passenger.getLocation().getY() < e.destFloor.getY()-0.1)){
 					passenger.setVelocity(new Vector(0,0,0));
+					Location pLoc = passenger.getLocation();
 					pLoc.setY(e.destFloor.getY()-0.7);
 					passenger.teleport(pLoc);
+					e.holders.put(passenger, passenger.getLocation());
+					if (e instanceof Player)
+						removePlayer((Player) passenger, passengers);
+					else
+						passengers.remove();
 				}
 			}
 			
 			for (LivingEntity holder : e.holders.keySet()){
 				holder.teleport(e.holders.get(holder));
 				holder.setFallDistance(0.0F);
-			}
-			
-			if (count >= e.passengers.size()){
-				ElevatorManager.endLift(e);
-				eleviterator.remove();
 			}
 		}
 	}

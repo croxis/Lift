@@ -78,9 +78,7 @@ public class LiftRedstoneListener implements Listener {
 			
 			Iterator<Block> iterator = elevator.baseBlocks.iterator();
 			for(Chunk chunk : elevator.chunks){
-				if (plugin.debug){
-					System.out.println("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().length));
-				}
+				plugin.logDebug("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().length));
 				for(Entity e : chunk.getEntities()){
 					if (e instanceof LivingEntity){
 						if (elevator.isInShaftAtFloor(e, startFloor)){

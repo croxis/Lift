@@ -38,6 +38,7 @@ public class Elevator {
 		worldFloorMap.clear();
 		passengers.clear();
 		glassBlocks.clear();
+		holders.clear();
 	}
 	
 	public TreeMap <Integer, Floor> getFloormap(){
