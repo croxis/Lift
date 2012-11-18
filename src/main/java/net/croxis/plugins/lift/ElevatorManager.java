@@ -119,6 +119,9 @@ public class ElevatorManager implements Runnable {
 			
 			while (true){
 				y1 = y1 + 1;
+				if (y1 == plugin.highScan) {
+					break;
+				}
 				Block testBlock = b.getWorld().getBlockAt(x, y1, z);
 				if (!isValidShaftBlock(testBlock)){
 					message += " | " + x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString();
