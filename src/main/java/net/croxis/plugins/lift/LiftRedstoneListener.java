@@ -94,12 +94,15 @@ public class LiftRedstoneListener implements Listener {
 							}
 							if (e instanceof Player){
 								Player player = (Player) e;
-								if (player.getAllowFlight())
+								if (player.getAllowFlight()){
 									ElevatorManager.flyers.add(player);
-                                else {
+									plugin.logDebug(player.getName() + " added to flying list");
+								} else {
                                     ElevatorManager.flyers.remove(player);
-                                    player.setAllowFlight(false);
+                                    //player.setAllowFlight(false);
+                                    plugin.logDebug(player.getName() + " NOT added to flying list");
                                 }
+								plugin.logDebug("Flyers: " + ElevatorManager.flyers.toString());
 								if (!player.hasPermission("lift")){
 									elevator.holders.put((LivingEntity) e, e.getLocation());
 									elevator.passengers.remove((LivingEntity) e);

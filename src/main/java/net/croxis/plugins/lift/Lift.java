@@ -46,7 +46,7 @@ public class Lift extends JavaPlugin implements Listener {
 	
 	public void logDebug(String message){
 		if (debug)
-			this.getLogger().log(Level.INFO, message);
+			this.getLogger().log(Level.INFO, "[DEBUG] " + message);
 	}
 	
 	public void logInfo(String message){

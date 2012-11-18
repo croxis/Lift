@@ -81,7 +81,7 @@ public class ElevatorManager implements Runnable {
 				|| checkBlock.getType() == Material.TORCH || checkBlock.getType() == Material.WALL_SIGN
 				|| checkBlock.getType() == Material.STONE_BUTTON || checkBlock.getType() == Material.VINE 
 				|| checkBlock.getType() == Material.LADDER || checkBlock.getType() == Material.WATER
-				|| checkBlock.getType() == Material.STATIONARY_WATER)
+				|| checkBlock.getType() == Material.STATIONARY_WATER || checkBlock.getType() == Material.WOOD_BUTTON)
 			return true;
 		return false;
 	}
@@ -125,7 +125,7 @@ public class ElevatorManager implements Runnable {
 					maxY = y1;
 					break;
 				}
-				if (testBlock.getType() == Material.STONE_BUTTON){
+				if (testBlock.getType() == Material.STONE_BUTTON || testBlock.getType() == Material.WOOD_BUTTON){
 					if (plugin.checkGlass)
 						if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, elevator)){
 							break;
@@ -171,51 +171,73 @@ public class ElevatorManager implements Runnable {
 			b.setType(plugin.floorBlock);
 		for (LivingEntity p : elevator.passengers){
 			fallers.remove(p);
-			if (p instanceof Player){
-				Player pl = (Player) p;
-				if (!flyers.contains(pl))
-					pl.setAllowFlight(false);
-				//((Player) p).setAllowFlight(plugin.serverFlight);
-				if (plugin.useAntiCheat)
-					AnticheatAPI.unexemptPlayer((Player) p, CheckType.FLY);
-			}
-			if (plugin.useSpout){
-				if (p instanceof Player){
-					SpoutManager.getPlayer((Player) p).setGravityMultiplier(1);
-					SpoutManager.getPlayer((Player) p).setCanFly(false);
-				}					
-			}
+			if (p instanceof Player)
+				removePlayer((Player) p);
+			else
+				elevator.passengers.remove(p);
+		}
+		for (LivingEntity p : elevator.holders.keySet()){
+			if (p instanceof Player)
+				removePlayer((Player) p);
 		}
 		elevator.clear();
-		//elevators.remove(elevator);
-		//plugin.getServer().getScheduler().cancelTask(elevator.taskid);
 	}
 	
 	public static void removePlayer(Player player, Iterator<LivingEntity> passengers){
+		plugin.logDebug("E: " + elevators.toString());
 		for (Elevator elevator : elevators){
-			if (elevator.passengers.contains(player)){
+			plugin.logDebug("Scanning lift");
+			if (elevator.passengers.contains(player) || elevator.holders.containsKey(player)){
+				plugin.logDebug("Removing player from lift");
 				//elevator.passengers.remove(player);
-				passengers.remove();
-				if (fallers.contains(player))
+				if (fallers.contains(player)){
 					fallers.remove(player);
-				if (flyers.contains(player))
+					plugin.logDebug("a");
+				}
+				if (flyers.contains(player)){
 					flyers.remove(player);
-				else
+					plugin.logDebug("b");
+				} else {
 					player.setAllowFlight(false);
+					plugin.logDebug("Removing player from flight");
+					if (plugin.useAntiCheat)
+						AnticheatAPI.unexemptPlayer(player, CheckType.FLY);
+					if (plugin.useSpout)
+						SpoutManager.getPlayer(player).setCanFly(false);				
+				}
+				if (plugin.useSpout)
+					SpoutManager.getPlayer(player).setGravityMultiplier(1);				
+				passengers.remove();
 			}
 		}
 	}
 	
 	public static void removePlayer(Player player){
+		plugin.logDebug("El: " + elevators.toString());
 		for (Elevator elevator : elevators){
-			if (elevator.passengers.contains(player)){
-				elevator.passengers.remove(player);
-				if (fallers.contains(player))
+			plugin.logDebug("Scanning lift");
+			if (elevator.passengers.contains(player) || elevator.holders.containsKey(player)){
+				plugin.logDebug("Removing player from lift");
+				if (fallers.contains(player)){
 					fallers.remove(player);
-				if (flyers.contains(player))
+					plugin.logDebug("a");
+				}
+				if (flyers.contains(player)){
 					flyers.remove(player);
-				else
+					plugin.logDebug("b");
+				} else {
 					player.setAllowFlight(false);
+					plugin.logDebug("Removing player from flight");
+					if (plugin.useAntiCheat)
+						AnticheatAPI.unexemptPlayer(player, CheckType.FLY);
+					if (plugin.useSpout)
+						SpoutManager.getPlayer(player).setCanFly(false);				
+				}
+				if (elevator.holders.containsKey(player))
+					elevator.holders.remove(player);
+				if (plugin.useSpout)
+					SpoutManager.getPlayer(player).setGravityMultiplier(1);	
+				elevator.passengers.remove(player);
 			}
 		}
 	}
