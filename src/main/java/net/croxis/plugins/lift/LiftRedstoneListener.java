@@ -32,7 +32,7 @@ public class LiftRedstoneListener implements Listener {
 	@EventHandler
 	public void onBlockRedstoneChange(BlockRedstoneEvent event){
 		Elevator elevator = null;
-		if ((event.getBlock().getType() == Material.STONE_BUTTON) 
+		if ((event.getBlock().getType() == Material.STONE_BUTTON || event.getBlock().getType() == Material.WOOD_BUTTON) 
 				&& (!event.getBlock().isBlockIndirectlyPowered())
 				&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
 			long startTime = System.currentTimeMillis();

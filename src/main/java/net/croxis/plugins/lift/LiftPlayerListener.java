@@ -34,7 +34,7 @@ public class LiftPlayerListener implements Listener{
 
 			if (signBlock.getType() == Material.WALL_SIGN
                 && buttonBlock != null
-			    && buttonBlock.getType() == Material.STONE_BUTTON) {
+			    && (buttonBlock.getType() == Material.STONE_BUTTON || buttonBlock.getType() == Material.WOOD_BUTTON)) {
 
 				Sign sign = (Sign) signBlock.getState();
 				Elevator elevator = ElevatorManager.createLift(buttonBlock);
