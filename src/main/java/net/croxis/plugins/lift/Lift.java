@@ -55,6 +55,7 @@ public class Lift extends JavaPlugin implements Listener {
 	
     public void onDisable() {
     	ElevatorManager.elevators.clear();
+    	getServer().getScheduler().cancelTask(ElevatorManager.taskid);
         System.out.println(this + " is now disabled!");
     }
 

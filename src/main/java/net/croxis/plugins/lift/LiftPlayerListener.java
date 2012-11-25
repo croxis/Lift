@@ -12,7 +12,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -67,25 +66,19 @@ public class LiftPlayerListener implements Listener{
 					currentDestinationInt = Integer.parseInt(splits[1]);	
 				} catch (Exception e){
 					currentDestinationInt = 0;
-					if (plugin.debug){
-						System.out.println("non Valid previous destination");
-					}
+					plugin.logDebug("non Valid previous destination");
 				}
 				currentDestinationInt++;
 				if (currentDestinationInt == currentFloor.getFloor()){
 					currentDestinationInt++;
-					if (plugin.debug){
-						System.out.println("Skipping current floor");
-					}
+					plugin.logDebug("Skipping current floor");
 				}
 				// The following line MAY be what causes a potential bug for max floors
 				if (currentDestinationInt > elevator.getTotalFloors()){
 					currentDestinationInt = 1;
 					if (currentFloor.getFloor() == 1)
 						currentDestinationInt = 2;
-					if (plugin.debug){
-						System.out.println("Rotating back to first floor");
-					}
+					plugin.logDebug("Rotating back to first floor");
 				}
 				sign2 = Lift.stringDestination + " " + Integer.toString(currentDestinationInt);
 				sign3 = elevator.getFloorFromN(currentDestinationInt).getName();

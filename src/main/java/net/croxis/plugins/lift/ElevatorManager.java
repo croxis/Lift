@@ -23,7 +23,7 @@ public class ElevatorManager implements Runnable {
 	public static HashSet<Elevator> elevators = new HashSet<Elevator>();
 	public static HashSet<Entity> fallers = new HashSet<Entity>();
 	public static HashSet<Player> flyers = new HashSet<Player>();
-	private int taskid;
+	public static int taskid;
 
 	public ElevatorManager(Lift plugin) {
 		ElevatorManager.plugin = plugin;
@@ -126,18 +126,35 @@ public class ElevatorManager implements Runnable {
 					message += " | " + x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString();
 					break;
 				}
-				if (testBlock.getType() == Material.STONE_BUTTON || testBlock.getType() == Material.WOOD_BUTTON){
-					if (plugin.checkGlass)
-						if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, elevator)){
-							break;
-						}
-					Floor floor = new Floor();
-					floor.setY(y1);
-					if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
-						floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
-					if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
-						elevator.floormap.put(y1, floor);
-					plugin.logDebug("Floor added: " + b.getLocation());
+				//Hack for tekkit servers
+				try {
+					if (testBlock.getType() == Material.STONE_BUTTON || testBlock.getType() == Material.WOOD_BUTTON){
+						if (plugin.checkGlass)
+							if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, elevator)){
+								break;
+							}
+						Floor floor = new Floor();
+						floor.setY(y1);
+						if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
+							floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
+						if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
+							elevator.floormap.put(y1, floor);
+						plugin.logDebug("Floor added: " + b.getLocation());
+					}
+				} catch (NullPointerException e){
+					if (testBlock.getType() == Material.STONE_BUTTON){
+						if (plugin.checkGlass)
+							if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, elevator)){
+								break;
+							}
+						Floor floor = new Floor();
+						floor.setY(y1);
+						if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
+							floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
+						if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
+							elevator.floormap.put(y1, floor);
+						plugin.logDebug("Floor added: " + b.getLocation());
+					}
 				}
 			}
 		}
