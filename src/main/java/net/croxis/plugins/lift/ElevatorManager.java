@@ -194,9 +194,12 @@ public class ElevatorManager implements Runnable {
 			else
 				elevator.passengers.remove(p);
 		}
-		for (LivingEntity p : elevator.holders.keySet()){
-			if (p instanceof Player)
-				removePlayer((Player) p);
+		Iterator<LivingEntity> passengerIterators = elevator.holders.keySet().iterator();
+		while (passengerIterators.hasNext()){
+			LivingEntity passenger = passengerIterators.next();
+			if (passenger instanceof Player){
+				removePlayer((Player) passenger, passengerIterators);
+			}
 		}
 		elevator.clear();
 	}
