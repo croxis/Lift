@@ -64,5 +64,5 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-    <version>29</version>
+    <version>30</version>
 </project>

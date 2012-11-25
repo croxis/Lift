@@ -108,7 +108,6 @@ public class ElevatorManager implements Runnable {
 	
 	public static String constructFloors(Elevator elevator){
 		String message = "";
-		int maxY = 0;
 
 		for (Block b : elevator.baseBlocks){
 			int x = b.getX();
@@ -125,7 +124,6 @@ public class ElevatorManager implements Runnable {
 				Block testBlock = b.getWorld().getBlockAt(x, y1, z);
 				if (!isValidShaftBlock(testBlock)){
 					message += " | " + x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString();
-					maxY = y1;
 					break;
 				}
 				if (testBlock.getType() == Material.STONE_BUTTON || testBlock.getType() == Material.WOOD_BUTTON){
