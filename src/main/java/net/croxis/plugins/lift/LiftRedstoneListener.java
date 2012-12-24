@@ -23,7 +23,9 @@ import org.getspout.spoutapi.SpoutManager;
 
 
 public class LiftRedstoneListener implements Listener {
-	private final Lift plugin; 
+	private final Lift plugin;
+	// Supporting annoying out of date servers
+	private boolean canDo = false;
 	public LiftRedstoneListener(Lift plugin){
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 		this.plugin = plugin;
@@ -32,9 +34,20 @@ public class LiftRedstoneListener implements Listener {
 	@EventHandler
 	public void onBlockRedstoneChange(BlockRedstoneEvent event){
 		Elevator elevator = null;
-		if ((event.getBlock().getType() == Material.STONE_BUTTON || event.getBlock().getType() == Material.WOOD_BUTTON) 
+		canDo = false;
+		try {
+			canDo = (event.getBlock().getType() == Material.STONE_BUTTON || event.getBlock().getType() == Material.WOOD_BUTTON) 
+					&& (!event.getBlock().isBlockIndirectlyPowered())
+					&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN;
+		} catch (Exception e) {
+			canDo = event.getBlock().getType() == Material.STONE_BUTTON 
+					&& (!event.getBlock().isBlockIndirectlyPowered())
+					&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN;
+		}
+		/*if ((event.getBlock().getType() == Material.STONE_BUTTON || event.getBlock().getType() == Material.WOOD_BUTTON) 
 				&& (!event.getBlock().isBlockIndirectlyPowered())
-				&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
+				&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){*/
+		if (canDo){
 			long startTime = System.currentTimeMillis();
 			//plugin.logDebug("Initial reqs met");
 			//elevator = new Elevator(this.plugin, event.getBlock());
