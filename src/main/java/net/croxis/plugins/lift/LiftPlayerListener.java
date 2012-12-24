@@ -26,7 +26,7 @@ public class LiftPlayerListener implements Listener{
 	
 	@EventHandler (ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event){
-		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getPlayer().hasPermission("lift.change")) {
 
 			final Block signBlock = event.getClickedBlock();
 			final Block buttonBlock = signBlock.getRelative(BlockFace.DOWN);

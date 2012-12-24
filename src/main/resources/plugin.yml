@@ -11,6 +11,9 @@ permissions:
   lift:
     description: Can ride in a lift
     default: true
+  lift.change:
+    description: Can change lift floors
+    default: true
 commands:
    lift:
       description: Scans a lift.
