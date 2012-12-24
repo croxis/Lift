@@ -37,7 +37,7 @@ public class ElevatorManager implements Runnable {
 		int yscan = block.getY() - 1;
 		while(yscan >= plugin.lowScan){
 			if (yscan == plugin.lowScan){ //Gone too far with no base abort!
-				plugin.logDebug("yscan was 0");
+				plugin.logDebug("yscan was too low");
 				return null;
 			}
 			Block checkBlock = block.getWorld().getBlockAt(block.getX(), yscan, block.getZ());
