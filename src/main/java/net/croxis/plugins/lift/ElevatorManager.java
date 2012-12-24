@@ -205,7 +205,7 @@ public class ElevatorManager implements Runnable {
 	}
 	
 	public static void removePlayer(Player player, Iterator<LivingEntity> passengers){
-		plugin.logDebug("E: " + elevators.toString());
+		plugin.logDebug("Removing player " + player.getName() + " from El: " + elevators.toString());
 		for (Elevator elevator : elevators){
 			plugin.logDebug("Scanning lift");
 			if (elevator.passengers.contains(player) || elevator.holders.containsKey(player)){
@@ -213,11 +213,9 @@ public class ElevatorManager implements Runnable {
 				//elevator.passengers.remove(player);
 				if (fallers.contains(player)){
 					fallers.remove(player);
-					plugin.logDebug("a");
 				}
 				if (flyers.contains(player)){
 					flyers.remove(player);
-					plugin.logDebug("b");
 				} else {
 					player.setAllowFlight(false);
 					plugin.logDebug("Removing player from flight");
@@ -234,18 +232,16 @@ public class ElevatorManager implements Runnable {
 	}
 	
 	public static void removePlayer(Player player){
-		plugin.logDebug("El: " + elevators.toString());
+		plugin.logDebug("Removing player " + player.getName() + " from El: " + elevators.toString());
 		for (Elevator elevator : elevators){
 			plugin.logDebug("Scanning lift");
 			if (elevator.passengers.contains(player) || elevator.holders.containsKey(player)){
 				plugin.logDebug("Removing player from lift");
 				if (fallers.contains(player)){
 					fallers.remove(player);
-					plugin.logDebug("a");
 				}
 				if (flyers.contains(player)){
 					flyers.remove(player);
-					plugin.logDebug("b");
 				} else {
 					player.setAllowFlight(false);
 					plugin.logDebug("Removing player from flight");
@@ -285,6 +281,7 @@ public class ElevatorManager implements Runnable {
 		//for (Elevator e : elevators){
 		while (eleviterator.hasNext()){
 			Elevator e = eleviterator.next();
+			plugin.logDebug("Passengers: " + e.passengers.toString());
 			if(e.passengers.isEmpty()){
 				ElevatorManager.endLift(e);
 				eleviterator.remove();
@@ -310,12 +307,15 @@ public class ElevatorManager implements Runnable {
 					removePlayer((Player) passenger, passengers);
 				}
 				
-				if((e.goingUp && passenger.getLocation().getY() > e.destFloor.getY()-1)
+				if((e.goingUp && passenger.getLocation().getY() > e.destFloor.getY() - 0.7)
 						|| (!e.goingUp && passenger.getLocation().getY() < e.destFloor.getY()-0.1)){
+					plugin.logDebug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.getLocation().getY()));
+					plugin.logDebug("Trigger status: Going up: " + Boolean.toString(e.goingUp));
+					plugin.logDebug("Floor Y: " + Double.toString(e.destFloor.getY()));
 					passenger.setVelocity(new Vector(0,0,0));
-					Location pLoc = passenger.getLocation();
-					pLoc.setY(e.destFloor.getY()-0.7);
-					passenger.teleport(pLoc);
+					//Location pLoc = passenger.getLocation();
+					//pLoc.setY(e.destFloor.getY()-0.7);
+					//passenger.teleport(pLoc);
 					e.holders.put(passenger, passenger.getLocation());
 					if (e instanceof Player)
 						removePlayer((Player) passenger, passengers);
@@ -325,6 +325,7 @@ public class ElevatorManager implements Runnable {
 			}
 			
 			for (LivingEntity holder : e.holders.keySet()){
+				plugin.logDebug("Holding: " + holder.toString() + " at " + e.holders.get(holder));
 				holder.teleport(e.holders.get(holder));
 				holder.setFallDistance(0.0F);
 			}
