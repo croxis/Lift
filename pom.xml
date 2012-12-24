@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.4.5-R0.1-SNAPSHOT</version>
+            <version>1.4.6-R0.2-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -64,5 +64,5 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-    <version>30</version>
+    <version>31</version>
 </project>

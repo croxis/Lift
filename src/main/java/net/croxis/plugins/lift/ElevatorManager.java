@@ -292,7 +292,7 @@ public class ElevatorManager implements Runnable {
 			}
 			
 			//Re apply impulse as it does seem to run out
-			for (Entity p : e.getPassengers()){
+			for (LivingEntity p : e.getPassengers()){
 				if(e.destFloor.getFloor() > e.startFloor.getFloor())
 					p.setVelocity(new Vector(0.0D, e.speed, 0.0D));
 				else
