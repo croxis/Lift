@@ -1,0 +1,8 @@
+name: Lift
+version: ${version} b${BUILD_NUMBER}
+description: ${project.description}
+author: [ croxis ]
+
+main: net.croxis.plugins.lift.LiftSpout
+load: POSTWORLD
+platform: SERVER
