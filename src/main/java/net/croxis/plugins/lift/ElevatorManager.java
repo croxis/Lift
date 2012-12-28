@@ -305,6 +305,7 @@ public class ElevatorManager implements Runnable {
 				if (!e.isInShaft(passenger) && passenger instanceof Player){
 					plugin.logDebug("Player out of shaft");
 					removePlayer((Player) passenger, passengers);
+					continue;
 				}
 				
 				if((e.goingUp && passenger.getLocation().getY() > e.destFloor.getY() - 0.7)
