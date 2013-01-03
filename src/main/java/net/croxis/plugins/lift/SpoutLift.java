@@ -56,7 +56,7 @@ public class SpoutLift extends CommonPlugin implements Listener{
 	public static String stringCantLeave;
 
 	public void onDisable() {
-    	ElevatorManager.elevators.clear();
+    	SpoutElevatorManager.elevators.clear();
     	getEngine().getScheduler().cancelTask(SpoutElevatorManager.taskid);
         System.out.println(this + " is now disabled!");
     }
@@ -68,7 +68,7 @@ public class SpoutLift extends CommonPlugin implements Listener{
     	
     	File file = new File(getDataFolder(), "config.yml");
 		if (!file.exists()) {
-			initializeConfig(getDataFolder(), "config.yml");
+			initializeConfig(file, "config.yml");
     	}
     	YamlConfiguration config = new YamlConfiguration(file);
     	try {
@@ -134,6 +134,7 @@ public class SpoutLift extends CommonPlugin implements Listener{
 	// TODO: Maybe improve the 2nd parameter?
 	protected void initializeConfig(File file, String fileName) {
 		try {
+			getLogger().info("Creating directories: " + file.toString() + " | " + file.getParentFile().toString());
 			file.getParentFile().mkdirs();
 			file.createNewFile();
 		} catch (IOException e) {
