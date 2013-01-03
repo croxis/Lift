@@ -99,8 +99,11 @@ public class ElevatorManager implements Runnable {
 				|| checkBlock.getType() == Material.TORCH || checkBlock.getType() == Material.WALL_SIGN
 				|| checkBlock.getType() == Material.STONE_BUTTON || checkBlock.getType() == Material.VINE 
 				|| checkBlock.getType() == Material.LADDER || checkBlock.getType() == Material.WATER
-				|| checkBlock.getType() == Material.STATIONARY_WATER || checkBlock.getType() == Material.WOOD_BUTTON)
+				|| checkBlock.getType() == Material.STATIONARY_WATER)
 			return true;
+		if (Material.getMaterial("WOOD_BUTTON") != null)
+			if (checkBlock.getType() == Material.WOOD_BUTTON)
+				return true;
 		return false;
 	}
 	
@@ -145,7 +148,7 @@ public class ElevatorManager implements Runnable {
 					break;
 				}
 				//Hack for tekkit servers
-				try {
+				if (Material.getMaterial("WOOD_BUTTON") != null) {
 					if (testBlock.getType() == Material.STONE_BUTTON || testBlock.getType() == Material.WOOD_BUTTON){
 						if (plugin.checkGlass)
 							if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, elevator)){
@@ -159,7 +162,7 @@ public class ElevatorManager implements Runnable {
 							elevator.floormap.put(y1, floor);
 						plugin.logDebug("Floor added: " + b.getLocation());
 					}
-				} catch (NullPointerException e){
+				} else {
 					if (testBlock.getType() == Material.STONE_BUTTON){
 						if (plugin.checkGlass)
 							if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, elevator)){

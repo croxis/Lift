@@ -118,11 +118,11 @@ public class SpoutLift extends CommonPlugin implements Listener{
 	
 	public void logDebug(String message){
 		if (debug )
-			this.getLogger().log(Level.INFO, "[DEBUG] " + message);
+			this.getLogger().log(Level.INFO, "[Lift][DEBUG] " + message);
 	}
 	
 	public void logInfo(String message){
-		this.getLogger().log(Level.INFO, message);
+		this.getLogger().log(Level.INFO, "[Lift] " + message);
 	}
 	
 	/**

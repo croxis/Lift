@@ -53,15 +53,14 @@ public class LiftRedstoneListener implements Listener {
 	public void onBlockRedstoneChange(BlockRedstoneEvent event){
 		Elevator elevator = null;
 		canDo = false;
-		try {
+		if(Material.getMaterial("WOOD_BUTTON") != null)
 			canDo = (event.getBlock().getType() == Material.STONE_BUTTON || event.getBlock().getType() == Material.WOOD_BUTTON) 
 					&& (!event.getBlock().isBlockIndirectlyPowered())
 					&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN;
-		} catch (Exception e) {
+		else
 			canDo = event.getBlock().getType() == Material.STONE_BUTTON 
 					&& (!event.getBlock().isBlockIndirectlyPowered())
 					&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN;
-		}
 		/*if ((event.getBlock().getType() == Material.STONE_BUTTON || event.getBlock().getType() == Material.WOOD_BUTTON) 
 				&& (!event.getBlock().isBlockIndirectlyPowered())
 				&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){*/
