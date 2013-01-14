@@ -1,7 +1,7 @@
 /*
  * This file is part of Lift.
  *
- * Copyright (c) null-2012, croxis <https://github.com/croxis/>
+ * Copyright (c) ${project.inceptionYear}-2012, croxis <https://github.com/croxis/>
  *
  * Lift is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,9 +32,9 @@ import org.spout.api.material.block.BlockFace;
 import org.spout.api.math.Vector3;
 import org.spout.api.scheduler.Task;
 import org.spout.api.scheduler.TaskPriority;
-import org.spout.vanilla.component.living.neutral.Human;
-import org.spout.vanilla.component.substance.material.Sign;
-import org.spout.vanilla.material.VanillaMaterials;
+import org.spout.vanilla.plugin.component.living.neutral.Human;
+import org.spout.vanilla.plugin.material.VanillaMaterials;
+import org.spout.vanilla.plugin.component.substance.material.Sign;
 
 public class SpoutElevatorManager implements Runnable{
 	private static SpoutLift plugin;
@@ -75,13 +75,11 @@ public class SpoutElevatorManager implements Runnable{
 				break;
 			} else {
 				// Something is obstructing the elevator so stop
-				if (SpoutLift.debug){
-					System.out.println("==Unknown Error==");
-					System.out.println("Yscan: " + Integer.toString(yscan));
-					System.out.println("Block: " + checkBlock.getMaterial().toString());
-					System.out.println("Is Valid Block: " + Boolean.toString(isValidShaftBlock(checkBlock)));
-					System.out.println("Is Base Block: " + Boolean.toString(SpoutElevatorManager.isBaseBlock(checkBlock)));
-				}
+				plugin.logDebug("==Unknown Error==");
+				plugin.logDebug("Yscan: " + Integer.toString(yscan));
+				plugin.logDebug("Block: " + checkBlock.getMaterial().toString());
+				plugin.logDebug("Is Valid Block: " + Boolean.toString(isValidShaftBlock(checkBlock)));
+				plugin.logDebug("Is Base Block: " + Boolean.toString(SpoutElevatorManager.isBaseBlock(checkBlock)));
 				return null;
 			}
 			yscan--;
@@ -158,7 +156,7 @@ public class SpoutElevatorManager implements Runnable{
 						floor.setName(((Sign) testBlock.translate(BlockFace.BOTTOM).getComponent()).getText()[1]);
 					if (testBlock.translate(BlockFace.TOP).getMaterial() == VanillaMaterials.WALL_SIGN)
 						elevator.floormap.put(y1, floor);
-					plugin.logDebug("Floor added: " + b.getPosition().toString());
+					plugin.logDebug("Floor added: " + testBlock.getPosition().toString());
 				}
 			}
 		}
@@ -173,11 +171,9 @@ public class SpoutElevatorManager implements Runnable{
 	
 	public static boolean scanFloorAtY(World world, int y, SpoutElevator elevator){
 		for (Block block : elevator.baseBlocks){
-			if (Lift.debug){
-				System.out.println("Scan glass block type: " + world.getBlock(block.getX(), y, block.getZ()).getMaterial().toString());
-				System.out.println("Is not glass?: " + Boolean.toString(world.getBlock(block.getX(), y, block.getZ()).getMaterial() != plugin.floorBlock));
-				System.out.println("Is not base?: " + Boolean.toString(!plugin.blockSpeeds.keySet().contains(world.getBlock(block.getX(), y, block.getZ()).getMaterial())));
-			}
+			plugin.logDebug("Scan glass block type: " + world.getBlock(block.getX(), y, block.getZ()).getMaterial().toString());
+			plugin.logDebug("Is not glass?: " + Boolean.toString(world.getBlock(block.getX(), y, block.getZ()).getMaterial() != plugin.floorBlock));
+			plugin.logDebug("Is not base?: " + Boolean.toString(!plugin.blockSpeeds.keySet().contains(world.getBlock(block.getX(), y, block.getZ()).getMaterial())));
 			if (world.getBlock(block.getX(), y, block.getZ()).getMaterial() != plugin.floorBlock && !plugin.blockSpeeds.keySet().contains(world.getBlock(block.getX(), y, block.getZ()).getMaterial())){
 				if (Lift.debug)
 					System.out.println("Invalid block type");
@@ -295,16 +291,16 @@ public class SpoutElevatorManager implements Runnable{
 				
 				//Check if passengers have left the shaft
 				if (!e.isInShaft(passenger) && passenger instanceof Player){
-					plugin.logDebug("Player out of shaft");
+					logDebug("Player out of shaft");
 					removePlayer((Player) passenger, passengers);
 					continue;
 				}
 				
 				if((e.goingUp && passenger.get(TransformComponent.class).getTransform().getPosition().getY() > e.destFloor.getY() - 0.7)
 						|| (!e.goingUp && passenger.get(TransformComponent.class).getTransform().getPosition().getY() < e.destFloor.getY()-0.1)){
-					plugin.logDebug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.get(TransformComponent.class).getTransform().getPosition().getY()));
-					plugin.logDebug("Trigger status: Going up: " + Boolean.toString(e.goingUp));
-					plugin.logDebug("Floor Y: " + Double.toString(e.destFloor.getY()));
+					logDebug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.get(TransformComponent.class).getTransform().getPosition().getY()));
+					logDebug("Trigger status: Going up: " + Boolean.toString(e.goingUp));
+					logDebug("Floor Y: " + Double.toString(e.destFloor.getY()));
 					passenger.get(PhysicsComponent.class).setLinearVelocity(new Vector3(0,0,0));
 					//Location pLoc = passenger.getLocation();
 					//pLoc.setY(e.destFloor.getY()-0.7);
@@ -323,5 +319,9 @@ public class SpoutElevatorManager implements Runnable{
 				//holder.setFallDistance(0.0F);
 			}
 		}
+	}
+	
+	private void logDebug(String message){
+		plugin.logDebug("[SpoutElevatorManager] " + message);
 	}
 }

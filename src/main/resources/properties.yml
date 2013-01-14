@@ -2,7 +2,7 @@ name: Lift
 version: ${version}
 description: ${project.description}
 author: [ croxis ]
-depend: [Vanilla]
+depends: [Vanilla]
 main: net.croxis.plugins.lift.SpoutLift
 load: POSTWORLD
 platform: SERVER

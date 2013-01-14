@@ -1,7 +1,7 @@
 /*
  * This file is part of Lift.
  *
- * Copyright (c) null-2012, croxis <https://github.com/croxis/>
+ * Copyright (c) ${project.inceptionYear}-2012, croxis <https://github.com/croxis/>
  *
  * Lift is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@ import org.spout.api.exception.ConfigurationException;
 import org.spout.api.material.Material;
 import org.spout.api.plugin.CommonPlugin;
 import org.spout.api.util.config.yaml.YamlConfiguration;
-import org.spout.vanilla.material.VanillaMaterials;
+import org.spout.vanilla.plugin.material.VanillaMaterials;
 
 public class SpoutLift extends CommonPlugin implements Listener{
 
@@ -99,12 +99,10 @@ public class SpoutLift extends CommonPlugin implements Listener{
         if (preventEntry || preventLeave){
         	getEngine().getEventManager().registerEvents(this, this);
         }
-        if (debug){
-			System.out.println("maxArea: " + Integer.toString(liftArea));
-			System.out.println("autoPlace: " + Boolean.toString(autoPlace));
-			System.out.println("checkGlass: " + Boolean.toString(checkGlass));
-			System.out.println("baseBlocks: " + blockSpeeds.toString());
-		}
+		logDebug("maxArea: " + Integer.toString(liftArea));
+		logDebug("autoPlace: " + Boolean.toString(autoPlace));
+		logDebug("checkGlass: " + Boolean.toString(checkGlass));
+		logDebug("baseBlocks: " + blockSpeeds.toString());
         
         try {
             SpoutMetrics metrics = new SpoutMetrics(this);
@@ -118,11 +116,11 @@ public class SpoutLift extends CommonPlugin implements Listener{
 	
 	public void logDebug(String message){
 		if (debug )
-			this.getLogger().log(Level.INFO, "[Lift][DEBUG] " + message);
+			this.getLogger().log(Level.INFO, "[DEBUG] " + message);
 	}
 	
 	public void logInfo(String message){
-		this.getLogger().log(Level.INFO, "[Lift] " + message);
+		this.getLogger().log(Level.INFO, message);
 	}
 	
 	/**

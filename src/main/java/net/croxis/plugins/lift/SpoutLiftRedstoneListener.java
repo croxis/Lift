@@ -1,7 +1,7 @@
 /*
  * This file is part of Lift.
  *
- * Copyright (c) null-2012, croxis <https://github.com/croxis/>
+ * Copyright (c) ${project.inceptionYear}-2012, croxis <https://github.com/croxis/>
  *
  * Lift is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,12 +29,10 @@ import org.spout.api.geo.cuboid.Block;
 import org.spout.api.geo.cuboid.Chunk;
 import org.spout.api.material.Material;
 import org.spout.api.material.block.BlockFace;
-
-import org.spout.vanilla.component.living.Living;
-import org.spout.vanilla.component.living.neutral.Human;
-import org.spout.vanilla.component.substance.material.Sign;
-import org.spout.vanilla.event.block.RedstoneChangeEvent;
-import org.spout.vanilla.material.VanillaMaterials;
+import org.spout.vanilla.plugin.component.living.neutral.Human;
+import org.spout.vanilla.plugin.event.block.RedstoneChangeEvent;
+import org.spout.vanilla.plugin.material.VanillaMaterials;
+import org.spout.vanilla.plugin.component.substance.material.Sign;
 
 public class SpoutLiftRedstoneListener implements Listener{
 	private final SpoutLift plugin;
@@ -83,49 +81,48 @@ public class SpoutLiftRedstoneListener implements Listener{
 			//And set their gravity to 0
 			elevator.destFloor = elevator.getFloorFromN(destination);
 			
-			if (plugin.debug){
-				System.out.println("Elevator start floor:" + startFloor.getFloor());
-				System.out.println("Elevator start floor y:" + startFloor.getY());
-				System.out.println("Elevator destination floor:" + destination);
-				System.out.println("Elevator destination y:" + elevator.destFloor.getY());
-			}
+			logDebug("Elevator start floor:" + startFloor.getFloor());
+			logDebug("Elevator start floor y:" + startFloor.getY());
+			logDebug("Elevator destination floor:" + destination);
+			logDebug("Elevator destination y:" + elevator.destFloor.getY());
 			
 			Iterator<Block> iterator = elevator.baseBlocks.iterator();
 			for(Chunk chunk : elevator.chunks){
-				plugin.logDebug("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().size()));
+				logDebug("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().size()));
 				for(Entity e : chunk.getEntities()){
-					if (e.has(Living.class)){
-						if (elevator.isInShaftAtFloor(e, startFloor)){
-							if (SpoutElevatorManager.isPassenger(e)){
-								if (e instanceof Player)
-									((Player) e).sendMessage("You are already in a lift. Relog in case this is an error.");
-								continue;
-							}
-							elevator.addPassenger(e);
-							if (iterator.hasNext() && plugin.autoPlace){
-								e.getTransform().setPosition(iterator.next().getPosition().add(0.5, 0, 0.5));
-							}
-							if (e instanceof Player){
-								Player player = (Player) e;
-								if (e.get(Human.class).canFly()){
-									SpoutElevatorManager.flyers.add(e);
-									plugin.logDebug(player.getName() + " added to flying list");
-								} else {
-                                    ElevatorManager.flyers.remove(player);
-                                    //player.setAllowFlight(false);
-                                    plugin.logDebug(player.getName() + " NOT added to flying list");
-                                }
-								plugin.logDebug("Flyers: " + ElevatorManager.flyers.toString());
-								if (!player.hasPermission("lift")){
-									elevator.holders.put(e, e.getTransform().getPosition());
-									elevator.passengers.remove(e);
-								}
-							}
-						} else if (!elevator.isInShaftAtFloor(e, startFloor) && elevator.isInShaft(e)){
-							elevator.holders.put(e, e.getTransform().getPosition());
-							elevator.passengers.remove(e);
+					//if (e.has(SpoutPhysicsComponent.class)){
+					if (elevator.isInShaftAtFloor(e, startFloor)){
+						logDebug("Adding passenger " + e.toString());
+						if (SpoutElevatorManager.isPassenger(e)){
+							if (e instanceof Player)
+								((Player) e).sendMessage("You are already in a lift. Relog in case this is an error.");
+							continue;
 						}
+						elevator.addPassenger(e);
+						if (iterator.hasNext() && plugin.autoPlace){
+							e.getTransform().setPosition(iterator.next().getPosition().add(0.5, 0, 0.5));
+						}
+						if (e instanceof Player){
+							Player player = (Player) e;
+							if (e.get(Human.class).canFly()){
+								SpoutElevatorManager.flyers.add(e);
+								logDebug(player.getName() + " added to flying list");
+							} else {
+                                SpoutElevatorManager.flyers.remove(player);
+                                //player.setAllowFlight(false);
+                                logDebug(player.getName() + " NOT added to flying list");
+                            }
+							logDebug("Flyers: " + SpoutElevatorManager.flyers.toString());
+							//if (!player.hasPermission("lift")){
+							//elevator.holders.put(e, e.getTransform().getPosition());
+							//elevator.passengers.remove(e);
+							//}
+						}
+					} else if (!elevator.isInShaftAtFloor(e, startFloor) && elevator.isInShaft(e)){
+						elevator.holders.put(e, e.getTransform().getPosition());
+						elevator.passengers.remove(e);
 					}
+					//}
 				}
 			}
 			
@@ -164,15 +161,16 @@ public class SpoutLiftRedstoneListener implements Listener{
 			}
 			
 			SpoutElevatorManager.elevators.add(elevator);
-
-			if (Lift.debug){
-				System.out.println("Going Up: " + Boolean.toString(elevator.goingUp));
-				System.out.println("Number of passengers: " + Integer.toString(elevator.passengers.size()));
-				System.out.println("Elevator chunks: " + Integer.toString(elevator.chunks.size()));
-				System.out.println("Total generation time: " + Long.toString(System.currentTimeMillis() - startTime));
-			}
+			logDebug("Going Up: " + Boolean.toString(elevator.goingUp));
+			logDebug("Number of passengers: " + Integer.toString(elevator.passengers.size()));
+			logDebug("Elevator chunks: " + Integer.toString(elevator.chunks.size()));
+			logDebug("Total generation time: " + Long.toString(System.currentTimeMillis() - startTime));
 		}
 		
+	}
+	
+	private void logDebug(String message){
+		plugin.logDebug("[SpoutLiftRedstoneListener] " + message);
 	}
 
 }

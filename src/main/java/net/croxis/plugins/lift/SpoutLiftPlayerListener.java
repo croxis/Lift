@@ -1,7 +1,7 @@
 /*
  * This file is part of Lift.
  *
- * Copyright (c) null-2012, croxis <https://github.com/croxis/>
+ * Copyright (c) ${project.inceptionYear}-2012, croxis <https://github.com/croxis/>
  *
  * Lift is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,11 +27,11 @@ import org.spout.api.event.player.PlayerInteractEvent.Action;
 import org.spout.api.event.player.PlayerLeaveEvent;
 import org.spout.api.geo.cuboid.Block;
 import org.spout.api.material.block.BlockFace;
-import org.spout.vanilla.component.substance.material.Sign;
-import org.spout.vanilla.event.cause.DamageCause.DamageType;
-import org.spout.vanilla.event.cause.HealthChangeCause;
-import org.spout.vanilla.event.entity.EntityDamageEvent;
-import org.spout.vanilla.material.VanillaMaterials;
+import org.spout.vanilla.plugin.component.substance.material.Sign;
+import org.spout.vanilla.plugin.event.cause.DamageCause.DamageType;
+import org.spout.vanilla.plugin.event.cause.HealthChangeCause;
+import org.spout.vanilla.plugin.event.entity.EntityDamageEvent;
+import org.spout.vanilla.plugin.material.VanillaMaterials;
 
 public class SpoutLiftPlayerListener implements Listener{
 	private SpoutLift plugin;
@@ -43,8 +43,8 @@ public class SpoutLiftPlayerListener implements Listener{
 	
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event){
-		
-		if (event.getAction() == Action.RIGHT_CLICK && event.getPlayer().hasPermission("lift.change")) {
+		//if (event.getAction() == Action.RIGHT_CLICK && (event.getPlayer().hasPermission("lift.change") || event.getPlayer().getName() == "croxis")) {
+		if (event.getAction() == Action.RIGHT_CLICK && event.getPlayer().getWorld().getBlock(event.getInteractedPoint()) != null) {
 			//TODO: There has got to be an easier way to do this
 			Block signBlock = event.getPlayer().getWorld().getBlock(event.getInteractedPoint());
 			Block buttonBlock = signBlock.translate(BlockFace.BOTTOM);
@@ -52,7 +52,8 @@ public class SpoutLiftPlayerListener implements Listener{
 			if (signBlock.getMaterial() == VanillaMaterials.WALL_SIGN
                 && buttonBlock != null
 			    && (buttonBlock.getMaterial() == VanillaMaterials.STONE_BUTTON || buttonBlock.getMaterial() == VanillaMaterials.WOOD_BUTTON)) {
-
+				
+				plugin.logDebug("Updating sign");
 				Sign sign = (Sign) signBlock.getComponent();
 				SpoutElevator elevator = SpoutElevatorManager.createLift(buttonBlock);
 				
@@ -65,7 +66,7 @@ public class SpoutLiftPlayerListener implements Listener{
 					// This is just a button and sign, not an elevator.
 					return;
 				} else if (elevator.getTotalFloors() == 1){
-					event.getPlayer().sendMessage(Lift.stringOneFloor);
+					event.getPlayer().sendMessage(SpoutLift.stringOneFloor);
 					return;
 				}
 				
@@ -75,7 +76,7 @@ public class SpoutLiftPlayerListener implements Listener{
 				Floor currentFloor = elevator.getFloorFromY(buttonBlock.getY());
 				String[] newText = new String[4];
 				
-				newText[0] = Lift.stringCurrentFloor;
+				newText[0] = SpoutLift.stringCurrentFloor;
 				newText[1] = Integer.toString(currentFloor.getFloor());
 				newText[2] = "";
 				newText[3] = "";
@@ -98,10 +99,11 @@ public class SpoutLiftPlayerListener implements Listener{
 						currentDestinationInt = 2;
 					plugin.logDebug("Rotating back to first floor");
 				}
-				newText[2] = Lift.stringDestination + " " + Integer.toString(currentDestinationInt);
+				newText[2] = SpoutLift.stringDestination + " " + Integer.toString(currentDestinationInt);
 				newText[3] = elevator.getFloorFromN(currentDestinationInt).getName();
-				
+				plugin.logDebug("Updating sign: " + newText.toString());
 				sign.setText(newText, new PlayerCause(event.getPlayer()));
+				//sign.
 				plugin.logDebug("Completed sign update");
 			}
 		}
@@ -113,7 +115,7 @@ public class SpoutLiftPlayerListener implements Listener{
 			Entity faller = e.getEntity();
 			if(SpoutElevatorManager.fallers.contains(faller)){
 				e.setCancelled(true);
-				//ElevatorManager.fallers.remove(faller);
+				SpoutElevatorManager.fallers.remove(faller);
 			}
 		}
 	}
