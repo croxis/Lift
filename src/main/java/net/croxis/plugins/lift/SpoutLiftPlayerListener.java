@@ -27,10 +27,10 @@ import org.spout.api.event.player.PlayerInteractEvent.Action;
 import org.spout.api.event.player.PlayerLeaveEvent;
 import org.spout.api.geo.cuboid.Block;
 import org.spout.api.material.block.BlockFace;
+import org.spout.vanilla.api.event.cause.DamageCause.DamageType;
+import org.spout.vanilla.api.event.cause.HealthChangeCause;
+import org.spout.vanilla.api.event.entity.EntityDamageEvent;
 import org.spout.vanilla.plugin.component.substance.material.Sign;
-import org.spout.vanilla.plugin.event.cause.DamageCause.DamageType;
-import org.spout.vanilla.plugin.event.cause.HealthChangeCause;
-import org.spout.vanilla.plugin.event.entity.EntityDamageEvent;
 import org.spout.vanilla.plugin.material.VanillaMaterials;
 
 public class SpoutLiftPlayerListener implements Listener{

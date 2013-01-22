@@ -99,7 +99,7 @@ public class LiftRedstoneListener implements Listener {
 			//And set their gravity to 0
 			elevator.destFloor = elevator.getFloorFromN(destination);
 			
-			if (plugin.debug){
+			if (Lift.debug){
 				System.out.println("Elevator start floor:" + startFloor.getFloor());
 				System.out.println("Elevator start floor y:" + startFloor.getY());
 				System.out.println("Elevator destination floor:" + destination);
