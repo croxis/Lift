@@ -21,8 +21,6 @@ package net.croxis.plugins.lift;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.spout.api.component.impl.PhysicsComponent;
-import org.spout.api.component.impl.TransformComponent;
 import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
 import org.spout.api.geo.World;
@@ -278,10 +276,10 @@ public class SpoutElevatorManager implements Runnable{
 			
 			//Re apply impulse as it does seem to run out
 			for (Entity p : e.getPassengers()){
-				if(e.destFloor.getFloor() > e.startFloor.getFloor())
-					p.get(PhysicsComponent.class).setLinearVelocity(new Vector3(0.0D, e.speed, 0.0D));
-				else
-					p.get(PhysicsComponent.class).setLinearVelocity(new Vector3(0.0D, -e.speed, 0.0D));
+				if(e.destFloor.getFloor() > e.startFloor.getFloor()){
+					p.getScene().setMovementVelocity(new Vector3(0.0D, e.speed, 0.0D));
+				} else
+					p.getScene().setMovementVelocity(new Vector3(0.0D, -e.speed, 0.0D));
 				//p.setFallDistance(0.0F);
 			}
 			
@@ -296,16 +294,16 @@ public class SpoutElevatorManager implements Runnable{
 					continue;
 				}
 				
-				if((e.goingUp && passenger.get(TransformComponent.class).getTransform().getPosition().getY() > e.destFloor.getY() - 0.7)
-						|| (!e.goingUp && passenger.get(TransformComponent.class).getTransform().getPosition().getY() < e.destFloor.getY()-0.1)){
-					logDebug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.get(TransformComponent.class).getTransform().getPosition().getY()));
+				if((e.goingUp && passenger.getScene().getPosition().getY() > e.destFloor.getY() - 0.7)
+						|| (!e.goingUp && passenger.getScene().getPosition().getY() < e.destFloor.getY()-0.1)){
+					logDebug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.getScene().getPosition().getY()));
 					logDebug("Trigger status: Going up: " + Boolean.toString(e.goingUp));
 					logDebug("Floor Y: " + Double.toString(e.destFloor.getY()));
-					passenger.get(PhysicsComponent.class).setLinearVelocity(new Vector3(0,0,0));
+					passenger.getScene().setMovementVelocity(new Vector3(0,0,0));
 					//Location pLoc = passenger.getLocation();
 					//pLoc.setY(e.destFloor.getY()-0.7);
 					//passenger.teleport(pLoc);
-					e.holders.put(passenger, passenger.get(TransformComponent.class).getTransform().getPosition());
+					e.holders.put(passenger, passenger.getScene().getPosition());
 					if (e instanceof Player)
 						removePlayer((Player) passenger, passengers);
 					else
@@ -315,7 +313,7 @@ public class SpoutElevatorManager implements Runnable{
 			
 			for (Entity holder : e.holders.keySet()){
 				plugin.logDebug("Holding: " + holder.toString() + " at " + e.holders.get(holder));
-				holder.get(TransformComponent.class).setPosition(e.holders.get(holder));
+				holder.getScene().setPosition(e.holders.get(holder));
 				//holder.setFallDistance(0.0F);
 			}
 		}

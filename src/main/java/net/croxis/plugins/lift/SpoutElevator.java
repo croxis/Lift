@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 
-import org.spout.api.component.impl.TransformComponent;
 import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
 import org.spout.api.geo.World;
@@ -78,7 +77,7 @@ public class SpoutElevator {
 	public boolean isInShaft(Entity entity){
 		for (Block block : baseBlocks){
 			Point inside = block.getPosition();
-			Point loc = entity.get(TransformComponent.class).getPosition();
+			Point loc = entity.getScene().getPosition();
 			if (loc.getBlockX() == block.getX() && 
 					(loc.getY() >= inside.getY() - 1.0D) && 
 					(loc.getY() <= floormap2.get(floormap2.lastKey()).getY()) && 
@@ -90,7 +89,7 @@ public class SpoutElevator {
 	
 	public boolean isInShaftAtFloor(Entity entity, Floor floor){
 		if (isInShaft(entity)){
-			if (entity.get(TransformComponent.class).getPosition().getY() >= floor.getY() - 1 && entity.get(TransformComponent.class).getPosition().getY() <= floor.getY())
+			if (entity.getScene().getPosition().getY() >= floor.getY() - 1 && entity.getScene().getPosition().getY() <= floor.getY())
 				return true;
 		}
 		return false;

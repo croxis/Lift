@@ -100,7 +100,7 @@ public class SpoutLiftRedstoneListener implements Listener{
 						}
 						elevator.addPassenger(e);
 						if (iterator.hasNext() && plugin.autoPlace){
-							e.getTransform().setPosition(iterator.next().getPosition().add(0.5, 0, 0.5));
+							e.getScene().setPosition(iterator.next().getPosition().add(0.5, 0, 0.5));
 						}
 						if (e instanceof Player){
 							Player player = (Player) e;
@@ -119,7 +119,7 @@ public class SpoutLiftRedstoneListener implements Listener{
 							//}
 						}
 					} else if (!elevator.isInShaftAtFloor(e, startFloor) && elevator.isInShaft(e)){
-						elevator.holders.put(e, e.getTransform().getPosition());
+						elevator.holders.put(e, e.getScene().getPosition());
 						elevator.passengers.remove(e);
 					}
 					//}
