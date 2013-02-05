@@ -34,6 +34,8 @@ import org.spout.vanilla.plugin.component.living.neutral.Human;
 import org.spout.vanilla.plugin.material.VanillaMaterials;
 import org.spout.vanilla.plugin.component.substance.material.Sign;
 
+import com.bulletphysics.collision.shapes.CollisionShape;
+
 public class SpoutLiftRedstoneListener implements Listener{
 	private final SpoutLift plugin;
 	public SpoutLiftRedstoneListener(SpoutLift plugin){
@@ -98,6 +100,7 @@ public class SpoutLiftRedstoneListener implements Listener{
 								((Player) e).sendMessage("You are already in a lift. Relog in case this is an error.");
 							continue;
 						}
+						//e.getScene().setShape(1, new CollisionShape());
 						elevator.addPassenger(e);
 						if (iterator.hasNext() && plugin.autoPlace){
 							e.getScene().setPosition(iterator.next().getPosition().add(0.5, 0, 0.5));
