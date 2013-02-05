@@ -335,9 +335,10 @@ public class ElevatorManager implements Runnable {
 					plugin.logDebug("Trigger status: Going up: " + Boolean.toString(e.goingUp));
 					plugin.logDebug("Floor Y: " + Double.toString(e.destFloor.getY()));
 					passenger.setVelocity(new Vector(0,0,0));
-					//Location pLoc = passenger.getLocation();
-					//pLoc.setY(e.destFloor.getY()-0.7);
-					//passenger.teleport(pLoc);
+					Location pLoc = passenger.getLocation();
+					pLoc.setY(e.destFloor.getY()-0.5);
+					passenger.teleport(pLoc);
+					passenger.setFallDistance(0.0F);
 					e.holders.put(passenger, passenger.getLocation());
 					if (e instanceof Player)
 						removePlayer((Player) passenger, passengers);
