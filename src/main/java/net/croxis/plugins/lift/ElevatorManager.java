@@ -208,18 +208,19 @@ public class ElevatorManager implements Runnable {
 		plugin.logDebug("Halting lift");
 		for (Block b : elevator.glassBlocks)
 			b.setType(plugin.floorBlock);
-		for (LivingEntity p : elevator.passengers){
-			fallers.remove(p);
-			if (p instanceof Player)
-				removePlayer((Player) p);
-			else
-				elevator.passengers.remove(p);
+		Iterator<LivingEntity> passengerIterator = elevator.passengers.iterator();
+		while (passengerIterator.hasNext()){
+			LivingEntity e = passengerIterator.next();
+			fallers.remove(e);
+			if (e instanceof Player)
+				removePlayer((Player) e);
+			passengerIterator.remove();
 		}
-		Iterator<LivingEntity> passengerIterators = elevator.holders.keySet().iterator();
-		while (passengerIterators.hasNext()){
-			LivingEntity passenger = passengerIterators.next();
+		Iterator<LivingEntity> holdersIterators = elevator.holders.keySet().iterator();
+		while (holdersIterators.hasNext()){
+			LivingEntity passenger = holdersIterators.next();
 			if (passenger instanceof Player){
-				removePlayer((Player) passenger, passengerIterators);
+				removePlayer((Player) passenger, holdersIterators);
 			}
 		}
 		elevator.clear();
