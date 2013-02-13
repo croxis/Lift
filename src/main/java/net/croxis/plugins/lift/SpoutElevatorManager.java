@@ -27,24 +27,23 @@ import org.spout.api.geo.World;
 import org.spout.api.geo.cuboid.Block;
 import org.spout.api.material.BlockMaterial;
 import org.spout.api.material.block.BlockFace;
-import org.spout.api.math.Vector3;
 import org.spout.api.scheduler.Task;
 import org.spout.api.scheduler.TaskPriority;
 import org.spout.vanilla.plugin.component.living.neutral.Human;
 import org.spout.vanilla.plugin.material.VanillaMaterials;
 import org.spout.vanilla.plugin.component.substance.material.Sign;
 
-public class SpoutElevatorManager implements Runnable{
+public class SpoutElevatorManager extends ElevatorManager{
 	private static SpoutLift plugin;
 	public static HashSet<SpoutElevator> elevators = new HashSet<SpoutElevator>();
 	public static HashSet<Entity> fallers = new HashSet<Entity>();
 	public static HashSet<Entity> flyers = new HashSet<Entity>();
-	public static Task taskid;
+	public static Task spouttaskid;
 
 	public SpoutElevatorManager(SpoutLift plugin) {
 		SpoutElevatorManager.plugin = plugin;
 		//TODO:Move to using getParallelTaskManager
-		taskid = plugin.getEngine().getScheduler().scheduleSyncRepeatingTask(plugin, this, 0, 500, TaskPriority.NORMAL);
+		spouttaskid = plugin.getEngine().getScheduler().scheduleSyncRepeatingTask(plugin, this, 0, 500, TaskPriority.NORMAL);
 	}
 	
 	public static SpoutElevator createLift(Block block){
@@ -173,7 +172,7 @@ public class SpoutElevatorManager implements Runnable{
 			plugin.logDebug("Is not glass?: " + Boolean.toString(world.getBlock(block.getX(), y, block.getZ()).getMaterial() != plugin.floorBlock));
 			plugin.logDebug("Is not base?: " + Boolean.toString(!plugin.blockSpeeds.keySet().contains(world.getBlock(block.getX(), y, block.getZ()).getMaterial())));
 			if (world.getBlock(block.getX(), y, block.getZ()).getMaterial() != plugin.floorBlock && !plugin.blockSpeeds.keySet().contains(world.getBlock(block.getX(), y, block.getZ()).getMaterial())){
-				if (Lift.debug)
+				if (BukkitLift.debug)
 					System.out.println("Invalid block type");
 				return false;	
 			}
@@ -277,9 +276,14 @@ public class SpoutElevatorManager implements Runnable{
 			//Re apply impulse as it does seem to run out
 			for (Entity p : e.getPassengers()){
 				if(e.destFloor.getFloor() > e.startFloor.getFloor()){
-					p.getScene().setMovementVelocity(new Vector3(0.0D, e.speed, 0.0D));
-				} else
-					p.getScene().setMovementVelocity(new Vector3(0.0D, -e.speed, 0.0D));
+					plugin.logDebug("Processing up: " + p.toString());
+					//p.getScene().setMovementVelocity(new Vector3(0.0D, e.speed, 0.0D));
+					p.getScene().setPosition(p.getScene().getPosition().add(0.0D, 1.0D, 0.0D));
+				} else {
+					plugin.logDebug("Processing down: " + p.toString());
+					p.getScene().setPosition(p.getScene().getPosition().add(0.0D, -e.speed, 0.0D));
+					//p.getScene().setMovementVelocity(new Vector3(0.0D, -e.speed, 0.0D));
+				}
 				//p.setFallDistance(0.0F);
 			}
 			
@@ -299,7 +303,7 @@ public class SpoutElevatorManager implements Runnable{
 					logDebug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.getScene().getPosition().getY()));
 					logDebug("Trigger status: Going up: " + Boolean.toString(e.goingUp));
 					logDebug("Floor Y: " + Double.toString(e.destFloor.getY()));
-					passenger.getScene().setMovementVelocity(new Vector3(0,0,0));
+					//passenger.getScene().setMovementVelocity(new Vector3(0,0,0));
 					//Location pLoc = passenger.getLocation();
 					//pLoc.setY(e.destFloor.getY()-0.7);
 					//passenger.teleport(pLoc);

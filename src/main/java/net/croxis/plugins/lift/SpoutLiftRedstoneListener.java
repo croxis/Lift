@@ -34,8 +34,6 @@ import org.spout.vanilla.plugin.component.living.neutral.Human;
 import org.spout.vanilla.plugin.material.VanillaMaterials;
 import org.spout.vanilla.plugin.component.substance.material.Sign;
 
-import com.bulletphysics.collision.shapes.CollisionShape;
-
 public class SpoutLiftRedstoneListener implements Listener{
 	private final SpoutLift plugin;
 	public SpoutLiftRedstoneListener(SpoutLift plugin){
@@ -89,6 +87,30 @@ public class SpoutLiftRedstoneListener implements Listener{
 			logDebug("Elevator destination y:" + elevator.destFloor.getY());
 			
 			Iterator<Block> iterator = elevator.baseBlocks.iterator();
+			
+			//Disable all glass inbetween players and destination
+			ArrayList<Floor> glassfloors = new ArrayList<Floor>();
+			//Going up
+			if (startFloor.getY() < elevator.destFloor.getY()){
+				for(int i = startFloor.getFloor() + 1; i<= elevator.destFloor.getFloor(); i++){
+					glassfloors.add(elevator.getFloormap2().get(i));
+				}
+			}
+			//Going down
+			else {
+				for(int i = elevator.destFloor.getFloor() + 1; i<= startFloor.getFloor(); i++){
+					glassfloors.add(elevator.getFloormap2().get(i));
+				}
+			}
+			for (Floor f : glassfloors){
+				for (Block b : elevator.baseBlocks){
+					Block gb = event.getBlock().getWorld().getBlock(b.getX(), f.getY()-2, b.getZ());
+					gb.setMaterial(VanillaMaterials.AIR);
+					elevator.glassBlocks.add(gb);
+				}
+			}
+			
+			
 			for(Chunk chunk : elevator.chunks){
 				logDebug("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().size()));
 				for(Entity e : chunk.getEntities()){
@@ -129,27 +151,7 @@ public class SpoutLiftRedstoneListener implements Listener{
 				}
 			}
 			
-			//Disable all glass inbetween players and destination
-			ArrayList<Floor> glassfloors = new ArrayList<Floor>();
-			//Going up
-			if (startFloor.getY() < elevator.destFloor.getY()){
-				for(int i = startFloor.getFloor() + 1; i<= elevator.destFloor.getFloor(); i++){
-					glassfloors.add(elevator.getFloormap2().get(i));
-				}
-			}
-			//Going down
-			else {
-				for(int i = elevator.destFloor.getFloor() + 1; i<= startFloor.getFloor(); i++){
-					glassfloors.add(elevator.getFloormap2().get(i));
-				}
-			}
-			for (Floor f : glassfloors){
-				for (Block b : elevator.baseBlocks){
-					Block gb = event.getBlock().getWorld().getBlock(b.getX(), f.getY()-2, b.getZ());
-					gb.setMaterial(VanillaMaterials.AIR);
-					elevator.glassBlocks.add(gb);
-				}
-			}
+			
 			//Apply impulse to players
 			for (Entity p : elevator.getPassengers()){
 				if (p instanceof Player){

@@ -36,7 +36,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.*;
 
-public class Lift extends JavaPlugin implements Listener {
+public class BukkitLift extends JavaPlugin implements Listener {
 	public static boolean debug = false;
 	boolean useSpout = false;
 	//public double liftSpeed = 0.5;
@@ -51,7 +51,7 @@ public class Lift extends JavaPlugin implements Listener {
 	public boolean serverFlight = false;
 	//public boolean useV10 = false;
 	//public V10verlap_API v10verlap_API = null;
-	public static ElevatorManager manager;
+	public static BukkitElevatorManager manager;
 	public boolean useAntiCheat = false;
 	public AnticheatAPI anticheat = null;
 	private boolean preventEntry = false;
@@ -72,15 +72,15 @@ public class Lift extends JavaPlugin implements Listener {
 	}
 	
     public void onDisable() {
-    	ElevatorManager.elevators.clear();
-    	getServer().getScheduler().cancelTask(ElevatorManager.taskid);
+    	BukkitElevatorManager.bukkitElevators.clear();
+    	getServer().getScheduler().cancelTask(BukkitElevatorManager.taskid);
         System.out.println(this + " is now disabled!");
     }
 
     public void onEnable() {
-    	new LiftRedstoneListener(this);
-    	new LiftPlayerListener(this);
-    	manager = new ElevatorManager(this);
+    	new BukkitLiftRedstoneListener(this);
+    	new BukkitLiftPlayerListener(this);
+    	manager = new BukkitElevatorManager(this);
     	
     	//liftSpeed = this.getConfig().getDouble("liftSpeed");
     	this.getConfig().options().copyDefaults(true);
@@ -146,18 +146,18 @@ public class Lift extends JavaPlugin implements Listener {
 	
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event){
-		for (Elevator elevator : ElevatorManager.elevators){
-			if (elevator.chunks.contains(event.getTo().getChunk())){
-				if (elevator.isInShaft(event.getPlayer()) 
-						&& !elevator.isInLift(event.getPlayer())
+		for (BukkitElevator bukkitElevator : BukkitElevatorManager.bukkitElevators){
+			if (bukkitElevator.chunks.contains(event.getTo().getChunk())){
+				if (bukkitElevator.isInShaft(event.getPlayer()) 
+						&& !bukkitElevator.isInLift(event.getPlayer())
 						&& preventEntry){
 					event.setCancelled(true);
-					event.getPlayer().sendMessage(Lift.stringCantEnter);
-				} else if (!elevator.isInShaft(event.getPlayer())
-						&& elevator.isInLift(event.getPlayer())
+					event.getPlayer().sendMessage(BukkitLift.stringCantEnter);
+				} else if (!bukkitElevator.isInShaft(event.getPlayer())
+						&& bukkitElevator.isInLift(event.getPlayer())
 						&& preventLeave){
 					event.setCancelled(true);
-					event.getPlayer().sendMessage(Lift.stringCantLeave);
+					event.getPlayer().sendMessage(BukkitLift.stringCantLeave);
 				}
 			}
 		}
@@ -168,19 +168,19 @@ public class Lift extends JavaPlugin implements Listener {
     		long time = System.currentTimeMillis();
     		Player player = (Player) sender;
     		player.sendMessage("Starting scan");
-    		Elevator elevator = new Elevator();
+    		BukkitElevator bukkitElevator = new BukkitElevator();
     		//Location location = player.getLocation();
     		//location.setY(location.getY() - 2);
-    		if (ElevatorManager.isBaseBlock(player.getLocation().getBlock().getRelative(BlockFace.DOWN))){
-    			elevator.baseBlockType = player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType();
-    			ElevatorManager.scanBaseBlocks(player.getLocation().getBlock().getRelative(BlockFace.DOWN), elevator);
+    		if (BukkitElevatorManager.isBaseBlock(player.getLocation().getBlock().getRelative(BlockFace.DOWN))){
+    			bukkitElevator.baseBlockType = player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType();
+    			BukkitElevatorManager.scanBaseBlocks(player.getLocation().getBlock().getRelative(BlockFace.DOWN), bukkitElevator);
     		} else {
     			player.sendMessage("Not a valid base block type: " + player.getLocation().getBlock().getType().toString());
     			player.sendMessage("Options are: " + this.blockSpeeds.toString());
     			return true;
     		}
-    		player.sendMessage("Base block type: " + elevator.baseBlockType + " | Size: " + Integer.toString(elevator.baseBlocks.size()));
-    		player.sendMessage("Floor scan reports: " + ElevatorManager.constructFloors(elevator));
+    		player.sendMessage("Base block type: " + bukkitElevator.baseBlockType + " | Size: " + Integer.toString(bukkitElevator.baseBlocks.size()));
+    		player.sendMessage("Floor scan reports: " + BukkitElevatorManager.constructFloors(bukkitElevator));
     		player.sendMessage("Total time generating elevator: " + Long.toString(System.currentTimeMillis() - time));
     		return true;
     	} //If this has happened the function will break and return true. if this hasn't happened the a value of false will be returned.

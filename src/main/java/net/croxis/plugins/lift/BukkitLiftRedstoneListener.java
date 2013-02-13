@@ -40,18 +40,18 @@ import org.bukkit.block.Sign;
 import org.getspout.spoutapi.SpoutManager;
 
 
-public class LiftRedstoneListener implements Listener {
-	private final Lift plugin;
+public class BukkitLiftRedstoneListener implements Listener {
+	private final BukkitLift plugin;
 	// Supporting annoying out of date servers
 	private boolean canDo = false;
-	public LiftRedstoneListener(Lift plugin){
+	public BukkitLiftRedstoneListener(BukkitLift plugin){
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 		this.plugin = plugin;
 	} 
 	
 	@EventHandler
 	public void onBlockRedstoneChange(BlockRedstoneEvent event){
-		Elevator elevator = null;
+		BukkitElevator bukkitElevator = null;
 		canDo = false;
 		if(Material.getMaterial("WOOD_BUTTON") != null)
 			canDo = (event.getBlock().getType() == Material.STONE_BUTTON || event.getBlock().getType() == Material.WOOD_BUTTON) 
@@ -68,25 +68,25 @@ public class LiftRedstoneListener implements Listener {
 			long startTime = System.currentTimeMillis();
 			//plugin.logDebug("Initial reqs met");
 			//elevator = new Elevator(this.plugin, event.getBlock());
-			elevator = ElevatorManager.createLift(event.getBlock());
-			if (elevator == null)
+			bukkitElevator = BukkitElevatorManager.createLift(event.getBlock());
+			if (bukkitElevator == null)
 				return;
 			
 			//See if lift is in use
-			for (Elevator e : ElevatorManager.elevators){
-				Iterator<Block> iterator = elevator.baseBlocks.iterator();
+			for (BukkitElevator e : BukkitElevatorManager.bukkitElevators){
+				Iterator<Block> iterator = bukkitElevator.baseBlocks.iterator();
 				while (iterator.hasNext()){
 					if (e.baseBlocks.contains(iterator.next()))
 						return;
 				}
 			}
 			
-			if (elevator.getTotalFloors() < 2)
+			if (bukkitElevator.getTotalFloors() < 2)
 				return;
 			
 			int y = event.getBlock().getY();
-			Floor startFloor = elevator.getFloormap().get(y);
-			elevator.startFloor = startFloor;
+			Floor startFloor = bukkitElevator.floormap.get(y);
+			bukkitElevator.startFloor = startFloor;
 			String line = ((Sign) event.getBlock().getRelative(BlockFace.UP).getState()).getLine(2);
 			if (line.isEmpty())
 				return;
@@ -97,27 +97,27 @@ public class LiftRedstoneListener implements Listener {
 
 			//Get all players in elevator shaft (at floor of button pusher if possible)
 			//And set their gravity to 0
-			elevator.destFloor = elevator.getFloorFromN(destination);
+			bukkitElevator.destFloor = bukkitElevator.getFloorFromN(destination);
 			
-			if (Lift.debug){
+			if (BukkitLift.debug){
 				System.out.println("Elevator start floor:" + startFloor.getFloor());
 				System.out.println("Elevator start floor y:" + startFloor.getY());
 				System.out.println("Elevator destination floor:" + destination);
-				System.out.println("Elevator destination y:" + elevator.destFloor.getY());
+				System.out.println("Elevator destination y:" + bukkitElevator.destFloor.getY());
 			}
 			
-			Iterator<Block> iterator = elevator.baseBlocks.iterator();
-			for(Chunk chunk : elevator.chunks){
+			Iterator<Block> iterator = bukkitElevator.baseBlocks.iterator();
+			for(Chunk chunk : bukkitElevator.chunks){
 				plugin.logDebug("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().length));
 				for(Entity e : chunk.getEntities()){
 					if (e instanceof LivingEntity){
-						if (elevator.isInShaftAtFloor(e, startFloor)){
-							if (ElevatorManager.isPassenger(e)){
+						if (bukkitElevator.isInShaftAtFloor(e, startFloor)){
+							if (BukkitElevatorManager.isPassenger(e)){
 								if (e instanceof Player)
 									((Player) e).sendMessage("You are already in a lift. Relog in case this is an error.");
 								continue;
 							}
-							elevator.addPassenger((LivingEntity) e);
+							bukkitElevator.addPassenger((LivingEntity) e);
 							if (iterator.hasNext() && plugin.autoPlace){
 								Location loc = iterator.next().getLocation();
 								e.teleport(new Location(e.getWorld(), loc.getX() + 0.5D, e.getLocation().getY(), loc.getZ() + 0.5D, e.getLocation().getYaw(), e.getLocation().getPitch()));
@@ -125,22 +125,22 @@ public class LiftRedstoneListener implements Listener {
 							if (e instanceof Player){
 								Player player = (Player) e;
 								if (player.getAllowFlight()){
-									ElevatorManager.flyers.add(player);
+									BukkitElevatorManager.flyers.add(player);
 									plugin.logDebug(player.getName() + " added to flying list");
 								} else {
-                                    ElevatorManager.flyers.remove(player);
+                                    BukkitElevatorManager.flyers.remove(player);
                                     //player.setAllowFlight(false);
                                     plugin.logDebug(player.getName() + " NOT added to flying list");
                                 }
-								plugin.logDebug("Flyers: " + ElevatorManager.flyers.toString());
+								plugin.logDebug("Flyers: " + BukkitElevatorManager.flyers.toString());
 								if (!player.hasPermission("lift")){
-									elevator.holders.put((LivingEntity) e, e.getLocation());
-									elevator.passengers.remove((LivingEntity) e);
+									bukkitElevator.holders.put((LivingEntity) e, e.getLocation());
+									bukkitElevator.passengers.remove((LivingEntity) e);
 								}
 							}
-						} else if (!elevator.isInShaftAtFloor(e, startFloor) && elevator.isInShaft(e)){
-							elevator.holders.put((LivingEntity) e, e.getLocation());
-							elevator.passengers.remove((LivingEntity) e);
+						} else if (!bukkitElevator.isInShaftAtFloor(e, startFloor) && bukkitElevator.isInShaft(e)){
+							bukkitElevator.holders.put((LivingEntity) e, e.getLocation());
+							bukkitElevator.passengers.remove((LivingEntity) e);
 						}
 					}
 				}
@@ -149,26 +149,26 @@ public class LiftRedstoneListener implements Listener {
 			//Disable all glass inbetween players and destination
 			ArrayList<Floor> glassfloors = new ArrayList<Floor>();
 			//Going up
-			if (startFloor.getY() < elevator.destFloor.getY()){
-				for(int i = startFloor.getFloor() + 1; i<= elevator.destFloor.getFloor(); i++){
-					glassfloors.add(elevator.getFloormap2().get(i));
+			if (startFloor.getY() < bukkitElevator.destFloor.getY()){
+				for(int i = startFloor.getFloor() + 1; i<= bukkitElevator.destFloor.getFloor(); i++){
+					glassfloors.add(bukkitElevator.floormap2.get(i));
 				}
 			}
 			//Going down
 			else {
-				for(int i = elevator.destFloor.getFloor() + 1; i<= startFloor.getFloor(); i++){
-					glassfloors.add(elevator.getFloormap2().get(i));
+				for(int i = bukkitElevator.destFloor.getFloor() + 1; i<= startFloor.getFloor(); i++){
+					glassfloors.add(bukkitElevator.floormap2.get(i));
 				}
 			}
 			for (Floor f : glassfloors){
-				for (Block b : elevator.baseBlocks){
+				for (Block b : bukkitElevator.baseBlocks){
 					Block gb = event.getBlock().getWorld().getBlockAt(b.getX(), f.getY()-2, b.getZ());
 					gb.setType(Material.AIR);
-					elevator.glassBlocks.add(gb);
+					bukkitElevator.glassBlocks.add(gb);
 				}
 			}
 			//Apply impulse to players
-			for (Entity p : elevator.getPassengers()){
+			for (Entity p : bukkitElevator.passengers){
 				if (p instanceof Player){
 					((Player) p).setAllowFlight(true);
 					if (plugin.useAntiCheat)
@@ -181,19 +181,19 @@ public class LiftRedstoneListener implements Listener {
 						SpoutManager.getPlayer((Player) p).setCanFly(true);
 					}						
 				}
-				if (elevator.destFloor.getY() > startFloor.getY()){
-					elevator.goingUp = true;
+				if (bukkitElevator.destFloor.getY() > startFloor.getY()){
+					bukkitElevator.goingUp = true;
 				} else {
-					ElevatorManager.fallers.add(p);
+					BukkitElevatorManager.fallers.add(p);
 				}
 			}
 			
-			ElevatorManager.elevators.add(elevator);
+			BukkitElevatorManager.bukkitElevators.add(bukkitElevator);
 
-			if (Lift.debug){
-				System.out.println("Going Up: " + Boolean.toString(elevator.goingUp));
-				System.out.println("Number of passengers: " + Integer.toString(elevator.passengers.size()));
-				System.out.println("Elevator chunks: " + Integer.toString(elevator.chunks.size()));
+			if (BukkitLift.debug){
+				System.out.println("Going Up: " + Boolean.toString(bukkitElevator.goingUp));
+				System.out.println("Number of passengers: " + Integer.toString(bukkitElevator.passengers.size()));
+				System.out.println("Elevator chunks: " + Integer.toString(bukkitElevator.chunks.size()));
 				System.out.println("Total generation time: " + Long.toString(System.currentTimeMillis() - startTime));
 			}
 		}

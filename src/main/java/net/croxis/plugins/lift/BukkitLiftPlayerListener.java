@@ -34,10 +34,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class LiftPlayerListener implements Listener{
-	private Lift plugin;
+public class BukkitLiftPlayerListener implements Listener{
+	private BukkitLift plugin;
 
-	public LiftPlayerListener(Lift plugin){
+	public BukkitLiftPlayerListener(BukkitLift plugin){
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 		this.plugin = plugin;
 	}
@@ -54,28 +54,28 @@ public class LiftPlayerListener implements Listener{
 			    && (buttonBlock.getType() == Material.STONE_BUTTON || buttonBlock.getType() == Material.WOOD_BUTTON)) {
 
 				Sign sign = (Sign) signBlock.getState();
-				Elevator elevator = ElevatorManager.createLift(buttonBlock);
+				BukkitElevator bukkitElevator = BukkitElevatorManager.createLift(buttonBlock);
                 //Elevator elevator = new Elevator(this.plugin, buttonBlock);
 				
-				if (elevator == null){
+				if (bukkitElevator == null){
 					plugin.logInfo("Elevator generation returned a null object. Please report circumstances that generated this error.");
 					return;
 				}
 				
-				if (elevator.getTotalFloors() < 1){
+				if (bukkitElevator.getTotalFloors() < 1){
 					// This is just a button and sign, not an elevator.
 					return;
-				} else if (elevator.getTotalFloors() == 1){
-					event.getPlayer().sendMessage(Lift.stringOneFloor);
+				} else if (bukkitElevator.getTotalFloors() == 1){
+					event.getPlayer().sendMessage(BukkitLift.stringOneFloor);
 					return;
 				}
 				
 				event.setCancelled(true);
 				
 				int currentDestinationInt = 1;
-				Floor currentFloor = elevator.getFloorFromY(buttonBlock.getY());
+				Floor currentFloor = bukkitElevator.getFloorFromY(buttonBlock.getY());
 				
-				String sign0 = Lift.stringCurrentFloor;
+				String sign0 = BukkitLift.stringCurrentFloor;
 				String sign1 = Integer.toString(currentFloor.getFloor());
 				String sign2 = "";
 				String sign3 = "";
@@ -92,14 +92,14 @@ public class LiftPlayerListener implements Listener{
 					plugin.logDebug("Skipping current floor");
 				}
 				// The following line MAY be what causes a potential bug for max floors
-				if (currentDestinationInt > elevator.getTotalFloors()){
+				if (currentDestinationInt > bukkitElevator.getTotalFloors()){
 					currentDestinationInt = 1;
 					if (currentFloor.getFloor() == 1)
 						currentDestinationInt = 2;
 					plugin.logDebug("Rotating back to first floor");
 				}
-				sign2 = Lift.stringDestination + " " + Integer.toString(currentDestinationInt);
-				sign3 = elevator.getFloorFromN(currentDestinationInt).getName();
+				sign2 = BukkitLift.stringDestination + " " + Integer.toString(currentDestinationInt);
+				sign3 = bukkitElevator.getFloorFromN(currentDestinationInt).getName();
 				sign.setLine(0, sign0);
 				sign.setLine(1, sign1);
 				sign.setLine(2, sign2);
@@ -116,9 +116,9 @@ public class LiftPlayerListener implements Listener{
 			Entity fallerE = e.getEntity();
 			if (fallerE instanceof Player){
 				Player faller = (Player) fallerE;
-				if(ElevatorManager.fallers.contains(faller)){
+				if(BukkitElevatorManager.fallers.contains(faller)){
 					e.setCancelled(true);
-					ElevatorManager.fallers.remove(faller);
+					BukkitElevatorManager.fallers.remove(faller);
 				}
 			}
 		}
@@ -126,12 +126,12 @@ public class LiftPlayerListener implements Listener{
 	
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event){
-		ElevatorManager.removePlayer(event.getPlayer());
+		BukkitElevatorManager.removePlayer(event.getPlayer());
 	}
 	
 	@EventHandler
 	public void onPlayerKick(PlayerKickEvent event){
-		ElevatorManager.removePlayer(event.getPlayer());
+		BukkitElevatorManager.removePlayer(event.getPlayer());
 	}
 
 }

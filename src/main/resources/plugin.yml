@@ -2,7 +2,7 @@ author: croxis
 database: false
 #description: Elevators
 generator: http://dinnerbone.com/minecraft/tools/pluginator/
-main: net.croxis.plugins.lift.Lift
+main: net.croxis.plugins.lift.BukkitLift
 name: Lift
 startup: postworld
 #version: '32'
