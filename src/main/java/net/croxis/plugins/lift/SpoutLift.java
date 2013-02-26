@@ -32,7 +32,7 @@ import org.spout.api.exception.ConfigurationException;
 import org.spout.api.material.Material;
 import org.spout.api.plugin.CommonPlugin;
 import org.spout.api.util.config.yaml.YamlConfiguration;
-import org.spout.vanilla.plugin.material.VanillaMaterials;
+import org.spout.vanilla.material.VanillaMaterials;
 
 public class SpoutLift extends CommonPlugin implements Listener{
 

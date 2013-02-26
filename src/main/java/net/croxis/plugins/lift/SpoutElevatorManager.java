@@ -29,9 +29,9 @@ import org.spout.api.material.BlockMaterial;
 import org.spout.api.material.block.BlockFace;
 import org.spout.api.scheduler.Task;
 import org.spout.api.scheduler.TaskPriority;
-import org.spout.vanilla.plugin.component.living.neutral.Human;
-import org.spout.vanilla.plugin.material.VanillaMaterials;
-import org.spout.vanilla.plugin.component.substance.material.Sign;
+import org.spout.vanilla.component.entity.living.neutral.Human;
+import org.spout.vanilla.material.VanillaMaterials;
+import org.spout.vanilla.component.block.material.Sign;
 
 public class SpoutElevatorManager extends ElevatorManager{
 	private static SpoutLift plugin;

@@ -29,10 +29,10 @@ import org.spout.api.geo.cuboid.Block;
 import org.spout.api.geo.cuboid.Chunk;
 import org.spout.api.material.Material;
 import org.spout.api.material.block.BlockFace;
-import org.spout.vanilla.api.event.block.RedstoneChangeEvent;
-import org.spout.vanilla.plugin.component.living.neutral.Human;
-import org.spout.vanilla.plugin.material.VanillaMaterials;
-import org.spout.vanilla.plugin.component.substance.material.Sign;
+import org.spout.vanilla.event.block.RedstoneChangeEvent;
+import org.spout.vanilla.material.VanillaMaterials;
+import org.spout.vanilla.component.block.material.Sign;
+import org.spout.vanilla.component.entity.living.neutral.Human;
 
 public class SpoutLiftRedstoneListener implements Listener{
 	private final SpoutLift plugin;
