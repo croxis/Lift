@@ -63,10 +63,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import org.spout.api.Platform;
 import org.spout.api.Spout;
 import org.spout.api.Server;
 import org.spout.api.exception.ConfigurationException;
-import org.spout.api.plugin.Platform;
 import org.spout.api.plugin.Plugin;
 import org.spout.api.plugin.PluginDescriptionFile;
 import org.spout.api.scheduler.TaskPriority;

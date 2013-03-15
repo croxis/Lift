@@ -32,7 +32,7 @@ import org.spout.api.material.block.BlockFace;
 import org.spout.vanilla.event.block.RedstoneChangeEvent;
 import org.spout.vanilla.material.VanillaMaterials;
 import org.spout.vanilla.component.block.material.Sign;
-import org.spout.vanilla.component.entity.living.neutral.Human;
+import org.spout.vanilla.component.entity.living.Human;
 
 public class SpoutLiftRedstoneListener implements Listener{
 	private final SpoutLift plugin;
