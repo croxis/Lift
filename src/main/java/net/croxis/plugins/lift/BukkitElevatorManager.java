@@ -244,8 +244,22 @@ public class BukkitElevatorManager extends ElevatorManager{
 			if (bukkitElevator.isInLift(player)){
 				plugin.logDebug("Removing player from lift");
 				restorePlayer(player);
-				bukkitElevator.removePlayer(player);
+				bukkitElevator.removePassenger(player);
 			}
+		}
+	}
+	
+	public static void removePassenger(Entity passenger){
+		if (isPassenger(passenger)){
+			plugin.logDebug("Removing entity " + passenger.toString() + " from El: " + bukkitElevators.toString());
+			if (passenger instanceof Player)
+				removePlayer((Player) passenger);
+			else
+				for (BukkitElevator bukkitElevator : bukkitElevators){
+					plugin.logDebug("Scanning lift");
+					if (bukkitElevator.isInLift(passenger))
+						bukkitElevator.removePassenger(passenger);
+				}
 		}
 	}
 	

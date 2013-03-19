@@ -28,8 +28,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -108,6 +110,18 @@ public class BukkitLiftPlayerListener implements Listener{
 				plugin.logDebug("Completed sign update");
 			}
 		}
+	}
+	
+	@EventHandler
+	public void onPlayerItemPickup(PlayerPickupItemEvent event){
+		if (BukkitElevatorManager.isPassenger(event.getItem()))
+			BukkitElevatorManager.removePassenger(event.getItem());
+	}
+	
+	@EventHandler
+	public void onItemPickup(InventoryPickupItemEvent event){
+		if (BukkitElevatorManager.isPassenger(event.getItem()))
+			BukkitElevatorManager.removePassenger(event.getItem());
 	}
 	
 	@EventHandler

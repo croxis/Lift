@@ -102,12 +102,12 @@ public class BukkitElevator extends Elevator{
 		return (passengers.contains(entity) || holders.containsKey(entity));
 	}
 	
-	public void removePlayer(Player player){
+	public void removePassenger(Entity passenger){
 		// NOt thread safe in an interation!
-		if (passengers.contains(player))
-			passengers.remove(player);
-		else if (holders.containsKey(player))
-			holders.remove(player);
+		if (passengers.contains(passenger))
+			passengers.remove(passenger);
+		else if (holders.containsKey(passenger))
+			holders.remove(passenger);
 	}
 	
 	public Iterator<Entity> getPassengers(){
