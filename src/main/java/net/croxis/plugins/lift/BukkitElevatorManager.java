@@ -31,7 +31,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.getspout.spoutapi.SpoutManager;
@@ -53,8 +52,8 @@ public class BukkitElevatorManager extends ElevatorManager{
 		plugin.logDebug("Starting elevator gen");
 		BukkitElevator bukkitElevator = new BukkitElevator();
 		int yscan = block.getY() - 1;
-		while(yscan >= plugin.lowScan){
-			if (yscan == plugin.lowScan){ //Gone too far with no base abort!
+		while(yscan >= BukkitLift.lowScan){
+			if (yscan == BukkitLift.lowScan){ //Gone too far with no base abort!
 				plugin.logDebug("yscan was too low");
 				return null;
 			}
@@ -99,7 +98,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 				|| checkBlock.getType() == Material.TORCH || checkBlock.getType() == Material.WALL_SIGN
 				|| checkBlock.getType() == Material.STONE_BUTTON || checkBlock.getType() == Material.VINE 
 				|| checkBlock.getType() == Material.LADDER || checkBlock.getType() == Material.WATER
-				|| checkBlock.getType() == Material.STATIONARY_WATER)
+				|| checkBlock.getType() == Material.STATIONARY_WATER || checkBlock.getType() == Material.SNOW)
 			return true;
 		if (Material.getMaterial("WOOD_BUTTON") != null)
 			if (checkBlock.getType() == Material.WOOD_BUTTON)
@@ -111,7 +110,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 	//I'd rather it just return a hashset instead of passing elevator
 	//But I can't figure out a clean way to do it
 	public static void scanBaseBlocks(Block block, BukkitElevator bukkitElevator){
-		if (bukkitElevator.baseBlocks.size() >= plugin.liftArea)
+		if (bukkitElevator.baseBlocks.size() >= BukkitLift.liftArea)
 			return; //5x5 max, prevents infinite loops
 		else if (bukkitElevator.baseBlocks.contains(block))
 			return; // We have that block already
@@ -139,7 +138,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 			
 			while (true){
 				y1 = y1 + 1;
-				if (y1 == plugin.highScan) {
+				if (y1 == BukkitLift.highScan) {
 					break;
 				}
 				Block testBlock = b.getWorld().getBlockAt(x, y1, z);
@@ -208,17 +207,17 @@ public class BukkitElevatorManager extends ElevatorManager{
 		plugin.logDebug("Halting lift");
 		for (Block b : bukkitElevator.glassBlocks)
 			b.setType(plugin.floorBlock);
-		Iterator<LivingEntity> passengerIterator = bukkitElevator.passengers.iterator();
+		Iterator<Entity> passengerIterator = bukkitElevator.getPassengers();
 		while (passengerIterator.hasNext()){
-			LivingEntity e = passengerIterator.next();
+			Entity e = passengerIterator.next();
 			fallers.remove(e);
 			if (e instanceof Player)
 				removePlayer((Player) e);
 			passengerIterator.remove();
 		}
-		Iterator<LivingEntity> holdersIterators = bukkitElevator.holders.keySet().iterator();
+		Iterator<Entity> holdersIterators = bukkitElevator.getHolders();
 		while (holdersIterators.hasNext()){
-			LivingEntity passenger = holdersIterators.next();
+			Entity passenger = holdersIterators.next();
 			if (passenger instanceof Player){
 				removePlayer((Player) passenger, holdersIterators);
 			}
@@ -226,28 +225,13 @@ public class BukkitElevatorManager extends ElevatorManager{
 		bukkitElevator.clear();
 	}
 	
-	public static void removePlayer(Player player, Iterator<LivingEntity> passengers){
+	public static void removePlayer(Player player, Iterator<Entity> passengers){
 		plugin.logDebug("Removing player " + player.getName() + " from El: " + bukkitElevators.toString());
 		for (BukkitElevator bukkitElevator : bukkitElevators){
 			plugin.logDebug("Scanning lift");
-			if (bukkitElevator.passengers.contains(player) || bukkitElevator.holders.containsKey(player)){
+			if (bukkitElevator.isInLift(player)){
 				plugin.logDebug("Removing player from lift");
-				//elevator.passengers.remove(player);
-				if (fallers.contains(player)){
-					fallers.remove(player);
-				}
-				if (flyers.contains(player)){
-					flyers.remove(player);
-				} else {
-					player.setAllowFlight(false);
-					plugin.logDebug("Removing player from flight");
-					if (plugin.useAntiCheat)
-						AnticheatAPI.unexemptPlayer(player, CheckType.FLY);
-					if (plugin.useSpout)
-						SpoutManager.getPlayer(player).setCanFly(false);				
-				}
-				if (plugin.useSpout)
-					SpoutManager.getPlayer(player).setGravityMultiplier(1);				
+				restorePlayer(player);			
 				passengers.remove();
 			}
 		}
@@ -257,26 +241,10 @@ public class BukkitElevatorManager extends ElevatorManager{
 		plugin.logDebug("Removing player " + player.getName() + " from El: " + bukkitElevators.toString());
 		for (BukkitElevator bukkitElevator : bukkitElevators){
 			plugin.logDebug("Scanning lift");
-			if (bukkitElevator.passengers.contains(player) || bukkitElevator.holders.containsKey(player)){
+			if (bukkitElevator.isInLift(player)){
 				plugin.logDebug("Removing player from lift");
-				if (fallers.contains(player)){
-					fallers.remove(player);
-				}
-				if (flyers.contains(player)){
-					flyers.remove(player);
-				} else {
-					player.setAllowFlight(false);
-					plugin.logDebug("Removing player from flight");
-					if (plugin.useAntiCheat)
-						AnticheatAPI.unexemptPlayer(player, CheckType.FLY);
-					if (plugin.useSpout)
-						SpoutManager.getPlayer(player).setCanFly(false);				
-				}
-				if (bukkitElevator.holders.containsKey(player))
-					bukkitElevator.holders.remove(player);
-				if (plugin.useSpout)
-					SpoutManager.getPlayer(player).setGravityMultiplier(1);	
-				bukkitElevator.passengers.remove(player);
+				restorePlayer(player);
+				bukkitElevator.removePlayer(player);
 			}
 		}
 	}
@@ -291,40 +259,72 @@ public class BukkitElevatorManager extends ElevatorManager{
 		Iterator<BukkitElevator> iterator = bukkitElevators.iterator();
 		while (iterator.hasNext()){
 			BukkitElevator bukkitElevator = iterator.next();
-			if (bukkitElevator.passengers.contains(entity))
+			if (bukkitElevator.isInLift(entity))
 				return true;
 		}
 		return false;
 	}
 	
-	public static void setHolder(BukkitElevator elevator, LivingEntity entity){
-		plugin.logDebug("Holding entity: " + entity.toString() + " with y " + Double.toString(entity.getLocation().getY()));
-		if (elevator.passengers.contains(entity))
-			elevator.passengers.remove(entity);
-		entity.setVelocity(new Vector(0,0,0));
-		entity.setFallDistance(0.0F);
-		elevator.holders.put(entity, entity.getLocation());
-		
-		
-		
+	public static void setupPlayer(Player player){
+		// Function which sets up a player for holding or passengering. Anti cheat stuff
+		if (player.getAllowFlight()){
+			BukkitElevatorManager.flyers.add(player);
+			plugin.logDebug(player.getName() + " added to flying list");
+		} else {
+            BukkitElevatorManager.flyers.remove(player);
+            //player.setAllowFlight(false);
+            plugin.logDebug(player.getName() + " NOT added to flying list");
+        }
+
+		player.setAllowFlight(true);
+		if (plugin.useAntiCheat)
+			AnticheatAPI.exemptPlayer(player, CheckType.FLY);
+
+		if (plugin.useSpout){
+			SpoutManager.getPlayer(player).setGravityMultiplier(0);
+			SpoutManager.getPlayer(player).setCanFly(true);				
+		}
+	}
+	
+	public static void restorePlayer(Player player){
+		// Restores a player's previous stats.
+		if (fallers.contains(player)){
+			fallers.remove(player);
+		}
+		if (flyers.contains(player)){
+			flyers.remove(player);
+		} else {
+			player.setAllowFlight(false);
+			plugin.logDebug("Removing player from flight");
+			if (plugin.useAntiCheat)
+				AnticheatAPI.unexemptPlayer(player, CheckType.FLY);
+			if (plugin.useSpout)
+				SpoutManager.getPlayer(player).setCanFly(false);				
+		}
+		if (plugin.useSpout)
+			SpoutManager.getPlayer(player).setGravityMultiplier(1);
 	}
 	
 	public void run() {
 		//Using while loop iterator so we can remove lifts in a sane way
 		Iterator<BukkitElevator> eleviterator = bukkitElevators.iterator();
-		//for (Elevator e : elevators){
+		// Various variables to reduce variable spawning
+		BukkitElevator e;
+		Iterator<Entity> passengers;
+		Entity passenger;
+		Entity holder;
+		
 		while (eleviterator.hasNext()){
-			BukkitElevator e = eleviterator.next();
-			plugin.logDebug("Passengers: " + e.passengers.toString());
-			if(e.passengers.isEmpty()){
+			e = eleviterator.next();
+			plugin.logDebug("Passengers: " + e.getPassengers().toString());
+			passengers = e.getPassengers();
+			if(!passengers.hasNext()){
 				BukkitElevatorManager.endLift(e);
 				eleviterator.remove();
 				continue;
 			}
-			
-			Iterator<LivingEntity> passengers = e.passengers.iterator();
 			while (passengers.hasNext()){
-				LivingEntity passenger = passengers.next();
+				passenger = passengers.next();
 				
 				//Check if passengers have left the shaft
 				if (!e.isInShaft(passenger) && passenger instanceof Player){
@@ -345,21 +345,52 @@ public class BukkitElevatorManager extends ElevatorManager{
 					plugin.logDebug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.getLocation().getY()));
 					plugin.logDebug("Trigger status: Going up: " + Boolean.toString(e.goingUp));
 					plugin.logDebug("Floor Y: " + Double.toString(e.destFloor.getY()));
-					passengers.remove();
-					Location pLoc = passenger.getLocation();
+					
+					Location pLoc = passenger.getLocation().clone();
 					pLoc.setY(e.destFloor.getY()-0.5);
 					passenger.teleport(pLoc);
 					
-					e.holders.put(passenger, passenger.getLocation());
-					BukkitElevatorManager.setHolder(e, passenger);
+					moveToHolder(e, passengers, passenger, passenger.getLocation());
 				}
 			}
 			
-			for (LivingEntity holder : e.holders.keySet()){
-				plugin.logDebug("Holding: " + holder.toString() + " at " + e.holders.get(holder));
-				holder.teleport(e.holders.get(holder));
+			Iterator<Entity> holders = e.getHolders();
+			
+			while (holders.hasNext()){
+				holder = holders.next();
+				plugin.logDebug("Holding: " + holder.toString() + " at " + e.getHolderPos(holder));
+				holder.teleport(e.getHolderPos(holder));
 				holder.setFallDistance(0.0F);
+				holder.setVelocity(new Vector(0,0,0));
 			}
+		}
+	}
+
+	private void moveToHolder(BukkitElevator e, Iterator<Entity> passengers,
+			Entity passenger, Location location) {
+		passengers.remove();
+		e.addHolder(passenger, location);
+		passenger.setVelocity(new Vector(0,0,0));
+		passenger.setFallDistance(0.0F);
+	}
+	
+	public static void addHolder(BukkitElevator elevator, Entity holder, Location location){
+		// Adds a new entity to lift to be held in position
+		if (holder instanceof Player)
+			setupPlayer((Player) holder);
+		elevator.addHolder(holder, location);
+		if (!elevator.goingUp) {
+			BukkitElevatorManager.fallers.add(holder);
+		}
+	}
+	
+	public static void addPassenger(BukkitElevator elevator, Entity passenger){
+		// Adds a new entity to lift to be held in position
+		if (passenger instanceof Player)
+			setupPlayer((Player) passenger);
+		elevator.addPassenger(passenger);
+		if (!elevator.goingUp) {
+			BukkitElevatorManager.fallers.add(passenger);
 		}
 	}
 }

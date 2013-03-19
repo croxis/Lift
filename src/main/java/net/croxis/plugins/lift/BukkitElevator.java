@@ -21,6 +21,7 @@ package net.croxis.plugins.lift;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.TreeMap;
 
 import org.bukkit.Chunk;
@@ -35,10 +36,10 @@ import org.bukkit.entity.Player;
 public class BukkitElevator extends Elevator{
 	public HashSet<Block> baseBlocks = new HashSet<Block>();
 	public TreeMap <World, TreeMap<Integer, Floor>> worldFloorMap= new TreeMap <World, TreeMap<Integer, Floor>>();
-	public HashSet<LivingEntity> passengers = new HashSet<LivingEntity>();
+	private HashSet<Entity> passengers = new HashSet<Entity>();
+	private HashMap<Entity, Location> holders = new HashMap<Entity, Location>();
 	public HashSet<Block> glassBlocks = new HashSet<Block>();
 	public HashSet<Chunk> chunks = new HashSet<Chunk>();
-	public HashMap<LivingEntity, Location> holders = new HashMap<LivingEntity, Location>();
 	public Material baseBlockType = Material.IRON_BLOCK;
 	
 	public void clear(){
@@ -80,8 +81,12 @@ public class BukkitElevator extends Elevator{
 		return false;
 	}
 	
-	public void addPassenger(LivingEntity entity){
+	public void addPassenger(Entity entity){
 		passengers.add(entity);
+	}
+	
+	public void addHolder(Entity entity, Location location){
+		holders.put(entity, location);
 	}
 	
 	public void setPassengers(ArrayList<LivingEntity> entities){
@@ -93,9 +98,34 @@ public class BukkitElevator extends Elevator{
 		return floormap2.size();
 	}
 	
-	public boolean isInLift(Player player){
-		return (passengers.contains(player) || holders.containsKey(player));
+	public boolean isInLift(Entity entity){
+		return (passengers.contains(entity) || holders.containsKey(entity));
 	}
+	
+	public void removePlayer(Player player){
+		// NOt thread safe in an interation!
+		if (passengers.contains(player))
+			passengers.remove(player);
+		else if (holders.containsKey(player))
+			holders.remove(player);
+	}
+	
+	public Iterator<Entity> getPassengers(){
+		return passengers.iterator();
+	}
+	
+	public Iterator<Entity> getHolders(){
+		return holders.keySet().iterator();
+	}
+	
+	public Location getHolderPos(Entity entity){
+		return holders.get(entity);
+	}
+	
+	public int getSize(){
+		return passengers.size() + holders.size();
+	}
+	
 }
 
 
