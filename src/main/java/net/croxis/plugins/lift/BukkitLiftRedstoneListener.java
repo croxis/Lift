@@ -54,19 +54,47 @@ public class BukkitLiftRedstoneListener implements Listener {
 	
 	@EventHandler
 	public void onBlockRedstoneChange(BlockRedstoneEvent event){
+		Block block = event.getBlock();
 		canDo = false;
 		if(Material.getMaterial("WOOD_BUTTON") != null)
 			canDo = (event.getBlock().getType() == Material.STONE_BUTTON || event.getBlock().getType() == Material.WOOD_BUTTON) 
-					&& (!event.getBlock().isBlockIndirectlyPowered())
+					//&& (!event.getBlock().isBlockIndirectlyPowered())
 					&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN;
 		else
 			canDo = event.getBlock().getType() == Material.STONE_BUTTON 
-					&& (!event.getBlock().isBlockIndirectlyPowered())
+					//&& (!event.getBlock().isBlockIndirectlyPowered())
 					&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN;
 		
+		if (BukkitLift.redstone && Material.getMaterial("WOOD_BUTTON") != null){
+			plugin.logDebug("Redstone scan of " + event.getBlock().toString());
+			Block[] blocks = new Block[4];
+			blocks[0] = event.getBlock().getRelative(BlockFace.EAST);
+			blocks[1] = event.getBlock().getRelative(BlockFace.WEST);
+			blocks[2] = event.getBlock().getRelative(BlockFace.NORTH);
+			blocks[3] = event.getBlock().getRelative(BlockFace.SOUTH);
+			
+			for (Block b : blocks){
+				Block[] blocks2 = new Block[4];
+				blocks2[0] = b.getRelative(BlockFace.EAST);
+				blocks2[1] = b.getRelative(BlockFace.WEST);
+				blocks2[2] = b.getRelative(BlockFace.NORTH);
+				blocks2[3] = b.getRelative(BlockFace.SOUTH);
+				for (Block b2 : blocks2){
+					//plugin.logDebug("Block Type " + b.toString());
+					if ((b2.getType() == Material.STONE_BUTTON || b2.getType() == Material.WOOD_BUTTON)
+							&& b2.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
+						canDo = true;
+						block = b2;
+						break;
+					}
+				}
+			}
+			plugin.logDebug("Redstone scan no match");
+		}
+			
 		if (canDo){
 			long startTime = System.currentTimeMillis();
-			bukkitElevator = BukkitElevatorManager.createLift(event.getBlock());
+			bukkitElevator = BukkitElevatorManager.createLift(block);
 			if (bukkitElevator == null)
 				return;
 			
@@ -82,10 +110,10 @@ public class BukkitLiftRedstoneListener implements Listener {
 			if (bukkitElevator.getTotalFloors() < 2)
 				return;
 			
-			int y = event.getBlock().getY();
+			int y = block.getY();
 			Floor startFloor = bukkitElevator.floormap.get(y);
 			bukkitElevator.startFloor = startFloor;
-			String line = ((Sign) event.getBlock().getRelative(BlockFace.UP).getState()).getLine(2);
+			String line = ((Sign) block.getRelative(BlockFace.UP).getState()).getLine(2);
 			if (line.isEmpty())
 				return;
 			String[] splits = line.split(": ");

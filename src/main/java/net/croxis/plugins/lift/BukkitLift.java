@@ -40,6 +40,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
 	public static boolean debug = false;
 	boolean useSpout = false;
 	//public double liftSpeed = 0.5;
+	public static boolean redstone = true;
 	public static int liftArea = 16;
 	public static int lowScan = 0;
 	public static int highScan = 255;
@@ -93,6 +94,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
     	checkGlass = this.getConfig().getBoolean("checkGlass");
     	preventEntry = this.getConfig().getBoolean("preventEntry", false);
     	preventLeave = this.getConfig().getBoolean("preventLeave", false);
+    	redstone = this.getConfig().getBoolean("redstone", false);
     	Set<String> baseBlockKeys = this.getConfig().getConfigurationSection("baseBlockSpeeds").getKeys(false);
     	for (String key : baseBlockKeys){
     		blockSpeeds.put(Material.valueOf(key), this.getConfig().getDouble("baseBlockSpeeds." + key));

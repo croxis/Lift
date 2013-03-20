@@ -11,6 +11,7 @@ preventEntry: false
 preventLeave: true
 checkGlass: false
 floorBlock: GLASS
+redstone: false
 baseBlockSpeeds:
   IRON_BLOCK: 0.5
 STRING_oneFloor: "There is only one floor silly."
