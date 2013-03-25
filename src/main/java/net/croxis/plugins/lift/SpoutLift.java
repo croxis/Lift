@@ -37,11 +37,9 @@ import org.spout.vanilla.material.VanillaMaterials;
 public class SpoutLift extends CommonPlugin implements Listener{
 
 	public static boolean debug = false;
-	//public double liftSpeed = 0.5;
 	public int liftArea = 16;
 	public int lowScan = 0;
 	public int highScan = 255;
-	//public Material baseMaterial = Material.IRON_BLOCK;
 	public HashMap<Material, Double> blockSpeeds = new HashMap<Material, Double>();
 	public Material floorBlock = VanillaMaterials.GLASS;
 	public boolean autoPlace = false;

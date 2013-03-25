@@ -94,15 +94,18 @@ public class BukkitElevatorManager extends ElevatorManager{
 	
 	//Checks if block is a valid elevator block SANS iron
 	public static boolean isValidShaftBlock(Block checkBlock){
-		if (checkBlock.getType() == Material.AIR || checkBlock.getType() == plugin.floorBlock
-				|| checkBlock.getType() == Material.TORCH || checkBlock.getType() == Material.WALL_SIGN
-				|| checkBlock.getType() == Material.STONE_BUTTON || checkBlock.getType() == Material.VINE 
-				|| checkBlock.getType() == Material.LADDER || checkBlock.getType() == Material.WATER
-				|| checkBlock.getType() == Material.STATIONARY_WATER || checkBlock.getType() == Material.SNOW)
+		if (checkBlock.getType() == plugin.floorBlock
+				|| checkBlock.getType() == Material.AIR 
+				|| checkBlock.getType() == Material.LADDER
+				|| checkBlock.getType() == Material.SNOW
+				|| checkBlock.getType() == Material.STATIONARY_WATER
+				|| checkBlock.getType() == Material.STONE_BUTTON
+				|| checkBlock.getType() == Material.TORCH 
+				|| checkBlock.getType() == Material.VINE 
+				|| checkBlock.getType() == Material.WALL_SIGN
+				|| checkBlock.getType() == Material.WATER
+				|| checkBlock.getType() == Material.WOOD_BUTTON)
 			return true;
-		if (Material.getMaterial("WOOD_BUTTON") != null)
-			if (checkBlock.getType() == Material.WOOD_BUTTON)
-				return true;
 		return false;
 	}
 	
@@ -146,36 +149,20 @@ public class BukkitElevatorManager extends ElevatorManager{
 					message += " | " + x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString();
 					break;
 				}
-				//Hack for tekkit servers
-				if (Material.getMaterial("WOOD_BUTTON") != null) {
-					if (testBlock.getType() == Material.STONE_BUTTON || testBlock.getType() == Material.WOOD_BUTTON){
-						if (plugin.checkGlass)
-							if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, bukkitElevator)){
-								break;
-							}
-						Floor floor = new Floor();
-						floor.setY(y1);
-						if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
-							floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
-						if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
-							bukkitElevator.floormap.put(y1, floor);
-						plugin.logDebug("Floor added: " + b.getLocation());
-					}
-				} else {
-					if (testBlock.getType() == Material.STONE_BUTTON){
-						if (plugin.checkGlass)
-							if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, bukkitElevator)){
-								break;
-							}
-						Floor floor = new Floor();
-						floor.setY(y1);
-						if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
-							floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
-						if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
-							bukkitElevator.floormap.put(y1, floor);
-						plugin.logDebug("Floor added: " + b.getLocation());
-					}
-				}
+				
+				if (testBlock.getType() == Material.STONE_BUTTON || testBlock.getType() == Material.WOOD_BUTTON){
+					if (plugin.checkGlass)
+						if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, bukkitElevator)){
+							break;
+						}
+					Floor floor = new Floor();
+					floor.setY(y1);
+					if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
+						floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
+					if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
+						bukkitElevator.floormap.put(y1, floor);
+					plugin.logDebug("Floor added: " + b.getLocation());
+				}				
 			}
 		}
 		int floorNumber = 1;

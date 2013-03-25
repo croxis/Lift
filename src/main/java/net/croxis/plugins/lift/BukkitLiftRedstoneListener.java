@@ -56,16 +56,11 @@ public class BukkitLiftRedstoneListener implements Listener {
 	public void onBlockRedstoneChange(BlockRedstoneEvent event){
 		Block block = event.getBlock();
 		canDo = false;
-		if(Material.getMaterial("WOOD_BUTTON") != null)
-			canDo = (event.getBlock().getType() == Material.STONE_BUTTON || event.getBlock().getType() == Material.WOOD_BUTTON) 
-					//&& (!event.getBlock().isBlockIndirectlyPowered())
-					&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN;
-		else
-			canDo = event.getBlock().getType() == Material.STONE_BUTTON 
-					//&& (!event.getBlock().isBlockIndirectlyPowered())
-					&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN;
+		canDo = (event.getBlock().getType() == Material.STONE_BUTTON || event.getBlock().getType() == Material.WOOD_BUTTON) 
+				//&& (!event.getBlock().isBlockIndirectlyPowered())
+				&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN;
 		
-		if (BukkitLift.redstone && Material.getMaterial("WOOD_BUTTON") != null){
+		if (BukkitLift.redstone){
 			plugin.logDebug("Redstone scan of " + event.getBlock().toString());
 			Block[] blocks = new Block[4];
 			blocks[0] = event.getBlock().getRelative(BlockFace.EAST);
