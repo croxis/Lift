@@ -41,7 +41,7 @@ public class SpoutLift extends CommonPlugin implements Listener{
 	public int lowScan = 0;
 	public int highScan = 255;
 	public HashMap<Material, Double> blockSpeeds = new HashMap<Material, Double>();
-	public Material floorBlock = VanillaMaterials.GLASS;
+	public Material floorBlock;
 	public boolean autoPlace = false;
 	public boolean checkGlass = false;
 	public static SpoutElevatorManager manager;
@@ -60,6 +60,8 @@ public class SpoutLift extends CommonPlugin implements Listener{
     }
 
     public void onEnable() {
+    	floorBlock = VanillaMaterials.GLASS;
+    	
     	new SpoutLiftRedstoneListener(this);
     	new SpoutLiftPlayerListener(this);
     	manager = new SpoutElevatorManager(this);
