@@ -25,8 +25,10 @@ import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
 import org.spout.api.geo.World;
 import org.spout.api.geo.cuboid.Block;
+import org.spout.api.geo.discrete.Point;
 import org.spout.api.material.BlockMaterial;
 import org.spout.api.material.block.BlockFace;
+import org.spout.api.math.Vector3;
 import org.spout.api.scheduler.Task;
 import org.spout.api.scheduler.TaskPriority;
 import org.spout.vanilla.material.VanillaMaterials;
@@ -184,18 +186,19 @@ public class SpoutElevatorManager extends ElevatorManager{
 		plugin.logDebug("Halting lift");
 		for (Block b : elevator.glassBlocks)
 			b.setMaterial((BlockMaterial) plugin.floorBlock);
-		for (Entity p : elevator.passengers){
-			fallers.remove(p);
-			if (p instanceof Player)
-				removePlayer((Player) p);
-			else
-				elevator.passengers.remove(p);
+		Iterator<Entity> passengerIterator = elevator.getPassengers();
+		while (passengerIterator.hasNext()){
+			Entity e = passengerIterator.next();
+			fallers.remove(e);
+			if (e instanceof Player)
+				removePlayer((Player) e);
+			passengerIterator.remove();
 		}
-		Iterator<Entity> passengerIterators = elevator.holders.keySet().iterator();
-		while (passengerIterators.hasNext()){
-			Entity passenger = passengerIterators.next();
+		Iterator<Entity> holdersIterator = elevator.getHolders();
+		while (holdersIterator.hasNext()){
+			Entity passenger = holdersIterator.next();
 			if (passenger instanceof Player){
-				removePlayer((Player) passenger, passengerIterators);
+				removePlayer((Player) passenger, holdersIterator);
 			}
 		}
 		elevator.clear();
@@ -205,18 +208,9 @@ public class SpoutElevatorManager extends ElevatorManager{
 		plugin.logDebug("Removing player " + player.getName() + " from El: " + elevators.toString());
 		for (SpoutElevator elevator : elevators){
 			plugin.logDebug("Scanning lift");
-			if (elevator.passengers.contains(player) || elevator.holders.containsKey(player)){
+			if (elevator.isInLift(player)){
 				plugin.logDebug("Removing player from lift");
-				//elevator.passengers.remove(player);
-				if (fallers.contains(player)){
-					fallers.remove(player);
-				}
-				if (flyers.contains(player)){
-					flyers.remove(player);
-				} else {
-					player.get(Human.class).setCanFly(false);
-					plugin.logDebug("Removing player from flight");			
-				}			
+				restorePlayer(player);
 				passengers.remove();
 			}
 		}
@@ -226,20 +220,10 @@ public class SpoutElevatorManager extends ElevatorManager{
 		plugin.logDebug("Removing player " + player.getName() + " from El: " + elevators.toString());
 		for (SpoutElevator elevator : elevators){
 			plugin.logDebug("Scanning lift");
-			if (elevator.passengers.contains(player) || elevator.holders.containsKey(player)){
+			if (elevator.isInLift(player)){
 				plugin.logDebug("Removing player from lift");
-				if (fallers.contains(player)){
-					fallers.remove(player);
-				}
-				if (flyers.contains(player)){
-					flyers.remove(player);
-				} else {
-					player.get(Human.class).setCanFly(false);
-					plugin.logDebug("Removing player from flight");
-				}
-				if (elevator.holders.containsKey(player))
-					elevator.holders.remove(player);
-				elevator.passengers.remove(player);
+				restorePlayer(player);
+				elevator.removePassenger(player);
 			}
 		}
 	}
@@ -254,10 +238,36 @@ public class SpoutElevatorManager extends ElevatorManager{
 		Iterator<SpoutElevator> iterator = elevators.iterator();
 		while (iterator.hasNext()){
 			SpoutElevator elevator = iterator.next();
-			if (elevator.passengers.contains(entity))
+			if (elevator.isInLift(entity));
 				return true;
 		}
 		return false;
+	}
+	
+	public static void setupPlayer(Player player){
+		// Function which sets up a player for holding or passengering. Anti cheat stuff
+		if (player.get(Human.class).canFly()){
+			SpoutElevatorManager.flyers.add(player);
+			plugin.logDebug(player.getName() + " added to flying list");
+		} else {
+            SpoutElevatorManager.flyers.remove(player);
+            //player.setAllowFlight(false);
+            plugin.logDebug(player.getName() + " NOT added to flying list");
+        }
+
+		//player.get(Human.class).setCanFly(true); // May or maynot be needed
+	}
+	
+	public static void restorePlayer(Player player){
+		// Restores a player's previous stats.
+		if (fallers.contains(player)){
+			fallers.remove(player);
+		}
+		if (flyers.contains(player)){
+			flyers.remove(player);
+		} else {
+			player.get(Human.class).setCanFly(false);
+		}
 	}
 	
 	public void run() {
@@ -266,30 +276,26 @@ public class SpoutElevatorManager extends ElevatorManager{
 		//for (Elevator e : elevators){
 		while (eleviterator.hasNext()){
 			SpoutElevator e = eleviterator.next();
-			plugin.logDebug("Passengers: " + e.passengers.toString());
-			if(e.passengers.isEmpty()){
+			plugin.logDebug("Passengers: " + e.getPassengers().toString());
+			Iterator<Entity> passengers = e.getPassengers();
+			
+			if(!passengers.hasNext()){
 				SpoutElevatorManager.endLift(e);
 				eleviterator.remove();
 				continue;
 			}
-			
-			//Re apply impulse as it does seem to run out
-			for (Entity p : e.getPassengers()){
-				if(e.destFloor.getFloor() > e.startFloor.getFloor()){
-					plugin.logDebug("Processing up: " + p.toString());
-					//p.getScene().setMovementVelocity(new Vector3(0.0D, e.speed, 0.0D));
-					p.getScene().setPosition(p.getScene().getPosition().add(0.0D, 1.0D, 0.0D));
-				} else {
-					plugin.logDebug("Processing down: " + p.toString());
-					p.getScene().setPosition(p.getScene().getPosition().add(0.0D, -e.speed, 0.0D));
-					//p.getScene().setMovementVelocity(new Vector3(0.0D, -e.speed, 0.0D));
-				}
-				//p.setFallDistance(0.0F);
-			}
-			
-			Iterator<Entity> passengers = e.passengers.iterator();
 			while (passengers.hasNext()){
 				Entity passenger = passengers.next();
+				if(e.destFloor.getFloor() > e.startFloor.getFloor()){
+					plugin.logDebug("Processing up: " + passenger.toString());
+					//p.getScene().setMovementVelocity(new Vector3(0.0D, 1.0D, 0.0D));
+					passenger.getScene().setPosition(passenger.getScene().getPosition().add(0.0D, 1.0D, 0.0D));
+				} else {
+					plugin.logDebug("Processing down: " + passenger.toString());
+					//p.getScene().setPosition(p.getScene().getPosition().add(0.0D, -e.speed, 0.0D));
+					//p.getScene().setPosition(p.getScene().getPosition().add(0.0D, -1.0D, 0.0D));
+				}
+				//p.setFallDistance(0.0F);
 				
 				//Check if passengers have left the shaft
 				if (!e.isInShaft(passenger) && passenger instanceof Player){
@@ -303,23 +309,49 @@ public class SpoutElevatorManager extends ElevatorManager{
 					logDebug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.getScene().getPosition().getY()));
 					logDebug("Trigger status: Going up: " + Boolean.toString(e.goingUp));
 					logDebug("Floor Y: " + Double.toString(e.destFloor.getY()));
-					//passenger.getScene().setMovementVelocity(new Vector3(0,0,0));
-					//Location pLoc = passenger.getLocation();
-					//pLoc.setY(e.destFloor.getY()-0.7);
-					//passenger.teleport(pLoc);
-					e.holders.put(passenger, passenger.getScene().getPosition());
-					if (e instanceof Player)
-						removePlayer((Player) passenger, passengers);
-					else
-						passengers.remove();
+					passenger.getScene().setMovementVelocity(new Vector3(0,0,0));
+					Point pLoc = passenger.getScene().getTransform().getPosition();
+					pLoc = new Point(pLoc.getWorld(), pLoc.getX(), (float) (e.destFloor.getY()-0.7), pLoc.getZ());
+					passenger.getScene().setPosition(pLoc);
+					moveToHolder(e, passengers, passenger, passenger.getScene().getTransform().getPosition());
 				}
 			}
-			
-			for (Entity holder : e.holders.keySet()){
-				plugin.logDebug("Holding: " + holder.toString() + " at " + e.holders.get(holder));
-				holder.getScene().setPosition(e.holders.get(holder));
+			Iterator<Entity> holders = e.getHolders();
+			while (holders.hasNext()){
+				Entity holder = holders.next();
+				plugin.logDebug("Holding: " + holder.toString() + " at " + e.getHolderPos(holder));
+				holder.getScene().setPosition(e.getHolderPos(holder));
+				holder.getScene().setMovementVelocity(new Vector3(0,0,0));
 				//holder.setFallDistance(0.0F);
 			}
+		}
+	}
+	
+	private void moveToHolder(SpoutElevator e, Iterator<Entity> passengers,
+			Entity passenger, Point location) {
+		passengers.remove();
+		e.addHolder(passenger, location);
+		passenger.getScene().setMovementVelocity(new Vector3(0,0,0));
+		//passenger.setFallDistance(0.0F);
+	}
+	
+	public static void addHolder(SpoutElevator elevator, Entity holder, Point location){
+		// Adds a new entity to lift to be held in position
+		if (holder instanceof Player)
+			setupPlayer((Player) holder);
+		elevator.addHolder(holder, location);
+		if (!elevator.goingUp) {
+			SpoutElevatorManager.fallers.add(holder);
+		}
+	}
+	
+	public static void addPassenger(SpoutElevator elevator, Entity passenger){
+		// Adds a new entity to lift to be held in position
+		if (passenger instanceof Player)
+			setupPlayer((Player) passenger);
+		elevator.addPassenger(passenger);
+		if (!elevator.goingUp) {
+			SpoutElevatorManager.fallers.add(passenger);
 		}
 	}
 	

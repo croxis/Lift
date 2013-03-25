@@ -21,6 +21,7 @@ package net.croxis.plugins.lift;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.TreeMap;
 
 import org.spout.api.entity.Entity;
@@ -36,7 +37,7 @@ public class SpoutElevator {
 	public TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
 	public TreeMap <Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
 	private TreeMap <World, TreeMap<Integer, Floor>> worldFloorMap= new TreeMap <World, TreeMap<Integer, Floor>>();
-	public HashSet<Entity> passengers = new HashSet<Entity>();
+	private HashSet<Entity> passengers = new HashSet<Entity>();
 	public int destinationY = 0;//Destination y coordinate
 	public HashSet<Block> glassBlocks = new HashSet<Block>();
 	public int taskid = 0;
@@ -44,7 +45,7 @@ public class SpoutElevator {
 	public Floor startFloor = null;
 	public boolean goingUp = false;
 	public HashSet<Chunk> chunks = new HashSet<Chunk>();
-	public HashMap<Entity, Point> holders = new HashMap<Entity, Point>();
+	private HashMap<Entity, Point> holders = new HashMap<Entity, Point>();
 	public Material baseBlockType = Material.get("IRON_BLOCK");
 	public double speed = 0.5;
 	
@@ -99,20 +100,44 @@ public class SpoutElevator {
 		passengers.add(entity);
 	}
 	
+	public void addHolder(Entity entity, Point location){
+		holders.put(entity, location);
+	}
+	
 	public void setPassengers(ArrayList<Entity> entities){
 		passengers.clear();
 		passengers.addAll(entities);
-	}
-	
-	public HashSet<Entity> getPassengers(){
-		return passengers;
 	}
 	
 	public int getTotalFloors(){
 		return floormap2.size();
 	}
 	
-	public boolean isInLift(Player player){
+	public boolean isInLift(Entity player){
 		return passengers.contains(player);
+	}
+	
+	public void removePassenger(Entity passenger){
+		// NOt thread safe in an interation!
+		if (passengers.contains(passenger))
+			passengers.remove(passenger);
+		else if (holders.containsKey(passenger))
+			holders.remove(passenger);
+	}
+	
+	public Iterator<Entity> getPassengers(){
+		return passengers.iterator();
+	}
+	
+	public Iterator<Entity> getHolders(){
+		return holders.keySet().iterator();
+	}
+	
+	public Point getHolderPos(Entity entity){
+		return holders.get(entity);
+	}
+	
+	public int getSize(){
+		return passengers.size() + holders.size();
 	}
 }

@@ -81,6 +81,9 @@ public class SpoutLiftRedstoneListener implements Listener{
 			//And set their gravity to 0
 			elevator.destFloor = elevator.getFloorFromN(destination);
 			
+			if (elevator.destFloor.getY() > startFloor.getY())
+				elevator.goingUp = true;
+			
 			logDebug("Elevator start floor:" + startFloor.getFloor());
 			logDebug("Elevator start floor y:" + startFloor.getY());
 			logDebug("Elevator destination floor:" + destination);
@@ -88,6 +91,37 @@ public class SpoutLiftRedstoneListener implements Listener{
 			
 			Iterator<Block> iterator = elevator.baseBlocks.iterator();
 			
+			for(Chunk chunk : elevator.chunks){
+				logDebug("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().size()));
+				for(Entity e : chunk.getEntities()){
+					//if (e.has(SpoutPhysicsComponent.class)){
+					if (elevator.isInShaftAtFloor(e, startFloor)){
+						logDebug("Adding passenger " + e.toString());
+						if (SpoutElevatorManager.isPassenger(e)){
+							if (e instanceof Player)
+								((Player) e).sendMessage("You are already in a lift. Relog in case this is an error.");
+							continue;
+						}
+						SpoutElevatorManager.addPassenger(elevator, e);
+						if (iterator.hasNext() && plugin.autoPlace){
+							e.getScene().setPosition(iterator.next().getPosition().add(0.5, 0, 0.5));
+						}
+						if (e instanceof Player){
+							Player player = (Player) e;
+							logDebug("Flyers: " + SpoutElevatorManager.flyers.toString());
+							//if (!player.hasPermission("lift")){
+							//elevator.holders.put(e, e.getTransform().getPosition());
+							//elevator.passengers.remove(e);
+							//}
+						}
+					} else if (!elevator.isInShaftAtFloor(e, startFloor) && elevator.isInShaft(e)){
+						SpoutElevatorManager.addHolder(elevator, e, e.getScene().getTransform().getPosition());
+					}
+					//}
+				}
+			}
+			
+
 			//Disable all glass inbetween players and destination
 			ArrayList<Floor> glassfloors = new ArrayList<Floor>();
 			//Going up
@@ -110,64 +144,9 @@ public class SpoutLiftRedstoneListener implements Listener{
 				}
 			}
 			
-			
-			for(Chunk chunk : elevator.chunks){
-				logDebug("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().size()));
-				for(Entity e : chunk.getEntities()){
-					//if (e.has(SpoutPhysicsComponent.class)){
-					if (elevator.isInShaftAtFloor(e, startFloor)){
-						logDebug("Adding passenger " + e.toString());
-						if (SpoutElevatorManager.isPassenger(e)){
-							if (e instanceof Player)
-								((Player) e).sendMessage("You are already in a lift. Relog in case this is an error.");
-							continue;
-						}
-						//e.getScene().setShape(1, new CollisionShape());
-						elevator.addPassenger(e);
-						if (iterator.hasNext() && plugin.autoPlace){
-							e.getScene().setPosition(iterator.next().getPosition().add(0.5, 0, 0.5));
-						}
-						if (e instanceof Player){
-							Player player = (Player) e;
-							if (e.get(Human.class).canFly()){
-								SpoutElevatorManager.flyers.add(e);
-								logDebug(player.getName() + " added to flying list");
-							} else {
-                                SpoutElevatorManager.flyers.remove(player);
-                                //player.setAllowFlight(false);
-                                logDebug(player.getName() + " NOT added to flying list");
-                            }
-							logDebug("Flyers: " + SpoutElevatorManager.flyers.toString());
-							//if (!player.hasPermission("lift")){
-							//elevator.holders.put(e, e.getTransform().getPosition());
-							//elevator.passengers.remove(e);
-							//}
-						}
-					} else if (!elevator.isInShaftAtFloor(e, startFloor) && elevator.isInShaft(e)){
-						elevator.holders.put(e, e.getScene().getPosition());
-						elevator.passengers.remove(e);
-					}
-					//}
-				}
-			}
-			
-			
-			//Apply impulse to players
-			for (Entity p : elevator.getPassengers()){
-				if (p instanceof Player){
-					p.get(Human.class).setCanFly(true);
-				}
-				
-				if (elevator.destFloor.getY() > startFloor.getY()){
-					elevator.goingUp = true;
-				} else {
-					SpoutElevatorManager.fallers.add(p);
-				}
-			}
-			
 			SpoutElevatorManager.elevators.add(elevator);
 			logDebug("Going Up: " + Boolean.toString(elevator.goingUp));
-			logDebug("Number of passengers: " + Integer.toString(elevator.passengers.size()));
+			logDebug("Number of passengers: " + Integer.toString(elevator.getSize()));
 			logDebug("Elevator chunks: " + Integer.toString(elevator.chunks.size()));
 			logDebug("Total generation time: " + Long.toString(System.currentTimeMillis() - startTime));
 		}
