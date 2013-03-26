@@ -289,9 +289,16 @@ public class SpoutElevatorManager extends ElevatorManager{
 				if(e.destFloor.getFloor() > e.startFloor.getFloor()){
 					plugin.logDebug("Processing up: " + passenger.toString());
 					//p.getScene().setMovementVelocity(new Vector3(0.0D, 1.0D, 0.0D));
-					passenger.getScene().setPosition(passenger.getScene().getPosition().add(0.0D, 1.0D, 0.0D));
+					if (passenger instanceof Player)
+						((Player) passenger).teleport(passenger.getScene().getPosition().add(0.0D, 1.0D, 0.0D));
+					else
+						passenger.getScene().setPosition(passenger.getScene().getPosition().add(0.0D, 1.0D, 0.0D));
 				} else {
 					plugin.logDebug("Processing down: " + passenger.toString());
+					if (passenger instanceof Player)
+						((Player) passenger).teleport(passenger.getScene().getPosition().add(0.0D, -1.0D, 0.0D));
+					else
+						passenger.getScene().setPosition(passenger.getScene().getPosition().add(0.0D, -1.0D, 0.0D));
 					//p.getScene().setPosition(p.getScene().getPosition().add(0.0D, -e.speed, 0.0D));
 					//p.getScene().setPosition(p.getScene().getPosition().add(0.0D, -1.0D, 0.0D));
 				}
