@@ -107,6 +107,13 @@ public class BukkitLiftRedstoneListener implements Listener {
 			
 			int y = block.getY();
 			Floor startFloor = bukkitElevator.floormap.get(y);
+			
+			if (startFloor == null){
+				plugin.logInfo("Critical Error. Startfloor is null. Please set debug to true in config and report bug.");
+				plugin.logInfo("Floormap: " + bukkitElevator.floormap.toString());
+				plugin.logInfo("Floormap2: " + bukkitElevator.floormap2.toString());
+			}
+			
 			bukkitElevator.startFloor = startFloor;
 			String line = ((Sign) block.getRelative(BlockFace.UP).getState()).getLine(2);
 			if (line.isEmpty())

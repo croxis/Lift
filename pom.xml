@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.croxis.plugins.lift</groupId>
     <artifactId>Lift</artifactId>
@@ -7,6 +8,12 @@
     <url>https://github.com/croxis/Lift</url>
     
     <version>36</version>
+    
+    <parent>
+	    <groupId>net.md-5</groupId>
+	    <artifactId>ForgeMod</artifactId>
+	    <version>1.5.1-7.7.2-SNAPSHOT</version>
+  	</parent>
     
    	<scm>
 		<developerConnection>scm:git:git@github.com:croxis/Lift.git</developerConnection>
@@ -26,13 +33,39 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<bukkitVersion>1.5.1-R0.1-SNAPSHOT</bukkitVersion>
-		<spoutPluginVersion>1.4.7-R1.0-SNAPSHOT</spoutPluginVersion>
+		<bukkitVersion>1.5.2-R0.1</bukkitVersion>
+		<spoutPluginVersion>1.5.2-R0.1-SNAPSHOT</spoutPluginVersion>
 		<spoutVersion>dev-SNAPSHOT</spoutVersion>
-		<vanillaVersion>1.5.1-SNAPSHOT</vanillaVersion>
+		<vanillaVersion>1.5.2-SNAPSHOT</vanillaVersion>
+		<!-- <forge.build>682</forge.build>
+    	<forge.version>7.7.2.${forge.build}</forge.version>
+    	<forge.remapped.revision>R1-MCPC</forge.remapped.revision>-->
 	</properties>
+  	
+  	<pluginRepositories>
+    	<pluginRepository>
+	        <id>sonatype-oss-public</id>
+	        <url>https://oss.sonatype.org/content/groups/public</url>
+	        <releases>
+	            <enabled>true</enabled>
+	        </releases>
+	        <snapshots>
+	            <enabled>true</enabled>
+	        </snapshots>
+    	</pluginRepository>
+	</pluginRepositories>
     
     <repositories>
+    	<repository>
+      		<id>sonatype-oss-public</id>
+      		<url>https://oss.sonatype.org/content/groups/public</url>
+      		<releases>
+        		<enabled>true</enabled>
+      		</releases>
+      		<snapshots>
+       			<enabled>true</enabled>
+      		</snapshots>
+    	</repository>
         <repository>
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public</url>
@@ -45,10 +78,18 @@
         	<id>croxis</id>
         	<url>http://repository-croxis.forge.cloudbees.com/release/</url>
         </repository>
+    	<repository>
+        	<id>md-5</id>
+        	<url>http://repo.md-5.net</url>
+        </repository>
         <repository>
-        	<id>Plugin Metrics</id>
-       		<url>http://repo.mcstats.org/content/repositories/public</url>
-    	</repository>
+	        <id>md_5-snapshots</id>
+	        <url>http://repo.md-5.net/content/repositories/snapshots/</url>
+   		</repository>
+        <repository>
+            <id>Plugin Metrics</id>
+            <url>http://repo.mcstats.org/content/repositories/public</url>
+        </repository>
     </repositories>
     <build>
     	<defaultGoal>clean install</defaultGoal>
@@ -74,17 +115,17 @@
             </plugin>
             	<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-<artifactId>maven-javadoc-plugin</artifactId>
-<version>2.8</version>
-<executions>
-<execution>
-<phase>install</phase>
-<goals>
-<goal>javadoc</goal>
-</goals>
-</execution>
-</executions>
-<configuration>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.8</version>
+					<executions>
+						<execution>
+							<phase>install</phase>
+							<goals>
+								<goal>javadoc</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
 <excludePackageNames>com.greatmancode.craftconomy3.commands:com.greatmancode.craftconomy3.spout:com.greatmancode.craftconomy3.converter.converters</excludePackageNames>
 </configuration>
 </plugin>
@@ -168,6 +209,41 @@
 </executions>
 </plugin>
         </plugins>
+        <pluginManagement>
+        	<plugins>
+        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        		<plugin>
+        			<groupId>org.eclipse.m2e</groupId>
+        			<artifactId>lifecycle-mapping</artifactId>
+        			<version>1.0.0</version>
+        			<configuration>
+        				<lifecycleMappingMetadata>
+        					<pluginExecutions>
+        						<pluginExecution>
+        							<pluginExecutionFilter>
+        								<groupId>net.md-5</groupId>
+        								<artifactId>
+        									specialsource-maven-plugin
+        								</artifactId>
+        								<versionRange>
+        									[1.1-SNAPSHOT,)
+        								</versionRange>
+        								<goals>
+        									<goal>
+        										install-remapped-file
+        									</goal>
+        								</goals>
+        							</pluginExecutionFilter>
+        							<action>
+        								<ignore></ignore>
+        							</action>
+        						</pluginExecution>
+        					</pluginExecutions>
+        				</lifecycleMappingMetadata>
+        			</configuration>
+        		</plugin>
+        	</plugins>
+        </pluginManagement>
     </build>
     <dependencies>
         <dependency>
@@ -212,7 +288,20 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-		<!-- <dependency>
+		<!--<dependency>
+        	<groupId>net.minecraftforge</groupId>
+        	<artifactId>minecraft-forge</artifactId>
+       		<version>${forge.version}-${forge.remapped.revision}</version>
+        	<type>jar</type>
+        	<scope>compile</scope>
+        </dependency>-->
+		<!--<dependency>
+            <groupId>org.getlwc.mods</groupId>
+            <artifactId>forge</artifactId>
+            <version>5.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>-->
+		<!--<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
 			<version>0.9.8</version>
