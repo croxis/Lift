@@ -31,7 +31,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 public class BukkitElevator extends Elevator{
 	public HashSet<Block> baseBlocks = new HashSet<Block>();

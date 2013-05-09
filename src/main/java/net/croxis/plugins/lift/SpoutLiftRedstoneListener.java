@@ -32,7 +32,6 @@ import org.spout.api.material.block.BlockFace;
 import org.spout.vanilla.event.block.RedstoneChangeEvent;
 import org.spout.vanilla.material.VanillaMaterials;
 import org.spout.vanilla.component.block.material.Sign;
-import org.spout.vanilla.component.entity.living.Human;
 
 public class SpoutLiftRedstoneListener implements Listener{
 	private final SpoutLift plugin;
@@ -107,7 +106,7 @@ public class SpoutLiftRedstoneListener implements Listener{
 							e.getScene().setPosition(iterator.next().getPosition().add(0.5, 0, 0.5));
 						}
 						if (e instanceof Player){
-							Player player = (Player) e;
+							//Player player = (Player) e;
 							logDebug("Flyers: " + SpoutElevatorManager.flyers.toString());
 							//if (!player.hasPermission("lift")){
 							//elevator.holders.put(e, e.getTransform().getPosition());

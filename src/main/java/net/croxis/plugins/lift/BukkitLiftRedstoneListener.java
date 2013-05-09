@@ -21,9 +21,6 @@ package net.croxis.plugins.lift;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import net.h31ix.anticheat.api.AnticheatAPI;
-import net.h31ix.anticheat.manage.CheckType;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -31,13 +28,11 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.block.Sign;
-import org.getspout.spoutapi.SpoutManager;
 
 
 public class BukkitLiftRedstoneListener implements Listener {
@@ -108,10 +103,11 @@ public class BukkitLiftRedstoneListener implements Listener {
 			int y = block.getY();
 			Floor startFloor = bukkitElevator.floormap.get(y);
 			
-			if (startFloor == null){
+			if (startFloor == null || bukkitElevator.destFloor == null){
 				plugin.logInfo("Critical Error. Startfloor is null. Please set debug to true in config and report bug.");
 				plugin.logInfo("Floormap: " + bukkitElevator.floormap.toString());
 				plugin.logInfo("Floormap2: " + bukkitElevator.floormap2.toString());
+				plugin.logInfo("Floormap3: " + bukkitElevator.destFloor.toString());
 			}
 			
 			bukkitElevator.startFloor = startFloor;
