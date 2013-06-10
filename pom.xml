@@ -9,12 +9,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     
     <version>36</version>
     
-    <parent>
-	    <groupId>net.md-5</groupId>
-	    <artifactId>ForgeMod</artifactId>
-	    <version>1.5.1-7.7.2-SNAPSHOT</version>
-  	</parent>
-    
    	<scm>
 		<developerConnection>scm:git:git@github.com:croxis/Lift.git</developerConnection>
 		<connection>scm:git:git@github.com:croxis/Lift.git</connection>
@@ -34,12 +28,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<bukkitVersion>1.5.2-R0.1</bukkitVersion>
-		<spoutPluginVersion>1.5.2-R0.1-SNAPSHOT</spoutPluginVersion>
+		<spoutPluginVersion>1.5.2-R0.2-SNAPSHOT</spoutPluginVersion>
 		<spoutVersion>dev-SNAPSHOT</spoutVersion>
 		<vanillaVersion>1.5.2-SNAPSHOT</vanillaVersion>
-		<!-- <forge.build>682</forge.build>
-    	<forge.version>7.7.2.${forge.build}</forge.version>
-    	<forge.remapped.revision>R1-MCPC</forge.remapped.revision>-->
 	</properties>
   	
   	<pluginRepositories>
@@ -126,7 +117,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 						</execution>
 					</executions>
 					<configuration>
-<excludePackageNames>com.greatmancode.craftconomy3.commands:com.greatmancode.craftconomy3.spout:com.greatmancode.craftconomy3.converter.converters</excludePackageNames>
+						<excludePackageNames>com.greatmancode.craftconomy3.commands:com.greatmancode.craftconomy3.spout:com.greatmancode.craftconomy3.converter.converters</excludePackageNames>
 </configuration>
 </plugin>
 <plugin>
@@ -288,24 +279,5 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-		<!--<dependency>
-        	<groupId>net.minecraftforge</groupId>
-        	<artifactId>minecraft-forge</artifactId>
-       		<version>${forge.version}-${forge.remapped.revision}</version>
-        	<type>jar</type>
-        	<scope>compile</scope>
-        </dependency>-->
-		<!--<dependency>
-            <groupId>org.getlwc.mods</groupId>
-            <artifactId>forge</artifactId>
-            <version>5.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>-->
-		<!--<dependency>
-			<groupId>org.reflections</groupId>
-			<artifactId>reflections</artifactId>
-			<version>0.9.8</version>
-			<scope>test</scope>
-		</dependency>-->
     </dependencies>
 </project>
