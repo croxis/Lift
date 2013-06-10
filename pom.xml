@@ -63,7 +63,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         </repository>
         <repository>
             <id>spout-repo</id>
-            <url>http://repo.spout.org</url>
+            <url>http://nexus.spout.org/content/groups/public/</url>
         </repository>
         <repository>
         	<id>croxis</id>
@@ -118,8 +118,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 					</executions>
 					<configuration>
 						<excludePackageNames>com.greatmancode.craftconomy3.commands:com.greatmancode.craftconomy3.spout:com.greatmancode.craftconomy3.converter.converters</excludePackageNames>
-</configuration>
-</plugin>
+					</configuration>
+				</plugin>
 <plugin>
 <groupId>org.apache.maven.plugins</groupId>
 <artifactId>maven-shade-plugin</artifactId>

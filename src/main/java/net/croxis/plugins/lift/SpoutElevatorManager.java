@@ -152,7 +152,7 @@ public class SpoutElevatorManager extends ElevatorManager{
 					Floor floor = new Floor();
 					floor.setY(y1);
 					if (testBlock.translate(BlockFace.BOTTOM).getMaterial() == VanillaMaterials.WALL_SIGN)
-						floor.setName(((Sign) testBlock.translate(BlockFace.BOTTOM).getComponent()).getText()[1]);
+						floor.setName(testBlock.translate(BlockFace.BOTTOM).get(Sign.class).getText()[1]);
 					if (testBlock.translate(BlockFace.TOP).getMaterial() == VanillaMaterials.WALL_SIGN)
 						elevator.floormap.put(y1, floor);
 					plugin.logDebug("Floor added: " + testBlock.getPosition().toString());

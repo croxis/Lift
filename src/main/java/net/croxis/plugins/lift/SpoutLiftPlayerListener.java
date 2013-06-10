@@ -19,11 +19,12 @@
 package net.croxis.plugins.lift;
 
 import org.spout.api.entity.Entity;
+import org.spout.api.entity.Player;
 import org.spout.api.event.EventHandler;
 import org.spout.api.event.Listener;
 import org.spout.api.event.cause.PlayerCause;
-import org.spout.api.event.player.PlayerInteractEvent;
-import org.spout.api.event.player.PlayerInteractEvent.Action;
+import org.spout.api.event.player.Action;
+import org.spout.api.event.player.PlayerInteractBlockEvent;
 import org.spout.api.event.player.PlayerLeaveEvent;
 import org.spout.api.geo.cuboid.Block;
 import org.spout.api.material.block.BlockFace;
@@ -42,11 +43,13 @@ public class SpoutLiftPlayerListener implements Listener{
 	}
 	
 	@EventHandler
-	public void onPlayerInteract(PlayerInteractEvent event){
+	public void onPlayerInteract(PlayerInteractBlockEvent event){
 		//if (event.getAction() == Action.RIGHT_CLICK && (event.getPlayer().hasPermission("lift.change") || event.getPlayer().getName() == "croxis")) {
-		if (event.getAction() == Action.RIGHT_CLICK && event.getPlayer().getWorld().getBlock(event.getInteractedPoint()) != null) {
+		//if (event.getAction() == Action.RIGHT_CLICK && event.getPlayer().getWorld().getBlock(event.getInteractedPoint()) != null) {
+		if (event.getAction() == Action.RIGHT_CLICK && event.getEntity().getWorld().getBlock(event.getPoint()) != null) {
+		//if (event.getTargetBlock().isMaterial(VanillaMaterials.SIGN)) {
 			//TODO: There has got to be an easier way to do this
-			Block signBlock = event.getPlayer().getWorld().getBlock(event.getInteractedPoint());
+			Block signBlock = event.getEntity().getWorld().getBlock(event.getPoint());
 			Block buttonBlock = signBlock.translate(BlockFace.BOTTOM);
 
 			if (signBlock.getMaterial() == VanillaMaterials.WALL_SIGN
@@ -54,7 +57,7 @@ public class SpoutLiftPlayerListener implements Listener{
 			    && (buttonBlock.getMaterial() == VanillaMaterials.STONE_BUTTON || buttonBlock.getMaterial() == VanillaMaterials.WOOD_BUTTON)) {
 				
 				plugin.logDebug("Updating sign");
-				Sign sign = (Sign) signBlock.getComponent();
+				Sign sign = signBlock.get(Sign.class);
 				SpoutElevator elevator = SpoutElevatorManager.createLift(buttonBlock);
 				
 				if (elevator == null){
@@ -66,7 +69,7 @@ public class SpoutLiftPlayerListener implements Listener{
 					// This is just a button and sign, not an elevator.
 					return;
 				} else if (elevator.getTotalFloors() == 1){
-					event.getPlayer().sendMessage(SpoutLift.stringOneFloor);
+					((Player) event.getEntity()).sendMessage(SpoutLift.stringOneFloor);
 					return;
 				}
 				
@@ -102,7 +105,7 @@ public class SpoutLiftPlayerListener implements Listener{
 				newText[2] = SpoutLift.stringDestination + " " + Integer.toString(currentDestinationInt);
 				newText[3] = elevator.getFloorFromN(currentDestinationInt).getName();
 				plugin.logDebug("Updating sign: " + newText.toString());
-				sign.setText(newText, new PlayerCause(event.getPlayer()));
+				sign.setText(newText, new PlayerCause((Player) event.getEntity()));
 				//sign.
 				plugin.logDebug("Completed sign update");
 			}

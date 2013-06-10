@@ -68,7 +68,7 @@ public class SpoutLiftRedstoneListener implements Listener{
 			int y = event.getBlock().getY();
 			Floor startFloor = elevator.getFloormap().get(y);
 			elevator.startFloor = startFloor;
-			String line = ((Sign) event.getBlock().translate(BlockFace.TOP).getComponent()).getText()[2];
+			String line = event.getBlock().translate(BlockFace.TOP).get(Sign.class).getText()[2];
 			if (line.isEmpty())
 				return;
 			String[] splits = line.split(": ");
