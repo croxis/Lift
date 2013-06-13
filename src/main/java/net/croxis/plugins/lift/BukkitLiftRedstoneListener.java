@@ -41,6 +41,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 	
 	// Supporting annoying out of date servers
 	private boolean canDo = false;
+	private Block block = null;
 	
 	public BukkitLiftRedstoneListener(BukkitLift plugin){
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
@@ -49,7 +50,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 	
 	@EventHandler
 	public void onBlockRedstoneChange(BlockRedstoneEvent event){
-		Block block = event.getBlock();
+		block = event.getBlock();
 		canDo = false;
 		canDo = (event.getBlock().getType() == Material.STONE_BUTTON || event.getBlock().getType() == Material.WOOD_BUTTON) 
 				//&& (!event.getBlock().isBlockIndirectlyPowered())
@@ -84,9 +85,18 @@ public class BukkitLiftRedstoneListener implements Listener {
 			
 		if (canDo){
 			long startTime = System.currentTimeMillis();
+			
 			bukkitElevator = BukkitElevatorManager.createLift(block);
 			if (bukkitElevator == null)
 				return;
+			
+			String line = ((Sign) block.getRelative(BlockFace.UP).getState()).getLine(2);
+			if (line.isEmpty())
+				return;
+			String[] splits = line.split(": ");
+			if (splits.length != 2)
+				return;
+			int destination = Integer.parseInt(splits[1]);	
 			
 			//See if lift is in use
 			for (BukkitElevator e : BukkitElevatorManager.bukkitElevators){
@@ -102,6 +112,10 @@ public class BukkitLiftRedstoneListener implements Listener {
 			
 			int y = block.getY();
 			Floor startFloor = bukkitElevator.floormap.get(y);
+			bukkitElevator.startFloor = startFloor;
+			//Get all players in elevator shaft (at floor of button pusher if possible)
+			//And set their gravity to 0
+			bukkitElevator.destFloor = bukkitElevator.getFloorFromN(destination);			
 			
 			if (startFloor == null || bukkitElevator.destFloor == null){
 				plugin.logInfo("Critical Error. Startfloor is null. Please set debug to true in config and report bug.");
@@ -109,19 +123,6 @@ public class BukkitLiftRedstoneListener implements Listener {
 				plugin.logInfo("Floormap2: " + bukkitElevator.floormap2.toString());
 				plugin.logInfo("Floormap3: " + bukkitElevator.destFloor.toString());
 			}
-			
-			bukkitElevator.startFloor = startFloor;
-			String line = ((Sign) block.getRelative(BlockFace.UP).getState()).getLine(2);
-			if (line.isEmpty())
-				return;
-			String[] splits = line.split(": ");
-			if (splits.length != 2)
-				return;
-			int destination = Integer.parseInt(splits[1]);	
-
-			//Get all players in elevator shaft (at floor of button pusher if possible)
-			//And set their gravity to 0
-			bukkitElevator.destFloor = bukkitElevator.getFloorFromN(destination);
 			
 			if (bukkitElevator.destFloor.getY() > startFloor.getY()){
 				bukkitElevator.goingUp = true;
