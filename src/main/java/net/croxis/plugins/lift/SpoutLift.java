@@ -30,11 +30,11 @@ import java.util.logging.Level;
 import org.spout.api.event.Listener;
 import org.spout.api.exception.ConfigurationException;
 import org.spout.api.material.Material;
-import org.spout.api.plugin.CommonPlugin;
+import org.spout.api.plugin.Plugin;
 import org.spout.api.util.config.yaml.YamlConfiguration;
 import org.spout.vanilla.material.VanillaMaterials;
 
-public class SpoutLift extends CommonPlugin implements Listener{
+public class SpoutLift extends Plugin implements Listener{
 
 	public static boolean debug = false;
 	public int liftArea = 16;
