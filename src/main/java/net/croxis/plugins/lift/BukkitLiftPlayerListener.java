@@ -38,6 +38,7 @@ import org.bukkit.event.Listener;
 
 public class BukkitLiftPlayerListener implements Listener{
 	private BukkitLift plugin;
+	private Block buttonBlock = null;
 
 	public BukkitLiftPlayerListener(BukkitLift plugin){
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
@@ -46,16 +47,17 @@ public class BukkitLiftPlayerListener implements Listener{
 	
 	@EventHandler (ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event){
-		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getPlayer().hasPermission("lift.change")) {
+		if ((event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK) 
+				&& event.getPlayer().hasPermission("lift.change")) {
 
-			final Block signBlock = event.getClickedBlock();
-			final Block buttonBlock = signBlock.getRelative(BlockFace.DOWN);
+			//final Block signBlock = event.getClickedBlock();
+			buttonBlock = event.getClickedBlock().getRelative(BlockFace.DOWN);
 
-			if (signBlock.getType() == Material.WALL_SIGN
+			if (event.getClickedBlock().getType() == Material.WALL_SIGN
                 && buttonBlock != null
 			    && (buttonBlock.getType() == Material.STONE_BUTTON || buttonBlock.getType() == Material.WOOD_BUTTON)) {
 
-				Sign sign = (Sign) signBlock.getState();
+				Sign sign = (Sign) event.getClickedBlock().getState();
 				BukkitElevator bukkitElevator = BukkitElevatorManager.createLift(buttonBlock);
                 //Elevator elevator = new Elevator(this.plugin, buttonBlock);
 				
