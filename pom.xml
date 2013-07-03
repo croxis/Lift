@@ -7,7 +7,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <description>Lifts and Elevators for Bukkit/Spout</description>
     <url>https://github.com/croxis/Lift</url>
     
-    <version>36</version>
+    <version>37</version>
     
    	<scm>
 		<developerConnection>scm:git:git@github.com:croxis/Lift.git</developerConnection>
@@ -104,33 +104,33 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                     <target>1.5</target>
                 </configuration>
             </plugin>
-            	<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.8</version>
-					<executions>
-						<execution>
-							<phase>install</phase>
-							<goals>
-								<goal>javadoc</goal>
-							</goals>
-						</execution>
-					</executions>
+           	<!-- <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<excludePackageNames>com.greatmancode.craftconomy3.commands:com.greatmancode.craftconomy3.spout:com.greatmancode.craftconomy3.converter.converters</excludePackageNames>
+				</configuration>
+			</plugin> -->
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-shade-plugin</artifactId>
+			<version>1.7.1</version>
+			<executions>
+				<execution>
+					<phase>package</phase>
+					<goals>
+						<goal>shade</goal>
+					</goals>
 					<configuration>
-						<excludePackageNames>com.greatmancode.craftconomy3.commands:com.greatmancode.craftconomy3.spout:com.greatmancode.craftconomy3.converter.converters</excludePackageNames>
-					</configuration>
-				</plugin>
-<plugin>
-<groupId>org.apache.maven.plugins</groupId>
-<artifactId>maven-shade-plugin</artifactId>
-<version>1.7.1</version>
-<executions>
-<execution>
-<phase>package</phase>
-<goals>
-<goal>shade</goal>
-</goals>
-<configuration>
 <artifactSet>
 <excludes>
 <exclude>junit:junit</exclude>
@@ -169,7 +169,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 <properties>
 <name>${project.name}</name>
 <url>${project.organization.url}</url>
-<copyright>Copyright (c) ${project.inceptionYear}-2012, ${project.organization.name}</copyright>
+<copyright>Copyright (c) ${project.inceptionYear}-2013, ${project.organization.name}</copyright>
 </properties>
 <includes>
 <include>src/main/java/**</include>
@@ -180,7 +180,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 </excludes>
 </configuration>
 </plugin>
-<plugin>
+<!--  <plugin>
 <artifactId>maven-assembly-plugin</artifactId>
 <executions>
 <execution>
@@ -191,14 +191,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 <appendAssemblyId>false</appendAssemblyId>
 <descriptors>
 <descriptor>src/main/assembly/assemble.xml</descriptor>
-</descriptors>
-</configuration>
-<goals>
-<goal>single</goal>
-</goals>
-</execution>
-</executions>
-</plugin>
+					</descriptors>
+					</configuration>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin> -->
         </plugins>
         <pluginManagement>
         	<plugins>
