@@ -52,9 +52,9 @@ public class BukkitElevatorManager extends ElevatorManager{
 		plugin.logDebug("Starting elevator gen");
 		BukkitElevator bukkitElevator = new BukkitElevator();
 		int yscan = block.getY() - 1;
-		while(yscan >= BukkitLift.lowScan){
-			if (yscan == BukkitLift.lowScan){ //Gone too far with no base abort!
-				plugin.logDebug("yscan was too low");
+		while(yscan >= -1){
+			if (yscan == -1){ //Gone too far with no base abort!
+				plugin.logDebug("No elevator base found");
 				return null;
 			}
 			Block checkBlock = block.getWorld().getBlockAt(block.getX(), yscan, block.getZ());
@@ -136,12 +136,14 @@ public class BukkitElevatorManager extends ElevatorManager{
 			int x = b.getX();
 			int z = b.getZ();
 			int y1 = b.getY();
+			int scanHeight = 0;
 			
 			World currentWorld = b.getWorld();
 			
 			while (true){
 				y1 = y1 + 1;
-				if (y1 == BukkitLift.highScan) {
+				scanHeight += 1;
+				if (scanHeight == BukkitLift.maxHeight + 2) {
 					break;
 				}
 				Block testBlock = b.getWorld().getBlockAt(x, y1, z);

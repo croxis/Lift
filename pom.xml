@@ -27,8 +27,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<bukkitVersion>1.5.2-R0.1</bukkitVersion>
-		<spoutPluginVersion>1.5.2-R0.2-SNAPSHOT</spoutPluginVersion>
+		<bukkitVersion>1.6.1-R0.1-SNAPSHOT</bukkitVersion>
+		<spoutPluginVersion>1.6.1-R0.1-SNAPSHOT</spoutPluginVersion>
 		<spoutVersion>dev-SNAPSHOT</spoutVersion>
 		<vanillaVersion>1.5.2-SNAPSHOT</vanillaVersion>
 	</properties>

@@ -38,8 +38,7 @@ public class SpoutLift extends Plugin implements Listener{
 
 	public static boolean debug = false;
 	public int liftArea = 16;
-	public int lowScan = 0;
-	public int highScan = 255;
+	public int maxHeight = 256;
 	public HashMap<Material, Double> blockSpeeds = new HashMap<Material, Double>();
 	public Material floorBlock;
 	public boolean autoPlace = false;
@@ -78,8 +77,7 @@ public class SpoutLift extends Plugin implements Listener{
     	}
     	
     	liftArea = config.getNode("maxLiftArea").getInt();
-    	lowScan = config.getNode("lowScan").getInt();
-    	highScan = config.getNode("highScan").getInt();
+    	maxHeight = config.getNode("maxHeight").getInt();
     	debug = config.getNode("debug").getBoolean();
     	autoPlace = config.getNode("autoPlace").getBoolean();
     	checkGlass = config.getNode("checkGlass").getBoolean();

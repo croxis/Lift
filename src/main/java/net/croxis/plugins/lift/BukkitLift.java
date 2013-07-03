@@ -42,8 +42,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
 	//public double liftSpeed = 0.5;
 	public static boolean redstone = true;
 	public static int liftArea = 16;
-	public static int lowScan = 0;
-	public static int highScan = 255;
+	public static int maxHeight = 256;
 	//public Material baseMaterial = Material.IRON_BLOCK;
 	public HashMap<Material, Double> blockSpeeds = new HashMap<Material, Double>();
 	public Material floorBlock = Material.GLASS;
@@ -86,8 +85,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
     	//liftSpeed = this.getConfig().getDouble("liftSpeed");
     	this.getConfig().options().copyDefaults(true);
     	liftArea = this.getConfig().getInt("maxLiftArea");
-    	lowScan = this.getConfig().getInt("lowScan");
-    	highScan = this.getConfig().getInt("highScan");
+    	maxHeight = this.getConfig().getInt("maxHeight");
     	debug = this.getConfig().getBoolean("debug");
     	//baseMaterial = Material.valueOf(this.getConfig().getString("baseBlock", "IRON_BLOCK"));
     	autoPlace = this.getConfig().getBoolean("autoPlace");

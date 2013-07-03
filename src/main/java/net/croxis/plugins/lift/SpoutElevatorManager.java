@@ -53,11 +53,13 @@ public class SpoutElevatorManager extends ElevatorManager{
 		plugin.logDebug("Starting elevator gen");
 		SpoutElevator elevator = new SpoutElevator();
 		int yscan = block.getY() - 1;
-		while(yscan >= plugin.lowScan){
-			if (yscan == plugin.lowScan){ //Gone too far with no base abort!
-				plugin.logDebug("yscan was too low");
+		int scanHeight = 0;
+		while(scanHeight >= plugin.maxHeight){
+			if (scanHeight == plugin.maxHeight){ //Gone too far with no base abort!
+				plugin.logDebug("No Base found");
 				return null;
 			}
+			scanHeight += 1;
 			Block checkBlock = block.getWorld().getBlock(block.getX(), yscan, block.getZ());
 			if (isValidShaftBlock(checkBlock)){
 				if (!elevator.chunks.contains(checkBlock.getChunk()))
@@ -130,12 +132,14 @@ public class SpoutElevatorManager extends ElevatorManager{
 			int x = b.getX();
 			int z = b.getZ();
 			int y1 = b.getY();
+			int scanHeight = 0;
 			
 			World currentWorld = b.getWorld();
 			
 			while (true){
 				y1 = y1 + 1;
-				if (y1 == plugin.highScan) {
+				scanHeight += 1;
+				if (scanHeight == plugin.maxHeight + 2) {
 					break;
 				}
 				Block testBlock = b.getWorld().getBlock(x, y1, z);
