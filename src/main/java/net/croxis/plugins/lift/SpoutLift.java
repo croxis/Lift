@@ -1,7 +1,7 @@
 /*
  * This file is part of Lift.
  *
- * Copyright (c) ${project.inceptionYear}-2012, croxis <https://github.com/croxis/>
+ * Copyright (c) ${project.inceptionYear}-2013, croxis <https://github.com/croxis/>
  *
  * Lift is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,10 +28,10 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.spout.api.event.Listener;
-import org.spout.api.exception.ConfigurationException;
 import org.spout.api.material.Material;
 import org.spout.api.plugin.Plugin;
-import org.spout.api.util.config.yaml.YamlConfiguration;
+import org.spout.cereal.config.ConfigurationException;
+import org.spout.cereal.config.yaml.YamlConfiguration;
 import org.spout.vanilla.material.VanillaMaterials;
 
 public class SpoutLift extends Plugin implements Listener{
