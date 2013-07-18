@@ -212,6 +212,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 			fallers.remove(e);
 			if (e instanceof Player)
 				removePlayer((Player) e);
+			e.setVelocity(new Vector(0, 0, 0));
 			passengerIterator.remove();
 		}
 		Iterator<Entity> holdersIterators = bukkitElevator.getHolders();
@@ -251,6 +252,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 	public static void removePassenger(Entity passenger){
 		if (isPassenger(passenger)){
 			plugin.logDebug("Removing entity " + passenger.toString() + " from El: " + bukkitElevators.toString());
+			passenger.setVelocity(new Vector(0, 0, 0));
 			if (passenger instanceof Player)
 				removePlayer((Player) passenger);
 			else
