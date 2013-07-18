@@ -38,7 +38,7 @@ public class SpoutLift extends Plugin implements Listener{
 
 	public static boolean debug = false;
 	public int liftArea = 16;
-	public int maxHeight = 256;
+	public static int maxHeight = 256;
 	public HashMap<Material, Double> blockSpeeds = new HashMap<Material, Double>();
 	public Material floorBlock;
 	public boolean autoPlace = false;

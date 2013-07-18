@@ -54,8 +54,8 @@ public class SpoutElevatorManager extends ElevatorManager{
 		SpoutElevator elevator = new SpoutElevator();
 		int yscan = block.getY() - 1;
 		int scanHeight = 0;
-		while(scanHeight >= plugin.maxHeight){
-			if (scanHeight == plugin.maxHeight){ //Gone too far with no base abort!
+		while(scanHeight >= SpoutLift.maxHeight){
+			if (scanHeight == SpoutLift.maxHeight){ //Gone too far with no base abort!
 				plugin.logDebug("No Base found");
 				return null;
 			}
@@ -133,18 +133,20 @@ public class SpoutElevatorManager extends ElevatorManager{
 			int z = b.getZ();
 			int y1 = b.getY();
 			int scanHeight = 0;
+			int maxY = y1 + SpoutLift.maxHeight;
 			
 			World currentWorld = b.getWorld();
 			
 			while (true){
 				y1 = y1 + 1;
 				scanHeight += 1;
-				if (scanHeight == plugin.maxHeight + 2) {
+				if (scanHeight == SpoutLift.maxHeight + 2 || scanHeight >= maxY) {
 					break;
 				}
 				Block testBlock = b.getWorld().getBlock(x, y1, z);
 				if (!isValidShaftBlock(testBlock)){
 					message += " | " + x + " " + y1 + " " + z + " of type "  + testBlock.getMaterial().toString();
+					maxY = y1;
 					break;
 				}
 

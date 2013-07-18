@@ -131,11 +131,13 @@ public class BukkitElevatorManager extends ElevatorManager{
 	
 	public static String constructFloors(BukkitElevator bukkitElevator){
 		String message = "";
+		int y1 = bukkitElevator.baseBlocks.iterator().next().getY();
+		int maxY = y1 + BukkitLift.maxHeight;
 
 		for (Block b : bukkitElevator.baseBlocks){
 			int x = b.getX();
 			int z = b.getZ();
-			int y1 = b.getY();
+			y1 = b.getY();
 			int scanHeight = 0;
 			
 			World currentWorld = b.getWorld();
@@ -143,12 +145,14 @@ public class BukkitElevatorManager extends ElevatorManager{
 			while (true){
 				y1 = y1 + 1;
 				scanHeight += 1;
-				if (scanHeight == BukkitLift.maxHeight + 2) {
+				if (scanHeight == BukkitLift.maxHeight + 2 || scanHeight >= maxY) {
 					break;
 				}
 				Block testBlock = b.getWorld().getBlockAt(x, y1, z);
 				if (!isValidShaftBlock(testBlock)){
 					message += " | " + x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString();
+					maxY = y1;
+					plugin.logDebug(" | " + x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString());
 					break;
 				}
 				
@@ -163,11 +167,17 @@ public class BukkitElevatorManager extends ElevatorManager{
 						floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
 					if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
 						bukkitElevator.floormap.put(y1, floor);
-					plugin.logDebug("Floor added: " + b.getLocation());
+					plugin.logDebug("Floor added at lift: " + b.getLocation());
+					plugin.logDebug("Floor y: " + Integer.toString(y1));
 				}				
 			}
 		}
 		int floorNumber = 1;
+		Iterator<Integer> floorIterator = bukkitElevator.floormap.keySet().iterator();
+		while (floorIterator.hasNext()){
+			if (floorIterator.next() >= maxY)
+				floorIterator.remove();
+		}
 		for (Floor floor : bukkitElevator.floormap.values()){
 			floor.setFloor(floorNumber);
 			bukkitElevator.floormap2.put(floorNumber, floor);
