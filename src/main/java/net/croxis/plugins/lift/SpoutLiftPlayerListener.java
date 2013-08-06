@@ -113,11 +113,11 @@ public class SpoutLiftPlayerListener implements Listener{
 	}
 	
 	@EventHandler
-	public void onEntityDamage(EntityDamageEvent e){
-		if(e.getCause() == HealthChangeCause.DAMAGE && e.getDamageType() == DamageType.FALL){
-			Entity faller = e.getEntity();
+	public void onEntityDamage(EntityDamageEvent event){
+		if(event.getCause() == HealthChangeCause.DAMAGE && event.getDamageType() == DamageType.FALL){
+			Entity faller = event.getEntity();
 			if(SpoutElevatorManager.fallers.contains(faller)){
-				e.setCancelled(true);
+				event.setCancelled(true);
 				SpoutElevatorManager.fallers.remove(faller);
 			}
 		}

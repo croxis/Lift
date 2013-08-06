@@ -294,21 +294,21 @@ public class SpoutElevatorManager extends ElevatorManager{
 				Entity passenger = passengers.next();
 				if(e.destFloor.getFloor() > e.startFloor.getFloor()){
 					plugin.logDebug("Processing up: " + passenger.toString());
-					//p.getScene().setMovementVelocity(new Vector3(0.0D, 1.0D, 0.0D));
-					passenger.getScene().setMovementVelocity(new Vector3(0.0D, 1.0D, 0.0D));
+					//p.getPhysics().setMovementVelocity(new Vector3(0.0D, 1.0D, 0.0D));
+					passenger.getPhysics().setMovementVelocity(new Vector3(0.0D, 1.0D, 0.0D));
 					/*if (passenger instanceof Player)
-						((Player) passenger).teleport(passenger.getScene().getPosition().add(0.0D, 1.0D, 0.0D));
+						((Player) passenger).teleport(passenger.getPhysics().getPosition().add(0.0D, 1.0D, 0.0D));
 					else
-						passenger.getScene().setPosition(passenger.getScene().getPosition().add(0.0D, 1.0D, 0.0D));*/
+						passenger.getPhysics().setPosition(passenger.getPhysics().getPosition().add(0.0D, 1.0D, 0.0D));*/
 				} else {
 					plugin.logDebug("Processing down: " + passenger.toString());
-					passenger.getScene().setMovementVelocity(new Vector3(0.0D, -1.0D, 0.0D));
+					passenger.getPhysics().setMovementVelocity(new Vector3(0.0D, -1.0D, 0.0D));
 					/*if (passenger instanceof Player)
-						((Player) passenger).teleport(passenger.getScene().getPosition().add(0.0D, -1.0D, 0.0D));
+						((Player) passenger).teleport(passenger.getPhysics().getPosition().add(0.0D, -1.0D, 0.0D));
 					else
-						passenger.getScene().setPosition(passenger.getScene().getPosition().add(0.0D, -1.0D, 0.0D));*/
-					//p.getScene().setPosition(p.getScene().getPosition().add(0.0D, -e.speed, 0.0D));
-					//p.getScene().setPosition(p.getScene().getPosition().add(0.0D, -1.0D, 0.0D));
+						passenger.getPhysics().setPosition(passenger.getPhysics().getPosition().add(0.0D, -1.0D, 0.0D));*/
+					//p.getPhysics().setPosition(p.getPhysics().getPosition().add(0.0D, -e.speed, 0.0D));
+					//p.getPhysics().setPosition(p.getPhysics().getPosition().add(0.0D, -1.0D, 0.0D));
 				}
 				//p.setFallDistance(0.0F);
 				
@@ -319,24 +319,24 @@ public class SpoutElevatorManager extends ElevatorManager{
 					continue;
 				}
 				
-				if((e.goingUp && passenger.getScene().getPosition().getY() > e.destFloor.getY() - 0.7)
-						|| (!e.goingUp && passenger.getScene().getPosition().getY() < e.destFloor.getY()-0.1)){
-					logDebug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.getScene().getPosition().getY()));
+				if((e.goingUp && passenger.getPhysics().getPosition().getY() > e.destFloor.getY() - 0.7)
+						|| (!e.goingUp && passenger.getPhysics().getPosition().getY() < e.destFloor.getY()-0.1)){
+					logDebug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.getPhysics().getPosition().getY()));
 					logDebug("Trigger status: Going up: " + Boolean.toString(e.goingUp));
 					logDebug("Floor Y: " + Double.toString(e.destFloor.getY()));
-					passenger.getScene().setMovementVelocity(new Vector3(0,0,0));
-					Point pLoc = passenger.getScene().getTransform().getPosition();
+					passenger.getPhysics().setMovementVelocity(new Vector3(0,0,0));
+					Point pLoc = passenger.getPhysics().getTransform().getPosition();
 					pLoc = new Point(pLoc.getWorld(), pLoc.getX(), (float) (e.destFloor.getY()-0.7), pLoc.getZ());
-					passenger.getScene().setPosition(pLoc);
-					moveToHolder(e, passengers, passenger, passenger.getScene().getTransform().getPosition());
+					passenger.getPhysics().setPosition(pLoc);
+					moveToHolder(e, passengers, passenger, passenger.getPhysics().getTransform().getPosition());
 				}
 			}
 			Iterator<Entity> holders = e.getHolders();
 			while (holders.hasNext()){
 				Entity holder = holders.next();
 				plugin.logDebug("Holding: " + holder.toString() + " at " + e.getHolderPos(holder));
-				holder.getScene().setPosition(e.getHolderPos(holder));
-				holder.getScene().setMovementVelocity(new Vector3(0,0,0));
+				holder.getPhysics().setPosition(e.getHolderPos(holder));
+				holder.getPhysics().setMovementVelocity(new Vector3(0,0,0));
 				//holder.setFallDistance(0.0F);
 			}
 		}
@@ -346,7 +346,7 @@ public class SpoutElevatorManager extends ElevatorManager{
 			Entity passenger, Point location) {
 		passengers.remove();
 		e.addHolder(passenger, location);
-		passenger.getScene().setMovementVelocity(new Vector3(0,0,0));
+		passenger.getPhysics().setMovementVelocity(new Vector3(0,0,0));
 		//passenger.setFallDistance(0.0F);
 	}
 	
