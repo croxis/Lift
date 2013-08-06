@@ -93,10 +93,10 @@ public class BukkitLiftRedstoneListener implements Listener {
 			String line = ((Sign) block.getRelative(BlockFace.UP).getState()).getLine(2);
 			if (line.isEmpty())
 				return;
-			String[] splits = line.split(": ");
+			String[] splits = line.split(":");
 			if (splits.length != 2)
 				return;
-			int destination = Integer.parseInt(splits[1]);	
+			int destination = Integer.parseInt(splits[1].trim());	
 			
 			//See if lift is in use
 			for (BukkitElevator e : BukkitElevatorManager.bukkitElevators){
