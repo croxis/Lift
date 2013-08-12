@@ -33,20 +33,22 @@ import org.spout.api.material.Material;
 
 public class SpoutElevator {
 	public HashSet<Block> baseBlocks = new HashSet<Block>();
-	public TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
-	public TreeMap <Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
+	public TreeMap <Integer, SpoutFloor> floormap = new TreeMap<Integer, SpoutFloor>();//Index is y value
+	public TreeMap <Integer, SpoutFloor> floormap2 = new TreeMap<Integer, SpoutFloor>();//Index is floor value
 	private TreeMap <World, TreeMap<Integer, Floor>> worldFloorMap= new TreeMap <World, TreeMap<Integer, Floor>>();
 	private HashSet<Entity> passengers = new HashSet<Entity>();
 	public int destinationY = 0;//Destination y coordinate
 	public HashSet<Block> glassBlocks = new HashSet<Block>();
 	public int taskid = 0;
-	public Floor destFloor = null;
-	public Floor startFloor = null;
+	public SpoutFloor destFloor = null;
+	public SpoutFloor startFloor = null;
 	public boolean goingUp = false;
 	public HashSet<Chunk> chunks = new HashSet<Chunk>();
 	private HashMap<Entity, Point> holders = new HashMap<Entity, Point>();
 	public Material baseBlockType = Material.get("IRON_BLOCK");
 	public double speed = 0.5;
+	
+	
 	
 	public void clear(){
 		baseBlocks.clear();
@@ -58,19 +60,19 @@ public class SpoutElevator {
 		holders.clear();
 	}
 	
-	public TreeMap <Integer, Floor> getFloormap(){
+	public TreeMap <Integer, SpoutFloor> getFloormap(){
 		return floormap;
 	}
 	
-	public TreeMap <Integer, Floor> getFloormap2(){
+	public TreeMap <Integer, SpoutFloor> getFloormap2(){
 		return floormap2;
 	}
 	
-	public Floor getFloorFromY(int y){
+	public SpoutFloor getFloorFromY(int y){
 		return floormap.get(y);
 	}
 	
-	public Floor getFloorFromN(int n){
+	public SpoutFloor getFloorFromN(int n){
 		return floormap2.get(n);
 	}
 	
@@ -87,7 +89,7 @@ public class SpoutElevator {
 		return false;
 	}
 	
-	public boolean isInShaftAtFloor(Entity entity, Floor floor){
+	public boolean isInShaftAtFloor(Entity entity, SpoutFloor floor){
 		if (isInShaft(entity)){
 			if (entity.getPhysics().getPosition().getY() >= floor.getY() - 1 && entity.getPhysics().getPosition().getY() <= floor.getY())
 				return true;

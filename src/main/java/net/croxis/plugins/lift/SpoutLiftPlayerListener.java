@@ -70,7 +70,7 @@ public class SpoutLiftPlayerListener implements Listener{
 				event.setCancelled(true);
 				
 				int currentDestinationInt = 1;
-				Floor currentFloor = elevator.getFloorFromY(buttonBlock.getY());
+				SpoutFloor currentFloor = elevator.getFloorFromY(buttonBlock.getY());
 				String[] newText = new String[4];
 				
 				newText[0] = SpoutLift.stringCurrentFloor;

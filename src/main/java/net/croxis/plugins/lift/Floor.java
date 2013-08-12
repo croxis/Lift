@@ -19,12 +19,17 @@
 package net.croxis.plugins.lift;
 
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 public class Floor {
 	private String name = "";
 	private int y;
 	private int floor;
 	private World world;
+	private Block button;
+	public Floor(final Block b){
+		button = b;
+	}
 	public String getName() {
 		return name;
 	}
@@ -50,6 +55,12 @@ public class Floor {
 	}
 	public void setWorld(World world) {
 		this.world = world;
+	}
+	public Block getButton() {
+		return button;
+	}
+	public void setButton(Block button) {
+		this.button = button;
 	}
 
 }

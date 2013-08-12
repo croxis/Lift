@@ -18,11 +18,23 @@
  */
 package net.croxis.plugins.lift;
 
-public abstract class Elevator {
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.scheduler.BukkitRunnable;
 
-	public int destinationY = 0;//Destination y coordinate
+public class BukkitCancelRedstoneTask extends BukkitRunnable{
+	private final Block button;
 	
-	public boolean goingUp = false;
-	public double speed = 0.5;
+	public BukkitCancelRedstoneTask(Block b){
+		button = b;
+	}
+
+	public void run() {
+		BlockState state = button.getState();
+		((org.bukkit.material.Button) state.getData()).setPowered(false);
+		state.update();
+		
+	}
+	
 
 }

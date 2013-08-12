@@ -18,11 +18,29 @@
  */
 package net.croxis.plugins.lift;
 
-public abstract class Elevator {
-
-	public int destinationY = 0;//Destination y coordinate
-	
-	public boolean goingUp = false;
-	public double speed = 0.5;
+public class SpoutFloor {
+	private String name = "";
+	private int y;
+	private int floor;
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+		if (name == null)
+			this.name = "";
+	}
+	public int getY() {
+		return y;
+	}
+	public void setY(int y) {
+		this.y = y;
+	}
+	public int getFloor() {
+		return floor;
+	}
+	public void setFloor(int floor) {
+		this.floor = floor;
+	}
 
 }

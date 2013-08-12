@@ -44,6 +44,10 @@ public class BukkitElevator extends Elevator{
 	private HashMap<Location, Integer> railBlocks = new HashMap<Location, Integer>();
 	public HashSet<Chunk> chunks = new HashSet<Chunk>();
 	public Material baseBlockType = Material.IRON_BLOCK;
+	public TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
+	public TreeMap <Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
+	public Floor destFloor = null;
+	public Floor startFloor = null;
 	
 	class FloorBlock{
 		public Material material;

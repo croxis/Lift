@@ -155,7 +155,7 @@ public class SpoutElevatorManager extends ElevatorManager{
 						if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, elevator)){
 							break;
 						}
-					Floor floor = new Floor();
+					SpoutFloor floor = new SpoutFloor();
 					floor.setY(y1);
 					if (testBlock.translate(BlockFace.BOTTOM).getMaterial() == VanillaMaterials.WALL_SIGN)
 						floor.setName(testBlock.translate(BlockFace.BOTTOM).get(Sign.class).getText()[1]);
@@ -166,7 +166,7 @@ public class SpoutElevatorManager extends ElevatorManager{
 			}
 		}
 		int floorNumber = 1;
-		for (Floor floor : elevator.floormap.values()){
+		for (SpoutFloor floor : elevator.floormap.values()){
 			floor.setFloor(floorNumber);
 			elevator.floormap2.put(floorNumber, floor);
 			floorNumber = floorNumber + 1;

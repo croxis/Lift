@@ -29,9 +29,11 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.material.Button;
 import org.bukkit.util.Vector;
 import org.getspout.spoutapi.SpoutManager;
 
@@ -163,7 +165,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 						if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, bukkitElevator)){
 							break;
 						}
-					Floor floor = new Floor();
+					Floor floor = new Floor(testBlock);
 					floor.setY(y1);
 					if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
 						floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
@@ -206,6 +208,12 @@ public class BukkitElevatorManager extends ElevatorManager{
 		return true;
 	}
 	
+	private void unPowerButton(Block button){
+		BlockState state = button.getState();
+		((org.bukkit.material.Button) state.getData()).setPowered(false);
+		state.update();
+	}
+	
 	public static void endLift(BukkitElevator bukkitElevator){
 		plugin.logDebug("Halting lift");
 		for (Location location : bukkitElevator.getFloorBlocks().keySet()){
@@ -214,6 +222,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 			if (bukkitElevator.getFloorBlocks().get(location).material == Material.AIR && !plugin.checkFloor)
 				location.getBlock().setType(plugin.floorMaterials.iterator().next());
 		}
+		
 		Iterator<Entity> passengerIterator = bukkitElevator.getPassengers();
 		while (passengerIterator.hasNext()){
 			Entity e = passengerIterator.next();
@@ -230,6 +239,45 @@ public class BukkitElevatorManager extends ElevatorManager{
 				removePlayer((Player) passenger, holdersIterators);
 			}
 		}
+		//Fire off redstone signal for arrival
+		Block s = bukkitElevator.destFloor.getButton().getRelative(BlockFace.UP);
+		org.bukkit.material.Sign sign = (org.bukkit.material.Sign) s.getState().getData();
+		BlockFace directionFacing = sign.getFacing();
+		if (directionFacing == BlockFace.NORTH){
+			if (s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH).getType() == Material.STONE_BUTTON
+					|| s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH).getType() == Material.WOOD_BUTTON){
+				BlockState state = s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH).getState();
+				((org.bukkit.material.Button) state.getData()).setPowered(true);
+				state.update();
+				new BukkitCancelRedstoneTask(s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH)).runTaskLater(plugin, 10);
+			}
+		} else if (directionFacing == BlockFace.EAST){
+			if (s.getRelative(BlockFace.WEST).getRelative(BlockFace.WEST).getType() == Material.STONE_BUTTON
+					|| s.getRelative(BlockFace.WEST).getRelative(BlockFace.WEST).getType() == Material.WOOD_BUTTON){
+				BlockState state = s.getRelative(BlockFace.WEST).getRelative(BlockFace.WEST).getState();
+				((org.bukkit.material.Button) state.getData()).setPowered(true);
+				state.update();
+				new BukkitCancelRedstoneTask(s.getRelative(BlockFace.WEST).getRelative(BlockFace.WEST)).runTaskLater(plugin, 10);
+			}
+		} else if (directionFacing == BlockFace.SOUTH){
+			if (s.getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH).getType() == Material.STONE_BUTTON
+					|| s.getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH).getType() == Material.WOOD_BUTTON){
+				BlockState state = s.getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH).getState();
+				((org.bukkit.material.Button) state.getData()).setPowered(true);
+				state.update();
+				new BukkitCancelRedstoneTask(s.getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH)).runTaskLater(plugin, 10);
+			}
+		} else if (directionFacing == BlockFace.WEST){
+			if (s.getRelative(BlockFace.EAST).getRelative(BlockFace.EAST).getType() == Material.STONE_BUTTON
+					|| s.getRelative(BlockFace.EAST).getRelative(BlockFace.EAST).getType() == Material.WOOD_BUTTON){
+				BlockState state = s.getRelative(BlockFace.EAST).getRelative(BlockFace.EAST).getState();
+				((org.bukkit.material.Button) state.getData()).setPowered(true);
+				state.update();
+				new BukkitCancelRedstoneTask(s.getRelative(BlockFace.EAST).getRelative(BlockFace.EAST)).runTaskLater(plugin, 10);
+			}
+		}
+		
+		
 		bukkitElevator.clear();
 	}
 	

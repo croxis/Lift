@@ -66,7 +66,7 @@ public class SpoutLiftRedstoneListener implements Listener{
 				return;
 			
 			int y = event.getBlock().getY();
-			Floor startFloor = elevator.getFloormap().get(y);
+			SpoutFloor startFloor = elevator.getFloormap().get(y);
 			elevator.startFloor = startFloor;
 			String line = event.getBlock().translate(BlockFace.TOP).get(Sign.class).getText()[2];
 			if (line.isEmpty())
@@ -122,7 +122,7 @@ public class SpoutLiftRedstoneListener implements Listener{
 			
 
 			//Disable all glass inbetween players and destination
-			ArrayList<Floor> glassfloors = new ArrayList<Floor>();
+			ArrayList<SpoutFloor> glassfloors = new ArrayList<SpoutFloor>();
 			//Going up
 			if (startFloor.getY() < elevator.destFloor.getY()){
 				for(int i = startFloor.getFloor() + 1; i<= elevator.destFloor.getFloor(); i++){
@@ -135,7 +135,7 @@ public class SpoutLiftRedstoneListener implements Listener{
 					glassfloors.add(elevator.getFloormap2().get(i));
 				}
 			}
-			for (Floor f : glassfloors){
+			for (SpoutFloor f : glassfloors){
 				for (Block b : elevator.baseBlocks){
 					Block gb = event.getBlock().getWorld().getBlock(b.getX(), f.getY()-2, b.getZ());
 					gb.setMaterial(VanillaMaterials.AIR);
