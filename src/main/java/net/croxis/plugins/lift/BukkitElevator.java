@@ -40,8 +40,8 @@ public class BukkitElevator extends Elevator{
 	//public HashSet<Block> glassBlocks = new HashSet<Block>();
 	private HashMap<Location, FloorBlock> floorBlocks = new HashMap<Location, FloorBlock>();
 	//Integer is the meta "damage" value
-	private HashMap<Location, Integer> carpetBlocks = new HashMap<Location, Integer>();
-	private HashMap<Location, Integer> railBlocks = new HashMap<Location, Integer>();
+	private HashMap<Location, Byte> carpetBlocks = new HashMap<Location, Byte>();
+	private HashMap<Location, Byte> railBlocks = new HashMap<Location, Byte>();
 	public HashSet<Chunk> chunks = new HashSet<Chunk>();
 	public Material baseBlockType = Material.IRON_BLOCK;
 	public TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
@@ -148,8 +148,16 @@ public class BukkitElevator extends Elevator{
 		return floorBlocks;
 	}
 	
-	public void addFloorBlock(Location location, Block block){
-		floorBlocks.put(location, new FloorBlock(block.getType(), block.getData()));
+	public void addFloorBlock(Block block){
+		floorBlocks.put(block.getLocation(), new FloorBlock(block.getType(), block.getData()));
+	}
+	
+	public HashMap<Location, Byte> getCarpetBlocks(){
+		return carpetBlocks;
+	}
+	
+	public void addCarpetBlock(Block block){
+		carpetBlocks.put(block.getLocation(), block.getData());
 	}
 }
 

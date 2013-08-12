@@ -181,8 +181,15 @@ public class BukkitLiftRedstoneListener implements Listener {
 			for (Floor f : glassfloors){
 				for (Block b : bukkitElevator.baseBlocks){
 					Block gb = event.getBlock().getWorld().getBlockAt(b.getX(), f.getY()-2, b.getZ());
-					bukkitElevator.addFloorBlock(gb.getLocation(), gb);
+					bukkitElevator.addFloorBlock(gb);
+					
+					if (gb.getRelative(BlockFace.UP).getType() == Material.CARPET){
+						bukkitElevator.addCarpetBlock(gb.getRelative(BlockFace.UP));
+						gb.getRelative(BlockFace.UP).setType(Material.AIR);
+					}
+					
 					gb.setType(Material.AIR);
+					
 				}
 			}
 			

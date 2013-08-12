@@ -33,7 +33,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.material.Button;
 import org.bukkit.util.Vector;
 import org.getspout.spoutapi.SpoutManager;
 
@@ -208,12 +207,6 @@ public class BukkitElevatorManager extends ElevatorManager{
 		return true;
 	}
 	
-	private void unPowerButton(Block button){
-		BlockState state = button.getState();
-		((org.bukkit.material.Button) state.getData()).setPowered(false);
-		state.update();
-	}
-	
 	public static void endLift(BukkitElevator bukkitElevator){
 		plugin.logDebug("Halting lift");
 		for (Location location : bukkitElevator.getFloorBlocks().keySet()){
@@ -221,6 +214,10 @@ public class BukkitElevatorManager extends ElevatorManager{
 			location.getBlock().setData(bukkitElevator.getFloorBlocks().get(location).data);
 			if (bukkitElevator.getFloorBlocks().get(location).material == Material.AIR && !plugin.checkFloor)
 				location.getBlock().setType(plugin.floorMaterials.iterator().next());
+		}
+		for (Location location : bukkitElevator.getCarpetBlocks().keySet()){
+			location.getBlock().setType(Material.CARPET);
+			location.getBlock().setData(bukkitElevator.getCarpetBlocks().get(location));
 		}
 		
 		Iterator<Entity> passengerIterator = bukkitElevator.getPassengers();
