@@ -103,7 +103,6 @@ public class BukkitLift extends JavaPlugin implements Listener {
     	//floorBlock = Material.valueOf(getConfig().getString("floorBlock"));
     	List<String> configFloorMaterials = this.getConfig().getStringList("floorBlocks");
     	for (String key : configFloorMaterials){
-    		System.out.println(key);
     		floorMaterials.add(Material.valueOf(key));
     	}
     	stringOneFloor = getConfig().getString("STRING_oneFloor", "There is only one floor silly.");

@@ -18,20 +18,20 @@
  */
 package net.croxis.plugins.lift;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class BukkitCancelRedstoneTask extends BukkitRunnable{
+public class BukkitRestoreRailTask extends BukkitRunnable{
 	private final Block button;
+	private final Material type;
 	
-	public BukkitCancelRedstoneTask(Block b){
+	public BukkitRestoreRailTask(Block b){
 		button = b;
+		type = b.getType();
 	}
 
 	public void run() {
-		BlockState state = button.getState();
-		((org.bukkit.material.Button) state.getData()).setPowered(false);
-		state.update();
+		button.setType(type);
 	}
 }

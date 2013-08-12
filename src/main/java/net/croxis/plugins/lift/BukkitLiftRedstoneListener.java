@@ -28,6 +28,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -146,6 +147,20 @@ public class BukkitLiftRedstoneListener implements Listener {
 								((Player) entity).sendMessage("You are already in a lift. Relog in case this is an error.");
 							continue;
 						}
+						
+						if (entity instanceof Minecart && bukkitElevator.goingUp){
+							Block block = entity.getLocation().getBlock();
+							plugin.logDebug("Minecart! Going up! Blocktype: " + block.getType().toString());
+							if (block.getType() == Material.RAILS
+									|| block.getType() == Material.DETECTOR_RAIL
+									|| block.getType() == Material.ACTIVATOR_RAIL
+									|| block.getType() == Material.POWERED_RAIL){
+								new BukkitRestoreRailTask(block).runTaskLater(plugin, 20);
+								plugin.logDebug("Minecart! We are on top of: " + block.getType().toString());
+								block.setType(Material.AIR);
+							}
+						}
+						
 						BukkitElevatorManager.addPassenger(bukkitElevator, entity);
 						if (baseBlocksIterator.hasNext() && plugin.autoPlace){
 							Location loc = baseBlocksIterator.next().getLocation();
