@@ -148,16 +148,16 @@ public class BukkitLiftRedstoneListener implements Listener {
 							continue;
 						}
 						
-						if (entity instanceof Minecart && bukkitElevator.goingUp){
-							Block block = entity.getLocation().getBlock();
-							plugin.logDebug("Minecart! Going up! Blocktype: " + block.getType().toString());
-							if (block.getType() == Material.RAILS
-									|| block.getType() == Material.DETECTOR_RAIL
-									|| block.getType() == Material.ACTIVATOR_RAIL
-									|| block.getType() == Material.POWERED_RAIL){
-								new BukkitRestoreRailTask(block).runTaskLater(plugin, 20);
-								plugin.logDebug("Minecart! We are on top of: " + block.getType().toString());
-								block.setType(Material.AIR);
+						if (entity instanceof Minecart){
+							bukkitElevator.addMinecartSpeed((Minecart) entity);
+							//A minecart wont go up if attached to a rail, so we temp remove the rail.  
+							if (bukkitElevator.goingUp
+									&& (entity.getLocation().getBlock().getType() == Material.RAILS
+									|| entity.getLocation().getBlock().getType() == Material.DETECTOR_RAIL
+									|| entity.getLocation().getBlock().getType() == Material.ACTIVATOR_RAIL
+									|| entity.getLocation().getBlock().getType() == Material.POWERED_RAIL)){
+								new BukkitRestoreRailTask(entity.getLocation().getBlock()).runTaskLater(plugin, 10);
+								entity.getLocation().getBlock().setType(Material.AIR);
 							}
 						}
 						

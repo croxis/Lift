@@ -32,6 +32,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.getspout.spoutapi.SpoutManager;
@@ -235,9 +236,11 @@ public class BukkitElevatorManager extends ElevatorManager{
 		while (passengerIterator.hasNext()){
 			Entity e = passengerIterator.next();
 			fallers.remove(e);
+			e.setVelocity(new Vector(0, 0, 0));
 			if (e instanceof Player)
 				removePlayer((Player) e);
-			e.setVelocity(new Vector(0, 0, 0));
+			else if (e instanceof Minecart)
+				((Minecart) e).setVelocity(bukkitElevator.getMinecartSpeeds().get(e));
 			passengerIterator.remove();
 		}
 		Iterator<Entity> holdersIterators = bukkitElevator.getHolders();
@@ -245,7 +248,8 @@ public class BukkitElevatorManager extends ElevatorManager{
 			Entity passenger = holdersIterators.next();
 			if (passenger instanceof Player){
 				removePlayer((Player) passenger, holdersIterators);
-			}
+			} else if (passenger instanceof Minecart)
+				((Minecart) passenger).setVelocity(bukkitElevator.getMinecartSpeeds().get(passenger));
 		}
 		//Fire off redstone signal for arrival
 		Block s = bukkitElevator.destFloor.getButton().getRelative(BlockFace.UP);

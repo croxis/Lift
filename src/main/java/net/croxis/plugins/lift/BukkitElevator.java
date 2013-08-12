@@ -31,6 +31,8 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Minecart;
+import org.bukkit.util.Vector;
 
 public class BukkitElevator extends Elevator{
 	public HashSet<Block> baseBlocks = new HashSet<Block>();
@@ -43,6 +45,7 @@ public class BukkitElevator extends Elevator{
 	private HashSet<Location> redstoneBlocks = new HashSet<Location>();
 	private HashMap<Location, Byte> carpetBlocks = new HashMap<Location, Byte>();
 	private HashMap<Location, FloorBlock> railBlocks = new HashMap<Location, FloorBlock>();
+	private HashMap<Entity, Vector> minecartSpeeds = new HashMap<Entity, Vector>();
 	public HashSet<Chunk> chunks = new HashSet<Chunk>();
 	public Material baseBlockType = Material.IRON_BLOCK;
 	public TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
@@ -68,6 +71,8 @@ public class BukkitElevator extends Elevator{
 		floorBlocks.clear();
 		carpetBlocks.clear();
 		railBlocks.clear();
+		redstoneBlocks.clear();
+		minecartSpeeds.clear();
 		holders.clear();
 	}
 	
@@ -175,6 +180,14 @@ public class BukkitElevator extends Elevator{
 	
 	public void addRedstoneBlock(Block block){
 		redstoneBlocks.add(block.getLocation());
+	}
+	
+	public HashMap<Entity, Vector> getMinecartSpeeds(){
+		return minecartSpeeds;
+	}
+	
+	public void addMinecartSpeed(Minecart minecart){
+		minecartSpeeds.put(minecart, minecart.getVelocity());
 	}
 }
 
