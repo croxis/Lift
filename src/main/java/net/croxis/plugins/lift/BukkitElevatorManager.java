@@ -107,7 +107,11 @@ public class BukkitElevatorManager extends ElevatorManager{
 				|| checkBlock.getType() == Material.WATER
 				|| checkBlock.getType() == Material.WOOD_BUTTON
 				|| checkBlock.getType() == Material.CARPET
-				|| checkBlock.getType() == Material.RAILS)
+				|| checkBlock.getType() == Material.RAILS
+				|| checkBlock.getType() == Material.DETECTOR_RAIL
+				|| checkBlock.getType() == Material.ACTIVATOR_RAIL
+				|| checkBlock.getType() == Material.POWERED_RAIL
+				|| checkBlock.getType() == Material.REDSTONE_WIRE)
 			return true;
 		return false;
 	}
@@ -212,12 +216,19 @@ public class BukkitElevatorManager extends ElevatorManager{
 		for (Location location : bukkitElevator.getFloorBlocks().keySet()){
 			location.getBlock().setType(bukkitElevator.getFloorBlocks().get(location).material);
 			location.getBlock().setData(bukkitElevator.getFloorBlocks().get(location).data);
-			if (bukkitElevator.getFloorBlocks().get(location).material == Material.AIR && !plugin.checkFloor)
+			if (location.getBlock().getType() == Material.AIR && !plugin.checkFloor)
 				location.getBlock().setType(plugin.floorMaterials.iterator().next());
+		}
+		for (Location location : bukkitElevator.getRedstoneBlocks()){
+			location.getBlock().setType(Material.REDSTONE_WIRE);
 		}
 		for (Location location : bukkitElevator.getCarpetBlocks().keySet()){
 			location.getBlock().setType(Material.CARPET);
 			location.getBlock().setData(bukkitElevator.getCarpetBlocks().get(location));
+		}
+		for (Location location : bukkitElevator.getRailBlocks().keySet()){
+			location.getBlock().setType(bukkitElevator.getRailBlocks().get(location).material);
+			location.getBlock().setData(bukkitElevator.getRailBlocks().get(location).data);
 		}
 		
 		Iterator<Entity> passengerIterator = bukkitElevator.getPassengers();

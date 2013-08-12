@@ -186,10 +186,18 @@ public class BukkitLiftRedstoneListener implements Listener {
 					if (gb.getRelative(BlockFace.UP).getType() == Material.CARPET){
 						bukkitElevator.addCarpetBlock(gb.getRelative(BlockFace.UP));
 						gb.getRelative(BlockFace.UP).setType(Material.AIR);
+					} else if (gb.getRelative(BlockFace.UP).getType() == Material.RAILS
+							|| gb.getRelative(BlockFace.UP).getType() == Material.DETECTOR_RAIL
+							|| gb.getRelative(BlockFace.UP).getType() == Material.POWERED_RAIL
+							|| gb.getRelative(BlockFace.UP).getType() == Material.ACTIVATOR_RAIL){
+						bukkitElevator.addRailBlock(gb.getRelative(BlockFace.UP));
+						gb.getRelative(BlockFace.UP).setType(Material.AIR);
+					} else if (gb.getRelative(BlockFace.UP).getType() == Material.REDSTONE_WIRE) {
+						bukkitElevator.addRedstoneBlock(gb.getRelative(BlockFace.UP));
+						gb.getRelative(BlockFace.UP).setType(Material.AIR);
 					}
 					
 					gb.setType(Material.AIR);
-					
 				}
 			}
 			
