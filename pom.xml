@@ -4,10 +4,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <groupId>net.croxis.plugins.lift</groupId>
     <artifactId>Lift</artifactId>
     <name>Lift</name>
-    <description>Lifts and Elevators for Bukkit/Spout</description>
+    <description>Simple and easy Lifts and Elevators for Bukkit/Spout</description>
     <url>https://github.com/croxis/Lift</url>
     
-    <version>39</version>
+    <version>40</version>
     
    	<scm>
 		<developerConnection>scm:git:git@github.com:croxis/Lift.git</developerConnection>
@@ -69,18 +69,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         	<id>croxis</id>
         	<url>http://repository-croxis.forge.cloudbees.com/release/</url>
         </repository>
-    	<repository>
-        	<id>md-5</id>
-        	<url>http://repo.md-5.net</url>
-        </repository>
-        <repository>
-	        <id>md_5-snapshots</id>
-	        <url>http://repo.md-5.net/content/repositories/snapshots/</url>
-   		</repository>
-        <repository>
-            <id>Plugin Metrics</id>
-            <url>http://repo.mcstats.org/content/repositories/public</url>
-        </repository>
     </repositories>
     <build>
     	<defaultGoal>clean install</defaultGoal>
@@ -104,101 +92,66 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                     <target>1.5</target>
                 </configuration>
             </plugin>
-           	<!-- <plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.8</version>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.7.1</version>
 				<executions>
 					<execution>
-						<phase>install</phase>
+						<phase>package</phase>
 						<goals>
-							<goal>javadoc</goal>
+							<goal>shade</goal>
 						</goals>
+						<configuration>
+							<artifactSet>
+								<excludes>
+									<exclude>junit:junit</exclude>
+									<exclude>org.bukkit:bukkit</exclude>
+									<exclude>org.spout:spoutapi</exclude>
+								</excludes>
+							</artifactSet>
+						</configuration>
 					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.10.b1</version>
+				<executions>
+				<execution>
+				<phase>clean</phase>
+				<goals>
+				<goal>format</goal>
+				</goals>
+				</execution>
 				</executions>
 				<configuration>
-					<excludePackageNames>com.greatmancode.craftconomy3.commands:com.greatmancode.craftconomy3.spout:com.greatmancode.craftconomy3.converter.converters</excludePackageNames>
+				<quiet>false</quiet>
+				<encoding>UTF-8</encoding>
+				<strictCheck>true</strictCheck>
+				<header>${basedir}/HEADER.txt</header>
+				<keywords>
+				<keyword>${project.name}</keyword>
+				<keyword>license</keyword>
+				</keywords>
+				<mapping>
+				<java>SLASHSTAR_STYLE</java>
+				</mapping>
+				<properties>
+				<name>${project.name}</name>
+				<url>${project.organization.url}</url>
+				<copyright>Copyright (c) ${project.inceptionYear}-2013, ${project.organization.name}</copyright>
+				</properties>
+				<includes>
+				<include>src/main/java/**</include>
+				<include>src/test/java/**</include>
+				</includes>
+				<excludes>
+				<exclude>src/main/java/com/greatmancode/craftconomy3/utils/Metrics.java</exclude>
+				</excludes>
 				</configuration>
-			</plugin> -->
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-shade-plugin</artifactId>
-			<version>1.7.1</version>
-			<executions>
-				<execution>
-					<phase>package</phase>
-					<goals>
-						<goal>shade</goal>
-					</goals>
-					<configuration>
-<artifactSet>
-<excludes>
-<exclude>junit:junit</exclude>
-<exclude>org.bukkit:bukkit</exclude>
-<exclude>org.spout:spoutapi</exclude>
-</excludes>
-</artifactSet>
-</configuration>
-</execution>
-</executions>
-</plugin>
-<plugin>
-<groupId>com.mycila.maven-license-plugin</groupId>
-<artifactId>maven-license-plugin</artifactId>
-<version>1.10.b1</version>
-<executions>
-<execution>
-<phase>clean</phase>
-<goals>
-<goal>format</goal>
-</goals>
-</execution>
-</executions>
-<configuration>
-<quiet>false</quiet>
-<encoding>UTF-8</encoding>
-<strictCheck>true</strictCheck>
-<header>${basedir}/HEADER.txt</header>
-<keywords>
-<keyword>${project.name}</keyword>
-<keyword>license</keyword>
-</keywords>
-<mapping>
-<java>SLASHSTAR_STYLE</java>
-</mapping>
-<properties>
-<name>${project.name}</name>
-<url>${project.organization.url}</url>
-<copyright>Copyright (c) ${project.inceptionYear}-2013, ${project.organization.name}</copyright>
-</properties>
-<includes>
-<include>src/main/java/**</include>
-<include>src/test/java/**</include>
-</includes>
-<excludes>
-<exclude>src/main/java/com/greatmancode/craftconomy3/utils/Metrics.java</exclude>
-</excludes>
-</configuration>
-</plugin>
-<!--  <plugin>
-<artifactId>maven-assembly-plugin</artifactId>
-<executions>
-<execution>
-<id>docs-assembly</id>
-<phase>install</phase>
-<configuration>
-<finalName>javadoc</finalName>
-<appendAssemblyId>false</appendAssemblyId>
-<descriptors>
-<descriptor>src/main/assembly/assemble.xml</descriptor>
-					</descriptors>
-					</configuration>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin> -->
+			</plugin>
         </plugins>
         <pluginManagement>
         	<plugins>

@@ -18,7 +18,6 @@
  */
 package net.croxis.plugins.lift;
 
-import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
 import org.spout.api.event.EventHandler;
 import org.spout.api.event.Listener;
@@ -28,8 +27,6 @@ import org.spout.api.event.player.PlayerInteractBlockEvent;
 import org.spout.api.event.player.PlayerLeaveEvent;
 import org.spout.api.geo.cuboid.Block;
 import org.spout.api.material.block.BlockFace;
-import org.spout.vanilla.event.cause.DamageCause.DamageType;
-import org.spout.vanilla.event.cause.HealthChangeCause;
 import org.spout.vanilla.event.entity.EntityDamageEvent;
 import org.spout.vanilla.component.block.material.Sign;
 import org.spout.vanilla.material.VanillaMaterials;
@@ -44,10 +41,7 @@ public class SpoutLiftPlayerListener implements Listener{
 	
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractBlockEvent event){
-		//if (event.getAction() == Action.RIGHT_CLICK && (event.getPlayer().hasPermission("lift.change") || event.getPlayer().getName() == "croxis")) {
-		//if (event.getAction() == Action.RIGHT_CLICK && event.getPlayer().getWorld().getBlock(event.getInteractedPoint()) != null) {
 		if (event.getAction() == Action.RIGHT_CLICK && event.getEntity().getWorld().getBlock(event.getPoint()) != null) {
-		//if (event.getTargetBlock().isMaterial(VanillaMaterials.SIGN)) {
 			//TODO: There has got to be an easier way to do this
 			Block signBlock = event.getEntity().getWorld().getBlock(event.getPoint());
 			Block buttonBlock = signBlock.translate(BlockFace.BOTTOM);
@@ -114,13 +108,14 @@ public class SpoutLiftPlayerListener implements Listener{
 	
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent event){
-		if(event.getCause() == HealthChangeCause.DAMAGE && event.getDamageType() == DamageType.FALL){
+		//disabled for now until vanilla is fixed
+		/*if(event.getCause() == HealthChangeCause.DAMAGE && event.getDamageType() == DamageType.FALL){
 			Entity faller = event.getEntity();
 			if(SpoutElevatorManager.fallers.contains(faller)){
 				event.setCancelled(true);
 				SpoutElevatorManager.fallers.remove(faller);
 			}
-		}
+		}*/
 	}
 	
 	@EventHandler

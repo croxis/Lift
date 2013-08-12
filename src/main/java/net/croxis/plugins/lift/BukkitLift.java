@@ -20,6 +20,8 @@ package net.croxis.plugins.lift;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -45,9 +47,10 @@ public class BukkitLift extends JavaPlugin implements Listener {
 	public static int maxHeight = 256;
 	//public Material baseMaterial = Material.IRON_BLOCK;
 	public HashMap<Material, Double> blockSpeeds = new HashMap<Material, Double>();
-	public Material floorBlock = Material.GLASS;
+	//public Material floorBlock = Material.GLASS;
+	public HashSet<Material> floorMaterials = new HashSet<Material>();
 	public boolean autoPlace = false;
-	public boolean checkGlass = false;
+	public boolean checkFloor = false;
 	public boolean serverFlight = false;
 	//public boolean useV10 = false;
 	//public V10verlap_API v10verlap_API = null;
@@ -89,7 +92,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
     	debug = this.getConfig().getBoolean("debug");
     	//baseMaterial = Material.valueOf(this.getConfig().getString("baseBlock", "IRON_BLOCK"));
     	autoPlace = this.getConfig().getBoolean("autoPlace");
-    	checkGlass = this.getConfig().getBoolean("checkGlass");
+    	checkFloor = this.getConfig().getBoolean("checkFloor");
     	preventEntry = this.getConfig().getBoolean("preventEntry", false);
     	preventLeave = this.getConfig().getBoolean("preventLeave", false);
     	redstone = this.getConfig().getBoolean("redstone", false);
@@ -97,7 +100,12 @@ public class BukkitLift extends JavaPlugin implements Listener {
     	for (String key : baseBlockKeys){
     		blockSpeeds.put(Material.valueOf(key), this.getConfig().getDouble("baseBlockSpeeds." + key));
     	}
-    	floorBlock = Material.valueOf(getConfig().getString("floorBlock"));
+    	//floorBlock = Material.valueOf(getConfig().getString("floorBlock"));
+    	List<String> configFloorMaterials = this.getConfig().getStringList("floorBlocks");
+    	for (String key : configFloorMaterials){
+    		System.out.println(key);
+    		floorMaterials.add(Material.valueOf(key));
+    	}
     	stringOneFloor = getConfig().getString("STRING_oneFloor", "There is only one floor silly.");
     	stringCurrentFloor = getConfig().getString("STRING_currentFloor", "Current Floor:");
     	stringDestination = getConfig().getString("STRING_dest", "Dest:");
@@ -126,7 +134,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
         if (debug){
 			System.out.println("maxArea: " + Integer.toString(liftArea));
 			System.out.println("autoPlace: " + Boolean.toString(autoPlace));
-			System.out.println("checkGlass: " + Boolean.toString(checkGlass));
+			System.out.println("checkGlass: " + Boolean.toString(checkFloor));
 			System.out.println("baseBlocks: " + blockSpeeds.toString());
 		}
         

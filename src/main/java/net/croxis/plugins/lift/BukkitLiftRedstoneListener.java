@@ -53,11 +53,13 @@ public class BukkitLiftRedstoneListener implements Listener {
 		block = event.getBlock();
 		canDo = false;
 		canDo = (event.getBlock().getType() == Material.STONE_BUTTON || event.getBlock().getType() == Material.WOOD_BUTTON) 
-				//&& (!event.getBlock().isBlockIndirectlyPowered())
+				&& (!event.getBlock().isBlockIndirectlyPowered())
 				&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN;
+		String reason = "Button press";
 		
 		if (BukkitLift.redstone){
 			plugin.logDebug("Redstone scan of " + event.getBlock().toString());
+			reason = "Redstone signal event";
 			Block[] blocks = new Block[4];
 			blocks[0] = event.getBlock().getRelative(BlockFace.EAST);
 			blocks[1] = event.getBlock().getRelative(BlockFace.WEST);
@@ -85,8 +87,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 			
 		if (canDo){
 			long startTime = System.currentTimeMillis();
-			
-			bukkitElevator = BukkitElevatorManager.createLift(block);
+			bukkitElevator = BukkitElevatorManager.createLift(block, reason);
 			if (bukkitElevator == null)
 				return;
 			
@@ -180,8 +181,8 @@ public class BukkitLiftRedstoneListener implements Listener {
 			for (Floor f : glassfloors){
 				for (Block b : bukkitElevator.baseBlocks){
 					Block gb = event.getBlock().getWorld().getBlockAt(b.getX(), f.getY()-2, b.getZ());
+					bukkitElevator.addFloorBlock(gb.getLocation(), gb);
 					gb.setType(Material.AIR);
-					bukkitElevator.glassBlocks.add(gb);
 				}
 			}
 			

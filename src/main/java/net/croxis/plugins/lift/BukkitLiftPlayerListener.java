@@ -49,8 +49,6 @@ public class BukkitLiftPlayerListener implements Listener{
 	public void onPlayerInteract(PlayerInteractEvent event){
 		if ((event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK) 
 				&& event.getPlayer().hasPermission("lift.change")) {
-
-			//final Block signBlock = event.getClickedBlock();
 			buttonBlock = event.getClickedBlock().getRelative(BlockFace.DOWN);
 
 			if (event.getClickedBlock().getType() == Material.WALL_SIGN
@@ -58,8 +56,7 @@ public class BukkitLiftPlayerListener implements Listener{
 			    && (buttonBlock.getType() == Material.STONE_BUTTON || buttonBlock.getType() == Material.WOOD_BUTTON)) {
 
 				Sign sign = (Sign) event.getClickedBlock().getState();
-				BukkitElevator bukkitElevator = BukkitElevatorManager.createLift(buttonBlock);
-                //Elevator elevator = new Elevator(this.plugin, buttonBlock);
+				BukkitElevator bukkitElevator = BukkitElevatorManager.createLift(buttonBlock, event.getPlayer().getName());
 				
 				if (bukkitElevator == null){
 					plugin.logInfo("Elevator generation returned a null object. Please report circumstances that generated this error.");

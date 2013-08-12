@@ -47,9 +47,9 @@ public class BukkitElevatorManager extends ElevatorManager{
 		taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, 2, 2);
 	}
 	
-	public static BukkitElevator createLift(Block block){
+	public static BukkitElevator createLift(Block block, String cause){
 		long startTime = System.currentTimeMillis();
-		plugin.logDebug("Starting elevator gen");
+		plugin.logDebug("Starting elevator gen caused by: " + cause);
 		BukkitElevator bukkitElevator = new BukkitElevator();
 		int yscan = block.getY() - 1;
 		while(yscan >= -1){
@@ -94,7 +94,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 	
 	//Checks if block is a valid elevator block SANS iron
 	public static boolean isValidShaftBlock(Block checkBlock){
-		if (checkBlock.getType() == plugin.floorBlock
+		if (plugin.floorMaterials.contains(checkBlock.getType())
 				|| checkBlock.getType() == Material.AIR 
 				|| checkBlock.getType() == Material.LADDER
 				|| checkBlock.getType() == Material.SNOW
@@ -104,7 +104,9 @@ public class BukkitElevatorManager extends ElevatorManager{
 				|| checkBlock.getType() == Material.VINE 
 				|| checkBlock.getType() == Material.WALL_SIGN
 				|| checkBlock.getType() == Material.WATER
-				|| checkBlock.getType() == Material.WOOD_BUTTON)
+				|| checkBlock.getType() == Material.WOOD_BUTTON
+				|| checkBlock.getType() == Material.CARPET
+				|| checkBlock.getType() == Material.RAILS)
 			return true;
 		return false;
 	}
@@ -157,7 +159,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 				}
 				
 				if (testBlock.getType() == Material.STONE_BUTTON || testBlock.getType() == Material.WOOD_BUTTON){
-					if (plugin.checkGlass)
+					if (plugin.checkFloor)
 						if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, bukkitElevator)){
 							break;
 						}
@@ -189,13 +191,15 @@ public class BukkitElevatorManager extends ElevatorManager{
 	public static boolean scanFloorAtY(World world, int y, BukkitElevator bukkitElevator){
 		for (Block block : bukkitElevator.baseBlocks){
 			if (BukkitLift.debug){
-				System.out.println("Scan glass block type: " + world.getBlockAt(block.getX(), y, block.getZ()).getType().toString());
-				System.out.println("Is not glass?: " + Boolean.toString(world.getBlockAt(block.getX(), y, block.getZ()).getType() != plugin.floorBlock));
+				System.out.println("Scan floor block type: " + world.getBlockAt(block.getX(), y, block.getZ()).getType().toString());
+				System.out.println("Is not valid floor?: " + Boolean.toString(plugin.floorMaterials.contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())));
 				System.out.println("Is not base?: " + Boolean.toString(!plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())));
 			}
-			if (world.getBlockAt(block.getX(), y, block.getZ()).getType() != plugin.floorBlock && !plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())){
+			if (plugin.floorMaterials.contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())
+					&& !plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())
+					&& !(world.getBlockAt(block.getX(), y, block.getZ()).getType() == Material.AIR)){
 				if (BukkitLift.debug)
-					System.out.println("Invalid block type");
+					System.out.println("Invalid block type in lift shaft.");
 				return false;	
 			}
 		}
@@ -204,8 +208,12 @@ public class BukkitElevatorManager extends ElevatorManager{
 	
 	public static void endLift(BukkitElevator bukkitElevator){
 		plugin.logDebug("Halting lift");
-		for (Block b : bukkitElevator.glassBlocks)
-			b.setType(plugin.floorBlock);
+		for (Location location : bukkitElevator.getFloorBlocks().keySet()){
+			location.getBlock().setType(bukkitElevator.getFloorBlocks().get(location).material);
+			location.getBlock().setData(bukkitElevator.getFloorBlocks().get(location).data);
+			if (bukkitElevator.getFloorBlocks().get(location).material == Material.AIR && !plugin.checkFloor)
+				location.getBlock().setType(plugin.floorMaterials.iterator().next());
+		}
 		Iterator<Entity> passengerIterator = bukkitElevator.getPassengers();
 		while (passengerIterator.hasNext()){
 			Entity e = passengerIterator.next();
@@ -243,6 +251,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 			plugin.logDebug("Scanning lift");
 			if (bukkitElevator.isInLift(player)){
 				plugin.logDebug("Removing player from lift");
+				player.setVelocity(new Vector(0, 0, 0));
 				restorePlayer(player);
 				bukkitElevator.removePassenger(player);
 			}
@@ -344,6 +353,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 				//Check if passengers have left the shaft
 				if (!e.isInShaft(passenger) && passenger instanceof Player){
 					plugin.logDebug("Player out of shaft");
+					passenger.setVelocity(new Vector(0, 0, 0));
 					removePlayer((Player) passenger, passengers);
 					continue;
 				}
@@ -360,7 +370,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 					plugin.logDebug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.getLocation().getY()));
 					plugin.logDebug("Trigger status: Going up: " + Boolean.toString(e.goingUp));
 					plugin.logDebug("Floor Y: " + Double.toString(e.destFloor.getY()));
-					
+					passenger.setVelocity(new Vector(0, 0, 0));
 					Location pLoc = passenger.getLocation().clone();
 					pLoc.setY(e.destFloor.getY()-0.5);
 					passenger.teleport(pLoc);

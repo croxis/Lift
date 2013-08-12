@@ -8,8 +8,9 @@ debug: false
 autoPlace: false
 preventEntry: false
 preventLeave: true
-checkGlass: false
-floorBlock: GLASS
+checkFloor: false
+floorBlocks:
+- GLASS
 redstone: false
 baseBlockSpeeds:
   IRON_BLOCK: 0.5

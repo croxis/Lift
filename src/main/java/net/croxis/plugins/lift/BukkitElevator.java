@@ -37,9 +37,22 @@ public class BukkitElevator extends Elevator{
 	public TreeMap <World, TreeMap<Integer, Floor>> worldFloorMap= new TreeMap <World, TreeMap<Integer, Floor>>();
 	private HashSet<Entity> passengers = new HashSet<Entity>();
 	private HashMap<Entity, Location> holders = new HashMap<Entity, Location>();
-	public HashSet<Block> glassBlocks = new HashSet<Block>();
+	//public HashSet<Block> glassBlocks = new HashSet<Block>();
+	private HashMap<Location, FloorBlock> floorBlocks = new HashMap<Location, FloorBlock>();
+	//Integer is the meta "damage" value
+	private HashMap<Location, Integer> carpetBlocks = new HashMap<Location, Integer>();
+	private HashMap<Location, Integer> railBlocks = new HashMap<Location, Integer>();
 	public HashSet<Chunk> chunks = new HashSet<Chunk>();
 	public Material baseBlockType = Material.IRON_BLOCK;
+	
+	class FloorBlock{
+		public Material material;
+		public Byte data;
+		public FloorBlock(final Material m, final Byte d){
+			material = m;
+			data = d;
+		}
+	}
 	
 	public void clear(){
 		baseBlocks.clear();
@@ -47,7 +60,9 @@ public class BukkitElevator extends Elevator{
 		floormap2.clear();
 		worldFloorMap.clear();
 		passengers.clear();
-		glassBlocks.clear();
+		floorBlocks.clear();
+		carpetBlocks.clear();
+		railBlocks.clear();
 		holders.clear();
 	}
 	
@@ -65,7 +80,7 @@ public class BukkitElevator extends Elevator{
 			Location loc = entity.getLocation();
 			if (loc.getBlockX() == block.getX() && 
 					(loc.getY() >= inside.getY() - 1.0D) && 
-					(loc.getY() <= floormap2.get(floormap2.lastKey()).getY()) && 
+					(loc.getY() <= floormap2.get(floormap2.lastKey()).getY() + 3.0D) && 
 					loc.getBlockZ() == block.getZ())
 				return true;
 		}
@@ -125,6 +140,13 @@ public class BukkitElevator extends Elevator{
 		return passengers.size() + holders.size();
 	}
 	
+	public HashMap<Location, FloorBlock> getFloorBlocks(){
+		return floorBlocks;
+	}
+	
+	public void addFloorBlock(Location location, Block block){
+		floorBlocks.put(location, new FloorBlock(block.getType(), block.getData()));
+	}
 }
 
 
