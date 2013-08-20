@@ -115,15 +115,15 @@ public class BukkitLiftRedstoneListener implements Listener {
 			int y = block.getY();
 			Floor startFloor = bukkitElevator.floormap.get(y);
 			bukkitElevator.startFloor = startFloor;
-			//Get all players in elevator shaft (at floor of button pusher if possible)
-			//And set their gravity to 0
 			bukkitElevator.destFloor = bukkitElevator.getFloorFromN(destination);			
 			
 			if (startFloor == null || bukkitElevator.destFloor == null){
-				plugin.logInfo("Critical Error. Startfloor is null. Please set debug to true in config and report bug.");
+				plugin.logInfo("Critical Error. Startfloor||DestFloor is null. Please report entire stacktrace plus the following error codes.");
+				plugin.logInfo("Sign destination: " + Integer.toString(destination));
 				plugin.logInfo("Floormap: " + bukkitElevator.floormap.toString());
 				plugin.logInfo("Floormap2: " + bukkitElevator.floormap2.toString());
-				plugin.logInfo("Floormap3: " + bukkitElevator.destFloor.toString());
+				plugin.logInfo("Start y: " + Integer.toString(y));
+				return;
 			}
 			
 			if (bukkitElevator.destFloor.getY() > startFloor.getY()){
