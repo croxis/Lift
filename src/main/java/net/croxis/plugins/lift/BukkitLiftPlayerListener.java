@@ -75,6 +75,10 @@ public class BukkitLiftPlayerListener implements Listener{
 				
 				int currentDestinationInt = 1;
 				Floor currentFloor = bukkitElevator.getFloorFromY(buttonBlock.getY());
+				if (currentFloor == null){
+					event.getPlayer().sendMessage("Elevator generator says this floor does not exist. Check shaft for blockage");
+					return;
+				}
 				
 				String sign0 = BukkitLift.stringCurrentFloor;
 				String sign1 = Integer.toString(currentFloor.getFloor());
