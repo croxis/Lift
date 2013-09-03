@@ -59,7 +59,7 @@ public class BukkitLiftPlayerListener implements Listener{
 				BukkitElevator bukkitElevator = BukkitElevatorManager.createLift(buttonBlock, event.getPlayer().getName());
 				
 				if (bukkitElevator == null){
-					plugin.logInfo("Elevator generation returned a null object. Please report circumstances that generated this error.");
+					plugin.logInfo("Player elevator generation returned a null object. Please report circumstances that generated this error.");
 					return;
 				}
 				

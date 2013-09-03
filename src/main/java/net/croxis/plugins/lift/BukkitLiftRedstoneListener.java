@@ -89,8 +89,10 @@ public class BukkitLiftRedstoneListener implements Listener {
 		if (canDo){
 			long startTime = System.currentTimeMillis();
 			bukkitElevator = BukkitElevatorManager.createLift(block, reason);
-			if (bukkitElevator == null)
+			if (bukkitElevator == null){
+				plugin.logInfo("Redstone elevator generation returned a null object. Please report circumstances that generated this error.");
 				return;
+			}
 			
 			String line = ((Sign) block.getRelative(BlockFace.UP).getState()).getLine(2);
 			if (line.isEmpty())
