@@ -51,7 +51,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 	
 	public static BukkitElevator createLift(Block block, String cause){
 		long startTime = System.currentTimeMillis();
-		plugin.logDebug("Starting elevator gen caused by: " + cause);
+		plugin.logDebug("Starting elevator gen caused by: " + cause + " v" + plugin.getDescription().getVersion());
 		BukkitElevator bukkitElevator = new BukkitElevator();
 		int yscan = block.getY() - 1;
 		while(yscan >= -1){
@@ -85,7 +85,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 			}
 			yscan--;
 		}
-		plugin.logDebug("Base size: " + Integer.toString(bukkitElevator.baseBlocks.size()));
+		plugin.logDebug("Base size: " + Integer.toString(bukkitElevator.baseBlocks.size()) + " at " + bukkitElevator.baseBlocks.iterator().next().getLocation().toString());
 		
 		constructFloors(bukkitElevator);
 		
@@ -160,7 +160,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 				if (!isValidShaftBlock(testBlock)){
 					message += " | " + x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString();
 					maxY = y1;
-					plugin.logDebug(" | " + x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString());
+					plugin.logDebug("Not valid shaft block" + x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString());
 					break;
 				}
 				
@@ -175,7 +175,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 						floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
 					if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
 						bukkitElevator.floormap.put(y1, floor);
-					plugin.logDebug("Floor added at lift: " + b.getLocation());
+					plugin.logDebug("Floor added at lift: " + testBlock.getLocation().toString());
 					plugin.logDebug("Floor y: " + Integer.toString(y1));
 				}				
 			}
