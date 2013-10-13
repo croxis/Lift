@@ -27,8 +27,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<bukkitVersion>1.6.2-R0.2-SNAPSHOT</bukkitVersion>
-		<spoutPluginVersion>1.6.2-R0.1-SNAPSHOT</spoutPluginVersion>
+		<bukkitVersion>1.6.4-R0.1-SNAPSHOT</bukkitVersion>
 		<spoutVersion>dev-SNAPSHOT</spoutVersion>
 		<vanillaVersion>1.6.2-SNAPSHOT</vanillaVersion>
 	</properties>
@@ -208,13 +207,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             <groupId>fr.neatmonster.nocheatplus</groupId>
             <artifactId>NoCheatPlus</artifactId>
             <version>3.7</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.getspout</groupId>
-            <artifactId>spoutplugin</artifactId>
-            <version>${spoutPluginVersion}</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>

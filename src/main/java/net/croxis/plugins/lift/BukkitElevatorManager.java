@@ -35,7 +35,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import org.getspout.spoutapi.SpoutManager;
 
 public class BukkitElevatorManager extends ElevatorManager{
 	private static BukkitLift plugin;
@@ -363,11 +362,6 @@ public class BukkitElevatorManager extends ElevatorManager{
 		player.setAllowFlight(true);
 		if (plugin.useAntiCheat)
 			AnticheatAPI.exemptPlayer(player, CheckType.FLY);
-
-		if (plugin.useSpout){
-			SpoutManager.getPlayer(player).setGravityMultiplier(0);
-			SpoutManager.getPlayer(player).setCanFly(true);				
-		}
 	}
 	
 	public static void restorePlayer(Player player){
@@ -381,12 +375,8 @@ public class BukkitElevatorManager extends ElevatorManager{
 			player.setAllowFlight(false);
 			plugin.logDebug("Removing player from flight");
 			if (plugin.useAntiCheat)
-				AnticheatAPI.unexemptPlayer(player, CheckType.FLY);
-			if (plugin.useSpout)
-				SpoutManager.getPlayer(player).setCanFly(false);				
+				AnticheatAPI.unexemptPlayer(player, CheckType.FLY);			
 		}
-		if (plugin.useSpout)
-			SpoutManager.getPlayer(player).setGravityMultiplier(1);
 	}
 	
 	public void run() {

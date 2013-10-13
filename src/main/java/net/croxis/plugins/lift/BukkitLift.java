@@ -34,13 +34,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.*;
 
 public class BukkitLift extends JavaPlugin implements Listener {
 	public static boolean debug = false;
-	boolean useSpout = false;
 	//public double liftSpeed = 0.5;
 	public static boolean redstone = true;
 	public static int liftArea = 16;
@@ -115,15 +113,8 @@ public class BukkitLift extends JavaPlugin implements Listener {
         
         serverFlight = this.getServer().getAllowFlight();
         
-        Plugin test = getServer().getPluginManager().getPlugin("Spout");
-        
         if (preventEntry || preventLeave){
         	Bukkit.getServer().getPluginManager().registerEvents(this, this);
-        }
-        
-        if(test != null) {
-        	useSpout = true;
-        	System.out.println(this + " detected Spout!");
         }
         
         if(getServer().getPluginManager().getPlugin("AntiCheat") != null)
