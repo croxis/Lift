@@ -9,6 +9,7 @@ autoPlace: false
 preventEntry: false
 preventLeave: true
 checkFloor: false
+liftMobs: true
 floorBlocks:
 - GLASS
 redstone: false

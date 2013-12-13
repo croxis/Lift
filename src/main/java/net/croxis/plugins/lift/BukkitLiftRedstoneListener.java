@@ -143,6 +143,8 @@ public class BukkitLiftRedstoneListener implements Listener {
 			for(Chunk chunk : bukkitElevator.chunks){
 				plugin.logDebug("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().length));
 				for(Entity entity : chunk.getEntities()){
+					if (!plugin.liftMobs && !(entity instanceof Player))
+						continue;
 					if (bukkitElevator.isInShaftAtFloor(entity, startFloor)){
 						if (BukkitElevatorManager.isPassenger(entity)){
 							if (entity instanceof Player)

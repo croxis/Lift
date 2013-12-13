@@ -48,8 +48,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
 	public boolean autoPlace = false;
 	public boolean checkFloor = false;
 	public boolean serverFlight = false;
-	//public boolean useV10 = false;
-	//public V10verlap_API v10verlap_API = null;
+	public boolean liftMobs = false;
 	public static BukkitElevatorManager manager;
 	public boolean useAntiCheat = false;
 	public boolean useNoCheatPlus = false;
@@ -86,7 +85,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
     	liftArea = this.getConfig().getInt("maxLiftArea");
     	maxHeight = this.getConfig().getInt("maxHeight");
     	debug = this.getConfig().getBoolean("debug");
-    	//baseMaterial = Material.valueOf(this.getConfig().getString("baseBlock", "IRON_BLOCK"));
+    	liftMobs = this.getConfig().getBoolean("liftMobs");
     	autoPlace = this.getConfig().getBoolean("autoPlace");
     	checkFloor = this.getConfig().getBoolean("checkFloor");
     	preventEntry = this.getConfig().getBoolean("preventEntry", false);
