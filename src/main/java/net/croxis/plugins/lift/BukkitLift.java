@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
-import net.h31ix.anticheat.api.AnticheatAPI;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -54,7 +52,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
 	//public V10verlap_API v10verlap_API = null;
 	public static BukkitElevatorManager manager;
 	public boolean useAntiCheat = false;
-	public AnticheatAPI anticheat = null;
+	public boolean useNoCheatPlus = false;
 	private boolean preventEntry = false;
 	private boolean preventLeave = false;
 	public static String stringDestination;
@@ -121,6 +119,11 @@ public class BukkitLift extends JavaPlugin implements Listener {
         {
           useAntiCheat = true;
         }
+        if(getServer().getPluginManager().getPlugin("NoCheatPlus") != null)
+        {
+          useNoCheatPlus = true;
+        }
+        
         if (debug){
 			System.out.println("maxArea: " + Integer.toString(liftArea));
 			System.out.println("autoPlace: " + Boolean.toString(autoPlace));
@@ -137,10 +140,6 @@ public class BukkitLift extends JavaPlugin implements Listener {
         
         System.out.println(this + " is now enabled!");
     }
-    
-    /*public void removeLift(Elevator elevator){
-    	
-    }*/
 	
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event){

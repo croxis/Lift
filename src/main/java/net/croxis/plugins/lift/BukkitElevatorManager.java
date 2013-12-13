@@ -24,6 +24,8 @@ import java.util.Iterator;
 import net.h31ix.anticheat.api.AnticheatAPI;
 import net.h31ix.anticheat.manage.CheckType;
 
+import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -362,6 +364,8 @@ public class BukkitElevatorManager extends ElevatorManager{
 		player.setAllowFlight(true);
 		if (plugin.useAntiCheat)
 			AnticheatAPI.exemptPlayer(player, CheckType.FLY);
+		if (plugin.useNoCheatPlus)
+			NCPExemptionManager.isExempted(player, fr.neatmonster.nocheatplus.checks.CheckType.FIGHT);
 	}
 	
 	public static void restorePlayer(Player player){
@@ -375,7 +379,9 @@ public class BukkitElevatorManager extends ElevatorManager{
 			player.setAllowFlight(false);
 			plugin.logDebug("Removing player from flight");
 			if (plugin.useAntiCheat)
-				AnticheatAPI.unexemptPlayer(player, CheckType.FLY);			
+				AnticheatAPI.unexemptPlayer(player, CheckType.FLY);
+			if (plugin.useNoCheatPlus)
+				NCPExemptionManager.unexempt(player, fr.neatmonster.nocheatplus.checks.CheckType.FIGHT);
 		}
 	}
 	
