@@ -122,7 +122,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
         		logDebug("Hooked into Anticheat 2");
         	} else {
         		useAntiCheat = true;
-        		logDebug("Hooked into Anticheat");
+        		logDebug("Hooked into Anticheat 1");
         	}
         }
         if(getServer().getPluginManager().getPlugin("NoCheatPlus") != null)
