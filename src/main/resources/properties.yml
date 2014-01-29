@@ -1,8 +1,0 @@
-name: Lift
-version: ${version}
-description: ${project.description}
-author: [ croxis ]
-depends: [Vanilla]
-main: net.croxis.plugins.lift.SpoutLift
-load: POSTWORLD
-platform: SERVER

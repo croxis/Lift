@@ -51,6 +51,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
 	public boolean liftMobs = false;
 	public static BukkitElevatorManager manager;
 	public boolean useAntiCheat = false;
+	public boolean useAntiCheat2 = false;
 	public boolean useNoCheatPlus = false;
 	private boolean preventEntry = false;
 	private boolean preventLeave = false;
@@ -116,11 +117,18 @@ public class BukkitLift extends JavaPlugin implements Listener {
         
         if(getServer().getPluginManager().getPlugin("AntiCheat") != null)
         {
-          useAntiCheat = true;
+        	if (getServer().getPluginManager().getPlugin("AntiCheat").getDescription().getVersion().startsWith("2.0")){
+        		useAntiCheat2 = true;
+        		logDebug("Hooked into Anticheat 2");
+        	} else {
+        		useAntiCheat = true;
+        		logDebug("Hooked into Anticheat");
+        	}
         }
         if(getServer().getPluginManager().getPlugin("NoCheatPlus") != null)
         {
           useNoCheatPlus = true;
+          logDebug("Hooked into NoCheatPlus");
         }
         
         if (debug){

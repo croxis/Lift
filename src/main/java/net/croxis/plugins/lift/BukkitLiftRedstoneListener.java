@@ -163,9 +163,11 @@ public class BukkitLiftRedstoneListener implements Listener {
 								new BukkitRestoreRailTask(entity.getLocation().getBlock()).runTaskLater(plugin, 10);
 								entity.getLocation().getBlock().setType(Material.AIR);
 							}
+							plugin.logDebug("Minecart added to lift");
 						}
-						
+						plugin.logDebug("Adding passenger " + entity.toString());
 						BukkitElevatorManager.addPassenger(bukkitElevator, entity);
+						plugin.logDebug("Added passenger " + entity.toString());
 						if (baseBlocksIterator.hasNext() && plugin.autoPlace){
 							Location loc = baseBlocksIterator.next().getLocation();
 							entity.teleport(new Location(entity.getWorld(), loc.getX() + 0.5D, entity.getLocation().getY(), loc.getZ() + 0.5D, entity.getLocation().getYaw(), entity.getLocation().getPitch()));

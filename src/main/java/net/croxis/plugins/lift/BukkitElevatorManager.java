@@ -362,8 +362,12 @@ public class BukkitElevatorManager extends ElevatorManager{
         }
 
 		player.setAllowFlight(true);
-		if (plugin.useAntiCheat)
+		if (plugin.useAntiCheat){
 			AnticheatAPI.exemptPlayer(player, CheckType.FLY);
+		}
+		if (plugin.useAntiCheat2)
+			net.gravitydevelopment.anticheat.api.AnticheatAPI.exemptPlayer(player, net.gravitydevelopment.anticheat.manage.CheckType.FLY);
+		
 		if (plugin.useNoCheatPlus)
 			NCPExemptionManager.isExempted(player, fr.neatmonster.nocheatplus.checks.CheckType.FIGHT);
 	}
@@ -380,6 +384,8 @@ public class BukkitElevatorManager extends ElevatorManager{
 			plugin.logDebug("Removing player from flight");
 			if (plugin.useAntiCheat)
 				AnticheatAPI.unexemptPlayer(player, CheckType.FLY);
+			if (plugin.useAntiCheat2)
+				net.gravitydevelopment.anticheat.api.AnticheatAPI.unexemptPlayer(player, net.gravitydevelopment.anticheat.manage.CheckType.FLY);
 			if (plugin.useNoCheatPlus)
 				NCPExemptionManager.unexempt(player, fr.neatmonster.nocheatplus.checks.CheckType.FIGHT);
 		}
@@ -467,11 +473,13 @@ public class BukkitElevatorManager extends ElevatorManager{
 	
 	public static void addPassenger(BukkitElevator elevator, Entity passenger){
 		// Adds a new entity to lift to be held in position
+		plugin.logDebug("[Manager] Adding passenger " + passenger.toString());
 		if (passenger instanceof Player)
 			setupPlayer((Player) passenger);
 		elevator.addPassenger(passenger);
 		if (!elevator.goingUp) {
 			BukkitElevatorManager.fallers.add(passenger);
 		}
+		plugin.logDebug("[Manager] Added passenger " + passenger.toString());
 	}
 }
