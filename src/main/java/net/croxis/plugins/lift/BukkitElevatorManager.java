@@ -21,9 +21,9 @@ package net.croxis.plugins.lift;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import net.gravitydevelopment.anticheat.api.AntiCheatAPI;
 import net.h31ix.anticheat.api.AnticheatAPI;
 import net.h31ix.anticheat.manage.CheckType;
-
 import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
 
 import org.bukkit.Location;
@@ -365,8 +365,9 @@ public class BukkitElevatorManager extends ElevatorManager{
 		if (plugin.useAntiCheat){
 			AnticheatAPI.exemptPlayer(player, CheckType.FLY);
 		}
-		if (plugin.useAntiCheat2)
-			net.gravitydevelopment.anticheat.api.AnticheatAPI.exemptPlayer(player, net.gravitydevelopment.anticheat.manage.CheckType.FLY);
+		if (plugin.useAntiCheat2){
+			AntiCheatAPI.exemptPlayer(player, net.gravitydevelopment.anticheat.check.CheckType.FLY);
+		}
 		
 		if (plugin.useNoCheatPlus)
 			NCPExemptionManager.isExempted(player, fr.neatmonster.nocheatplus.checks.CheckType.FIGHT);
@@ -385,7 +386,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 			if (plugin.useAntiCheat)
 				AnticheatAPI.unexemptPlayer(player, CheckType.FLY);
 			if (plugin.useAntiCheat2)
-				net.gravitydevelopment.anticheat.api.AnticheatAPI.unexemptPlayer(player, net.gravitydevelopment.anticheat.manage.CheckType.FLY);
+				net.gravitydevelopment.anticheat.api.AntiCheatAPI.unexemptPlayer(player, net.gravitydevelopment.anticheat.check.CheckType.FLY);
 			if (plugin.useNoCheatPlus)
 				NCPExemptionManager.unexempt(player, fr.neatmonster.nocheatplus.checks.CheckType.FIGHT);
 		}
