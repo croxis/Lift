@@ -117,7 +117,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
         
         if(getServer().getPluginManager().getPlugin("AntiCheat") != null)
         {
-        	if (getServer().getPluginManager().getPlugin("AntiCheat").getDescription().getVersion().startsWith("2.0")){
+        	if (getServer().getPluginManager().getPlugin("AntiCheat").getDescription().getVersion().startsWith("2")){
         		useAntiCheat2 = true;
         		logDebug("Hooked into Anticheat 2");
         	} else {
