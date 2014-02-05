@@ -6,7 +6,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <name>Lift</name>
     <description>Simple and easy Lifts and Elevators for Bukkit/Spout</description>
     <url>https://github.com/croxis/Lift</url>
-    <version>46</version>
+    <version>47</version>
     
    	<scm>
 		<developerConnection>scm:git:git@github.com:croxis/Lift.git</developerConnection>
