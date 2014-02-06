@@ -26,10 +26,12 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -54,7 +56,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
 	public boolean useAntiCheat2 = false;
 	public boolean useNoCheatPlus = false;
 	private boolean preventEntry = false;
-	private boolean preventLeave = false;
+	public boolean preventLeave = false;
 	public static String stringDestination;
 	public static String stringCurrentFloor;
 	public static String stringOneFloor;
@@ -148,7 +150,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
         System.out.println(this + " is now enabled!");
     }
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerMove(PlayerMoveEvent event){
 		for (BukkitElevator bukkitElevator : BukkitElevatorManager.bukkitElevators){
 			if (bukkitElevator.chunks.contains(event.getTo().getChunk())){
@@ -158,12 +160,12 @@ public class BukkitLift extends JavaPlugin implements Listener {
 					event.setCancelled(true);
 					event.getPlayer().sendMessage(BukkitLift.stringCantEnter);
 					event.getPlayer().setVelocity(event.getPlayer().getLocation().getDirection().multiply(-1));	
-				} else if (!bukkitElevator.isInShaft(event.getPlayer())
+				} /*else if (!bukkitElevator.isInShaft(event.getPlayer())
 						&& bukkitElevator.isInLift(event.getPlayer())
 						&& preventLeave){
 					event.setCancelled(true);
 					event.getPlayer().sendMessage(BukkitLift.stringCantLeave);
-				}
+				}*/
 			}
 		}
 	}

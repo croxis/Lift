@@ -205,8 +205,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 			if (plugin.floorMaterials.contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())
 					&& !plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())
 					&& !(world.getBlockAt(block.getX(), y, block.getZ()).getType() == Material.AIR)){
-				if (BukkitLift.debug)
-					System.out.println("Invalid block type in lift shaft.");
+				plugin.logDebug("Invalid block type in lift shaft.");
 				return false;	
 			}
 		}
@@ -403,7 +402,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 		
 		while (eleviterator.hasNext()){
 			e = eleviterator.next();
-			plugin.logDebug("Passengers: " + e.getPassengers().toString());
+			plugin.logDebug("Processing elevator: " + e);
 			passengers = e.getPassengers();
 			if(!passengers.hasNext()){
 				BukkitElevatorManager.endLift(e);
@@ -414,11 +413,21 @@ public class BukkitElevatorManager extends ElevatorManager{
 				passenger = passengers.next();
 				
 				//Check if passengers have left the shaft
-				if (!e.isInShaft(passenger) && passenger instanceof Player){
+				if (!e.isInShaft(passenger)){
 					plugin.logDebug("Player out of shaft");
-					passenger.setVelocity(new Vector(0, 0, 0));
-					removePlayer((Player) passenger, passengers);
-					continue;
+					if (plugin.preventLeave){
+						if (passenger instanceof Player)
+							((Player) passenger).sendMessage(BukkitLift.stringCantLeave);
+						Location baseLoc = e.baseBlocks.iterator().next().getLocation();
+						Location playerLoc = passenger.getLocation();
+						playerLoc.setX(baseLoc.getX() + 0.5D);
+						playerLoc.setZ(baseLoc.getZ() + 0.5D);
+						passenger.teleport(playerLoc);
+					} else {
+						passenger.setVelocity(new Vector(0, 0, 0));
+						removePlayer((Player) passenger, passengers);
+						continue;
+					}
 				}
 				
 				//Re apply impulse as it does seem to run out

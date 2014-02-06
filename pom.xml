@@ -73,14 +73,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <build>
     	<defaultGoal>clean install</defaultGoal>
 		<resources>
-		<resource>
-		<targetPath>.</targetPath>
-		<filtering>true</filtering>
-		<directory>${basedir}/src/main/resources</directory>
-		<includes>
-		<include>*.yml</include>
-		</includes>
-		</resource>
+			<resource>
+			<targetPath>.</targetPath>
+			<filtering>true</filtering>
+			<directory>${basedir}/src/main/resources</directory>
+			<includes>
+				<include>*.yml</include>
+			</includes>
+			</resource>
 		</resources>
         <plugins>
             <plugin>

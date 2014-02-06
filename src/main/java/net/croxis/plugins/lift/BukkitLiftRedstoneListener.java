@@ -232,7 +232,5 @@ public class BukkitLiftRedstoneListener implements Listener {
 				System.out.println("Total generation time: " + Long.toString(System.currentTimeMillis() - startTime));
 			}
 		}
-		
 	}
-	
 }

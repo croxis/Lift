@@ -86,12 +86,10 @@ public class BukkitElevator extends Elevator{
 	
 	public boolean isInShaft(Entity entity){
 		for (Block block : baseBlocks){
-			Location inside = block.getLocation();
-			Location loc = entity.getLocation();
-			if (loc.getBlockX() == block.getX() && 
-					(loc.getY() >= inside.getY() - 1.0D) && 
-					(loc.getY() <= floormap2.get(floormap2.lastKey()).getY() + 3.0D) && 
-					loc.getBlockZ() == block.getZ())
+			if (entity.getLocation().getY() >= block.getLocation().getY() - 1.0D &&
+					entity.getLocation().getY() <= floormap2.get(floormap2.lastKey()).getY() + 3.0D &&
+					entity.getLocation().getBlockX() == block.getX() &&
+					entity.getLocation().getBlockZ() == block.getZ())
 				return true;
 		}
 		return false;
