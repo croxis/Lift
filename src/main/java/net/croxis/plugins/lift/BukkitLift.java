@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -39,13 +38,10 @@ import org.bukkit.command.*;
 
 public class BukkitLift extends JavaPlugin implements Listener {
 	public static boolean debug = false;
-	//public double liftSpeed = 0.5;
 	public static boolean redstone = true;
 	public static int liftArea = 16;
 	public static int maxHeight = 256;
-	//public Material baseMaterial = Material.IRON_BLOCK;
 	public HashMap<Material, Double> blockSpeeds = new HashMap<Material, Double>();
-	//public Material floorBlock = Material.GLASS;
 	public HashSet<Material> floorMaterials = new HashSet<Material>();
 	public boolean autoPlace = false;
 	public boolean checkFloor = false;
@@ -83,7 +79,6 @@ public class BukkitLift extends JavaPlugin implements Listener {
     	new BukkitLiftPlayerListener(this);
     	manager = new BukkitElevatorManager(this);
     	
-    	//liftSpeed = this.getConfig().getDouble("liftSpeed");
     	this.getConfig().options().copyDefaults(true);
     	liftArea = this.getConfig().getInt("maxLiftArea");
     	maxHeight = this.getConfig().getInt("maxHeight");
@@ -98,7 +93,6 @@ public class BukkitLift extends JavaPlugin implements Listener {
     	for (String key : baseBlockKeys){
     		blockSpeeds.put(Material.valueOf(key), this.getConfig().getDouble("baseBlockSpeeds." + key));
     	}
-    	//floorBlock = Material.valueOf(getConfig().getString("floorBlock"));
     	List<String> configFloorMaterials = this.getConfig().getStringList("floorBlocks");
     	for (String key : configFloorMaterials){
     		floorMaterials.add(Material.valueOf(key));
@@ -113,7 +107,8 @@ public class BukkitLift extends JavaPlugin implements Listener {
         
         serverFlight = this.getServer().getAllowFlight();
         
-        if (preventEntry || preventLeave){
+        //if (preventEntry || preventLeave){
+        if (preventEntry){
         	Bukkit.getServer().getPluginManager().registerEvents(this, this);
         }
         

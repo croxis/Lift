@@ -90,8 +90,8 @@ public class BukkitLiftRedstoneListener implements Listener {
 			long startTime = System.currentTimeMillis();
 			bukkitElevator = BukkitElevatorManager.createLift(block, reason);
 			if (bukkitElevator == null){
-				plugin.logInfo("Redstone elevator generation returned a null object. Button block at: " + block.getLocation().toString());
-				plugin.logInfo("This may not be a lift so this error can be ignored. If it is a lift, set debug to true in the lift config file and report the circumstances that generated this error.");
+				plugin.logDebug("Redstone elevator generation returned a null object. Button block at: " + block.getLocation().toString());
+				plugin.logDebug("Please see previous messages to determine why.");
 				return;
 			}
 			

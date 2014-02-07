@@ -59,8 +59,8 @@ public class BukkitLiftPlayerListener implements Listener{
 				BukkitElevator bukkitElevator = BukkitElevatorManager.createLift(buttonBlock, event.getPlayer().getName());
 				
 				if (bukkitElevator == null){
-					plugin.logInfo("Player elevator generation returned a null object. Button block at: " + buttonBlock.getLocation().toString());
-					plugin.logInfo("This may not be a lift so this error can be ignored. If it is a lift, set debug to true in the lift config file and report the circumstances that generated this error.");
+					plugin.logDebug("Player elevator generation returned a null object. Button block at: " + buttonBlock.getLocation().toString());
+					plugin.logDebug("Please see previous messages to determine why.");
 					return;
 				}
 				
