@@ -133,6 +133,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
 			System.out.println("autoPlace: " + Boolean.toString(autoPlace));
 			System.out.println("checkGlass: " + Boolean.toString(checkFloor));
 			System.out.println("baseBlocks: " + blockSpeeds.toString());
+			System.out.println("floorBlocks: " + floorMaterials.toString());
 		}
         
         try {
@@ -171,8 +172,6 @@ public class BukkitLift extends JavaPlugin implements Listener {
     		Player player = (Player) sender;
     		player.sendMessage("Starting scan");
     		BukkitElevator bukkitElevator = new BukkitElevator();
-    		//Location location = player.getLocation();
-    		//location.setY(location.getY() - 2);
     		if (BukkitElevatorManager.isBaseBlock(player.getLocation().getBlock().getRelative(BlockFace.DOWN))){
     			bukkitElevator.baseBlockType = player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType();
     			BukkitElevatorManager.scanBaseBlocks(player.getLocation().getBlock().getRelative(BlockFace.DOWN), bukkitElevator);

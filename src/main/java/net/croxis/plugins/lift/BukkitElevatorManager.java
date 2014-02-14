@@ -199,10 +199,11 @@ public class BukkitElevatorManager extends ElevatorManager{
 		for (Block block : bukkitElevator.baseBlocks){
 			if (BukkitLift.debug){
 				System.out.println("Scan floor block type: " + world.getBlockAt(block.getX(), y, block.getZ()).getType().toString());
-				System.out.println("Is not valid floor?: " + Boolean.toString(plugin.floorMaterials.contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())));
+				System.out.println("Is not valid flooring?: " + Boolean.toString(!plugin.floorMaterials.contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())));
 				System.out.println("Is not base?: " + Boolean.toString(!plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())));
+				System.out.println("Is not air?: " + Boolean.toString(!(world.getBlockAt(block.getX(), y, block.getZ()).getType() == Material.AIR)));
 			}
-			if (plugin.floorMaterials.contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())
+			if (!plugin.floorMaterials.contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())
 					&& !plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())
 					&& !(world.getBlockAt(block.getX(), y, block.getZ()).getType() == Material.AIR)){
 				plugin.logDebug("Invalid block type in lift shaft.");
