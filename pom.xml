@@ -4,9 +4,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <groupId>net.croxis.plugins.lift</groupId>
     <artifactId>Lift</artifactId>
     <name>Lift</name>
-    <description>Simple and easy Lifts and Elevators for Bukkit/Spout</description>
+    <description>Simple and easy Lifts and Elevators for Bukkit</description>
     <url>https://github.com/croxis/Lift</url>
-    <version>48</version>
+    <version>49</version>
     
    	<scm>
 		<developerConnection>scm:git:git@github.com:croxis/Lift.git</developerConnection>
@@ -26,7 +26,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<bukkitVersion>1.7.2-R0.4-SNAPSHOT</bukkitVersion>
+		<bukkitVersion>1.7.5-R0.1-SNAPSHOT</bukkitVersion>
 	</properties>
   	
   	<pluginRepositories>
@@ -57,18 +57,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public</url>
         </repository>
-        <repository>
-            <id>spout-repo</id>
-            <url>http://nexus.spout.org/content/groups/public/</url>
-        </repository>
-        <repository>
-        	<id>croxis</id>
-        	<url>http://repository-croxis.forge.cloudbees.com/release/</url>
-        </repository>
-            <repository>
-		        <id>gravity-repo</id>
-		        <url>http://repo.gravitydevelopment.net/</url>
-		    </repository>
+           <repository>
+	        <id>gravity-repo</id>
+	        <url>http://repo.gravitydevelopment.net/</url>
+	    </repository>
     </repositories>
     <build>
     	<defaultGoal>clean install</defaultGoal>
@@ -207,14 +199,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <dependency>
             <groupId>net.gravitydevelopment.anticheat</groupId>
             <artifactId>AntiCheat</artifactId>
-            <version>2.0.1</version>
+            <version>2.0.2</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>fr.neatmonster.nocheatplus</groupId>
             <artifactId>NoCheatPlus</artifactId>
-            <version>3.10.7</version>
+            <version>3.10.9</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>        
