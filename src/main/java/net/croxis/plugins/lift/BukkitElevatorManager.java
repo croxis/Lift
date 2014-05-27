@@ -98,6 +98,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 	//Checks if block is a valid elevator block SANS iron
 	public static boolean isValidShaftBlock(Block checkBlock){
 		if (plugin.floorMaterials.contains(checkBlock.getType())
+				|| checkBlock.isEmpty()
 				|| checkBlock.getType() == Material.AIR 
 				|| checkBlock.getType() == Material.LADDER
 				|| checkBlock.getType() == Material.SNOW
@@ -426,7 +427,10 @@ public class BukkitElevatorManager extends ElevatorManager{
 						passenger.teleport(playerLoc);
 					} else {
 						passenger.setVelocity(new Vector(0, 0, 0));
-						removePlayer((Player) passenger, passengers);
+						if (passenger instanceof Player)
+							removePlayer((Player) passenger, passengers);
+						else
+							removePassenger(passenger);
 						continue;
 					}
 				}
