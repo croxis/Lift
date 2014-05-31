@@ -61,6 +61,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	        <id>gravity-repo</id>
 	        <url>http://repo.gravitydevelopment.net/</url>
 	    </repository>
+        <repository>
+            <id>md5-repo</id>
+            <url>http://repo.md-5.net/content/repositories/releases/</url>
+        </repository>
     </repositories>
     <build>
     	<defaultGoal>clean install</defaultGoal>
@@ -204,9 +208,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>fr.neatmonster.nocheatplus</groupId>
-            <artifactId>NoCheatPlus</artifactId>
-            <version>3.10.9</version>
+            <groupId>fr.neatmonster</groupId>
+            <artifactId>ncpcore</artifactId>
+            <version>static</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>        
