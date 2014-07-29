@@ -255,7 +255,18 @@ public class BukkitElevatorManager extends ElevatorManager{
 		}
 		//Fire off redstone signal for arrival
 		Block s = bukkitElevator.destFloor.getButton().getRelative(BlockFace.UP);
-		org.bukkit.material.Sign sign = (org.bukkit.material.Sign) s.getState().getData();
+		org.bukkit.material.Sign sign;
+		try{
+			sign = (org.bukkit.material.Sign) s.getState().getData();
+		} catch(Exception exception) {
+			plugin.logInfo("WARNING: Unable to get sign for redstone pulse.");
+			plugin.logInfo("Sign coords: " + s.getLocation().toString());
+			plugin.logInfo("Sign material: " + s.getType().toString());
+			plugin.logInfo("Sign ID: " + Integer.toString(s.getTypeId()));
+			bukkitElevator.clear();
+			return;
+		}
+		
 		BlockFace directionFacing = sign.getFacing();
 		if (directionFacing == BlockFace.NORTH){
 			if (s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH).getType() == Material.STONE_BUTTON
