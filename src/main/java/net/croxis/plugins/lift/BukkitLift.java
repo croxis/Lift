@@ -18,7 +18,6 @@
  */
 package net.croxis.plugins.lift;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -53,7 +52,6 @@ public class BukkitLift extends JavaPlugin implements Listener {
 	public boolean useNoCheatPlus = false;
 	private boolean preventEntry = false;
 	public boolean preventLeave = false;
-	private boolean collectStats = false;
 	public static String stringDestination;
 	public static String stringCurrentFloor;
 	public static String stringOneFloor;
@@ -98,7 +96,6 @@ public class BukkitLift extends JavaPlugin implements Listener {
     	for (String key : configFloorMaterials){
     		floorMaterials.add(Material.valueOf(key));
     	}
-    	collectStats = this.getConfig().getBoolean("collectStats");
     	stringOneFloor = getConfig().getString("STRING_oneFloor", "There is only one floor silly.");
     	stringCurrentFloor = getConfig().getString("STRING_currentFloor", "Current Floor:");
     	stringDestination = getConfig().getString("STRING_dest", "Dest:");
@@ -137,15 +134,6 @@ public class BukkitLift extends JavaPlugin implements Listener {
 			System.out.println("baseBlocks: " + blockSpeeds.toString());
 			System.out.println("floorBlocks: " + floorMaterials.toString());
 		}
-        
-        try {
-        	if (collectStats){
-        		BukkitMetrics bukkitMetrics = new BukkitMetrics(this);
-        		bukkitMetrics.start();
-        	}
-        } catch (IOException e) {
-            // Failed to submit the stats :-(
-        }
         
         System.out.println(this + " is now enabled!");
     }

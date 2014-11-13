@@ -10,7 +10,6 @@ preventEntry: false
 preventLeave: true
 checkFloor: false
 liftMobs: true
-collectStats: true
 floorBlocks:
 - GLASS
 - STAINED_GLASS
