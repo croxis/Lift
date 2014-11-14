@@ -19,6 +19,7 @@
 package net.croxis.plugins.lift;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -104,7 +105,7 @@ public class BukkitLiftPlayerListener implements Listener{
 						currentDestinationInt = 2;
 					plugin.logDebug("Rotating back to first floor");
 				}
-				sign2 = BukkitLift.stringDestination + " " + Integer.toString(currentDestinationInt);
+				sign2 = Color.GREEN + BukkitLift.stringDestination + " " + Integer.toString(currentDestinationInt);
 				sign3 = bukkitElevator.getFloorFromN(currentDestinationInt).getName();
 				sign.setLine(0, sign0);
 				sign.setLine(1, sign1);

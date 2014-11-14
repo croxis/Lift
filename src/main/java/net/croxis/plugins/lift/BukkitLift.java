@@ -176,7 +176,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
     		player.sendMessage("Floor scan reports: " + BukkitElevatorManager.constructFloors(bukkitElevator));
     		player.sendMessage("Total time generating elevator: " + Long.toString(System.currentTimeMillis() - time));
     		return true;
-    	} //If this has happened the function will break and return true. if this hasn't happened the a value of false will be returned.
+    	}
     	return false; 
     }
 

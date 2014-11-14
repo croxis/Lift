@@ -6,7 +6,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <name>Lift</name>
     <description>Simple and easy Lifts and Elevators for Bukkit</description>
     <url>https://github.com/croxis/Lift</url>
-    <version>51</version>
+    <version>52</version>
     
    	<scm>
 		<developerConnection>scm:git:git@github.com:croxis/Lift.git</developerConnection>
@@ -18,11 +18,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<name>croxis</name>
 		<url>https://github.com/croxis</url>
 	</organization>
-	<!-- Continuous integration -->
-	<ciManagement>
-		<system>jenkins</system>
-		<url>https://croxis.ci.cloudbees.com/job/Lift</url>
-	</ciManagement>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -61,6 +56,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	        <id>gravity-repo</id>
 	        <url>http://repo.gravitydevelopment.net/</url>
 	    </repository>
+        <repository>
+            <id>spigot-repo</id>
+            <url>http://repo.md-5.net/content/groups/public/</url>
+        </repository>
     </repositories>
     <build>
     	<defaultGoal>clean install</defaultGoal>
