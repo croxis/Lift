@@ -188,9 +188,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             <version>${bukkitVersion}</version>
         </dependency>
         <dependency>
-            <groupId>fr.neatmonster.nocheatplus</groupId>
-            <artifactId>NoCheatPlus</artifactId>
-            <version>3.10.9</version>
+            <groupId>fr.neatmonster</groupId>
+            <artifactId>ncpcore</artifactId>
+            <version>static</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>        
