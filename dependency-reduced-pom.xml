@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
-    <artifactId>ForgeMod</artifactId>
-    <groupId>net.md-5</groupId>
-    <version>1.5.1-7.7.2-SNAPSHOT</version>
-    <relativePath>../pom.xml/pom.xml</relativePath>
-  </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.croxis.plugins.lift</groupId>
   <artifactId>Lift</artifactId>
   <name>Lift</name>
-  <version>36</version>
-  <description>Lifts and Elevators for Bukkit/Spout</description>
+  <version>52</version>
+  <description>Simple and easy Lifts and Elevators for Bukkit</description>
   <url>https://github.com/croxis/Lift</url>
-  <ciManagement>
-    <system>jenkins</system>
-    <url>https://croxis.ci.cloudbees.com/job/Lift</url>
-  </ciManagement>
   <scm>
     <connection>scm:git:git@github.com:croxis/Lift.git</connection>
     <developerConnection>scm:git:git@github.com:croxis/Lift.git</developerConnection>
@@ -69,25 +59,10 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.0.2</version>
+        <version>3.2</version>
         <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.8</version>
-        <executions>
-          <execution>
-            <phase>install</phase>
-            <goals>
-              <goal>javadoc</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <excludePackageNames>com.greatmancode.craftconomy3.commands:com.greatmancode.craftconomy3.spout:com.greatmancode.craftconomy3.converter.converters</excludePackageNames>
+          <source>1.7</source>
+          <target>1.7</target>
         </configuration>
       </plugin>
       <plugin>
@@ -138,7 +113,7 @@
           <properties>
             <name>${project.name}</name>
             <url>${project.organization.url}</url>
-            <copyright>Copyright (c) ${project.inceptionYear}-2012, ${project.organization.name}</copyright>
+            <copyright>Copyright (c) ${project.inceptionYear}-2013, ${project.organization.name}</copyright>
           </properties>
           <includes>
             <include>src/main/java/**</include>
@@ -148,25 +123,6 @@
             <exclude>src/main/java/com/greatmancode/craftconomy3/utils/Metrics.java</exclude>
           </excludes>
         </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>docs-assembly</id>
-            <phase>install</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>javadoc</finalName>
-              <appendAssemblyId>false</appendAssemblyId>
-              <descriptors>
-                <descriptor>src/main/assembly/assemble.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
@@ -182,24 +138,8 @@
       <url>http://repo.bukkit.org/content/groups/public</url>
     </repository>
     <repository>
-      <id>spout-repo</id>
-      <url>http://repo.spout.org</url>
-    </repository>
-    <repository>
-      <id>croxis</id>
-      <url>http://repository-croxis.forge.cloudbees.com/release/</url>
-    </repository>
-    <repository>
-      <id>md-5</id>
-      <url>http://repo.md-5.net</url>
-    </repository>
-    <repository>
-      <id>md_5-snapshots</id>
-      <url>http://repo.md-5.net/content/repositories/snapshots/</url>
-    </repository>
-    <repository>
-      <id>Plugin Metrics</id>
-      <url>http://repo.mcstats.org/content/repositories/public</url>
+      <id>spigot-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
     </repository>
   </repositories>
   <pluginRepositories>
@@ -214,57 +154,18 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.5.2-R0.1</version>
-      <scope>provided</scope>
+      <version>1.8.3-R0.1-SNAPSHOT</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>net.h31ix.anticheat</groupId>
-      <artifactId>AntiCheat</artifactId>
-      <version>1.3.4-DEV</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>mcMMO</artifactId>
-          <groupId>com.gmail.nossr50</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>fr.neatmonster.nocheatplus</groupId>
-      <artifactId>NoCheatPlus</artifactId>
-      <version>3.7</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>craftbukkit</artifactId>
-          <groupId>org.bukkit</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.getspout</groupId>
-      <artifactId>spoutplugin</artifactId>
-      <version>1.5.2-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.spout</groupId>
-      <artifactId>spoutapi</artifactId>
-      <version>dev-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.spout</groupId>
-      <artifactId>vanilla</artifactId>
-      <version>1.5.2-SNAPSHOT</version>
+      <groupId>fr.neatmonster</groupId>
+      <artifactId>ncpcore</artifactId>
+      <version>static</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
   <properties>
-    <vanillaVersion>1.5.2-SNAPSHOT</vanillaVersion>
-    <spoutPluginVersion>1.5.2-R0.1-SNAPSHOT</spoutPluginVersion>
-    <bukkitVersion>1.5.2-R0.1</bukkitVersion>
-    <spoutVersion>dev-SNAPSHOT</spoutVersion>
+    <bukkitVersion>1.8.3-R0.1-SNAPSHOT</bukkitVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>
