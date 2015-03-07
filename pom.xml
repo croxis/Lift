@@ -21,7 +21,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<bukkitVersion>1.7.10-R0.1-SNAPSHOT</bukkitVersion>
+		<bukkitVersion>1.8.3-R0.1-SNAPSHOT</bukkitVersion>
 	</properties>
   	
   	<pluginRepositories>
@@ -52,14 +52,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public</url>
         </repository>
-           <repository>
-	        <id>gravity-repo</id>
-	        <url>http://repo.gravitydevelopment.net/</url>
-	    </repository>
         <repository>
             <id>spigot-repo</id>
-            <url>http://repo.md-5.net/content/groups/public/</url>
-        </repository>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+		</repository>
     </repositories>
     <build>
     	<defaultGoal>clean install</defaultGoal>
@@ -181,26 +177,15 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         </pluginManagement>
     </build>
     <dependencies>
+    <dependency>
+          <groupId>org.spigotmc</groupId>
+          <artifactId>spigot-api</artifactId>
+          <version>${bukkitVersion}</version>
+		</dependency>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>${bukkitVersion}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.h31ix.anticheat</groupId>
-            <artifactId>AntiCheat</artifactId>
-            <version>1.5.9</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.gravitydevelopment.anticheat</groupId>
-            <artifactId>AntiCheat</artifactId>
-            <version>2.0.2</version>
-            <type>jar</type>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>fr.neatmonster.nocheatplus</groupId>
