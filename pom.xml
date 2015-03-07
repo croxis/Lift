@@ -56,6 +56,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
+		<repository>
+			<id>md5-repo</id>
+			<url>http://repo.md-5.net/content/repositories/releases/</url>
+		</repository>
     </repositories>
     <build>
     	<defaultGoal>clean install</defaultGoal>
