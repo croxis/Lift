@@ -18,20 +18,20 @@
  */
 package net.croxis.plugins.lift;
 
-public abstract class Elevator {
+import java.util.HashSet;
 
-	public int destinationY = 0;//Destination y coordinate
+import org.spongepowered.api.block.BlockLoc;
+import org.spongepowered.api.block.BlockType;
+
+
+public class SpongeElevator extends Elevator{
+	public BlockType baseBlockType = null;
+	public HashSet<BlockLoc> baseBlocks = new HashSet<BlockLoc>();
 	
-	public boolean goingUp = false;
-	public double speed = 0.5;
-	private String failReason = "";
-	public String cause = "";
-	public String getFailReason() {
-		return failReason;
-	}
+	@Override
 	public void setFailReason(String failReason) {
-		this.failReason = failReason;
+		super.setFailReason(failReason);
+		SpongeLift.instance.getLogger().debug(failReason);
 	}
-	
-	
+
 }

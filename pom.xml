@@ -6,7 +6,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <name>Lift</name>
     <description>Simple and easy Lifts and Elevators for Bukkit</description>
     <url>https://github.com/croxis/Lift</url>
-    <version>52</version>
+    <version>53</version>
     
    	<scm>
 		<developerConnection>scm:git:git@github.com:croxis/Lift.git</developerConnection>
@@ -60,6 +60,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			<id>md5-repo</id>
 			<url>http://repo.md-5.net/content/repositories/releases/</url>
 		</repository>
+		<repository>
+			<id>sponge-maven-repo</id>
+			<name>Sponge maven repo</name>
+			<url>http://repo.spongepowered.org/maven</url>
+		</repository>
     </repositories>
     <build>
     	<defaultGoal>clean install</defaultGoal>
@@ -83,7 +88,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                     <target>1.7</target>
                 </configuration>
             </plugin>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>1.7.1</version>
@@ -104,43 +109,43 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>com.mycila.maven-license-plugin</groupId>
 				<artifactId>maven-license-plugin</artifactId>
 				<version>1.10.b1</version>
 				<executions>
-				<execution>
-				<phase>clean</phase>
-				<goals>
-				<goal>format</goal>
-				</goals>
-				</execution>
+					<execution>
+						<phase>clean</phase>
+						<goals>
+						<goal>format</goal>
+						</goals>
+						</execution>
 				</executions>
 				<configuration>
-				<quiet>false</quiet>
-				<encoding>UTF-8</encoding>
-				<strictCheck>true</strictCheck>
-				<header>${basedir}/HEADER.txt</header>
-				<keywords>
-				<keyword>${project.name}</keyword>
-				<keyword>license</keyword>
-				</keywords>
-				<mapping>
-				<java>SLASHSTAR_STYLE</java>
-				</mapping>
-				<properties>
-				<name>${project.name}</name>
-				<url>${project.organization.url}</url>
-				<copyright>Copyright (c) ${project.inceptionYear}-2013, ${project.organization.name}</copyright>
-				</properties>
-				<includes>
-				<include>src/main/java/**</include>
-				<include>src/test/java/**</include>
-				</includes>
-				<excludes>
-				<exclude>src/main/java/com/greatmancode/craftconomy3/utils/Metrics.java</exclude>
-				</excludes>
+					<quiet>false</quiet>
+					<encoding>UTF-8</encoding>
+					<strictCheck>true</strictCheck>
+					<header>${basedir}/HEADER.txt</header>
+					<keywords>
+					<keyword>${project.name}</keyword>
+					<keyword>license</keyword>
+					</keywords>
+					<mapping>
+					<java>SLASHSTAR_STYLE</java>
+					</mapping>
+					<properties>
+					<name>${project.name}</name>
+					<url>${project.organization.url}</url>
+					<copyright>Copyright (c) ${project.inceptionYear}-2013, ${project.organization.name}</copyright>
+					</properties>
+					<includes>
+					<include>src/main/java/**</include>
+					<include>src/test/java/**</include>
+					</includes>
+					<excludes>
+					<exclude>src/main/java/com/greatmancode/craftconomy3/utils/Metrics.java</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
         </plugins>
@@ -197,6 +202,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             <version>static</version>
             <type>jar</type>
             <scope>provided</scope>
-        </dependency>        
+        </dependency>
+        <dependency>
+			<groupId>org.spongepowered</groupId>
+			<artifactId>spongeapi</artifactId>
+			<version>1.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>        
     </dependencies>
 </project>

@@ -44,17 +44,19 @@ public class BukkitElevatorManager extends ElevatorManager{
 
 	public BukkitElevatorManager(BukkitLift plugin) {
 		BukkitElevatorManager.plugin = plugin;
-		taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, 2, 2);
+		taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, 1, 1);
 	}
 	
 	public static BukkitElevator createLift(Block block, String cause){
 		long startTime = System.currentTimeMillis();
 		plugin.logDebug("Starting elevator gen caused by: " + cause + " v" + plugin.getDescription().getVersion());
 		BukkitElevator bukkitElevator = new BukkitElevator();
+		bukkitElevator.cause = "Starting elevator gen caused by: " + cause + " v" + plugin.getDescription().getVersion();
 		int yscan = block.getY() - 1;
 		while(yscan >= -1){
 			if (yscan == -1){ //Gone too far with no base abort!
 				plugin.logDebug("No elevator base found");
+				bukkitElevator.setFailReason("No elevator base found");
 				return null;
 			}
 			Block checkBlock = block.getWorld().getBlockAt(block.getX(), yscan, block.getZ());
@@ -94,7 +96,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 	
 	//Checks if block is a valid elevator block SANS iron
 	public static boolean isValidShaftBlock(Block checkBlock){
-		if (plugin.floorMaterials.contains(checkBlock.getType())
+		return (plugin.floorMaterials.contains(checkBlock.getType())
 				|| checkBlock.isEmpty()
 				|| checkBlock.getType() == Material.AIR 
 				|| checkBlock.getType() == Material.LADDER
@@ -111,19 +113,15 @@ public class BukkitElevatorManager extends ElevatorManager{
 				|| checkBlock.getType() == Material.DETECTOR_RAIL
 				|| checkBlock.getType() == Material.ACTIVATOR_RAIL
 				|| checkBlock.getType() == Material.POWERED_RAIL
-				|| checkBlock.getType() == Material.REDSTONE_WIRE)
-			return true;
-		return false;
+				|| checkBlock.getType() == Material.REDSTONE_WIRE);
 	}
 	
 	//Recursive function that constructs our list of blocks
 	//I'd rather it just return a hashset instead of passing elevator
 	//But I can't figure out a clean way to do it
 	public static void scanBaseBlocks(Block block, BukkitElevator bukkitElevator){
-		if (bukkitElevator.baseBlocks.size() >= BukkitLift.liftArea)
+		if (bukkitElevator.baseBlocks.size() >= BukkitLift.liftArea || bukkitElevator.baseBlocks.contains(block))
 			return; //5x5 max, prevents infinite loops
-		else if (bukkitElevator.baseBlocks.contains(block))
-			return; // We have that block already
 		bukkitElevator.baseBlocks.add(block);
 		if (block.getRelative(BlockFace.NORTH, 1).getType() == bukkitElevator.baseBlockType)
 			scanBaseBlocks(block.getRelative(BlockFace.NORTH), bukkitElevator);
@@ -162,7 +160,6 @@ public class BukkitElevatorManager extends ElevatorManager{
 					plugin.logDebug("Not valid shaft block" + x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString());
 					break;
 				}
-				
 				if (testBlock.getType() == Material.STONE_BUTTON || testBlock.getType() == Material.WOOD_BUTTON){
 					if (plugin.checkFloor)
 						if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, bukkitElevator)){
@@ -344,9 +341,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 	}
 	
 	public static boolean isBaseBlock(Block block){
-		if (plugin.blockSpeeds.containsKey(block.getType()))
-			return true;
-		return false;
+		return plugin.blockSpeeds.containsKey(block.getType());
 	}
 	
 	public static boolean isPassenger(Entity entity){
