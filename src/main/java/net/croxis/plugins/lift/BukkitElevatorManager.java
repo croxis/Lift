@@ -165,8 +165,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 						if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, bukkitElevator)){
 							break;
 						}
-					Floor floor = new Floor(testBlock);
-					floor.setY(y1);
+					BukkitFloor floor = new BukkitFloor(testBlock, y1);
 					if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
 						floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
 					if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
@@ -194,14 +193,14 @@ public class BukkitElevatorManager extends ElevatorManager{
 		for (Block block : bukkitElevator.baseBlocks){
 			if (BukkitLift.debug){
 				System.out.println("Scan floor block type: " + world.getBlockAt(block.getX(), y, block.getZ()).getType().toString());
-				System.out.println("Is not valid flooring?: " + Boolean.toString(!plugin.floorMaterials.contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())));
-				System.out.println("Is not base?: " + Boolean.toString(!plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())));
-				System.out.println("Is not air?: " + Boolean.toString(!(world.getBlockAt(block.getX(), y, block.getZ()).getType() == Material.AIR)));
 			}
 			if (!plugin.floorMaterials.contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())
 					&& !plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())
-					&& !(world.getBlockAt(block.getX(), y, block.getZ()).getType() == Material.AIR)){
+					&& !(world.getBlockAt(block.getX(), y, block.getZ()).isEmpty())){
 				plugin.logDebug("Invalid block type in lift shaft.");
+				plugin.logDebug("Is valid flooring?: " + Boolean.toString(plugin.floorMaterials.contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())));
+				plugin.logDebug("Is base?: " + Boolean.toString(plugin.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())));
+				plugin.logDebug("Is air?: " + Boolean.toString((world.getBlockAt(block.getX(), y, block.getZ()).getType() == Material.AIR)));
 				return false;	
 			}
 		}

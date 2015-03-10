@@ -18,18 +18,17 @@
  */
 package net.croxis.plugins.lift;
 
-import org.bukkit.World;
-import org.bukkit.block.Block;
+import java.util.TreeMap;
 
 public class Floor {
 	private String name = "";
 	private int y;
 	private int floor;
-	private World world;
-	private Block button;
-	public Floor(final Block b){
-		button = b;
+	
+	public Floor(final int y){
+		this.y = y;
 	}
+	
 	public String getName() {
 		return name;
 	}
@@ -41,26 +40,12 @@ public class Floor {
 	public int getY() {
 		return y;
 	}
-	public void setY(int y) {
-		this.y = y;
-	}
 	public int getFloor() {
 		return floor;
 	}
 	public void setFloor(int floor) {
 		this.floor = floor;
 	}
-	public World getWorld() {
-		return world;
-	}
-	public void setWorld(World world) {
-		this.world = world;
-	}
-	public Block getButton() {
-		return button;
-	}
-	public void setButton(Block button) {
-		this.button = button;
-	}
+	
 
 }

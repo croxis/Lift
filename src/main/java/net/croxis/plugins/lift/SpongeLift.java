@@ -166,7 +166,6 @@ public class SpongeLift {
 		 }
 		 
 		 
-		 
 		logger.debug("maxArea: " + Integer.toString(maxLiftArea));
 		logger.debug("autoPlace: " + Boolean.toString(autoPlace));
 		logger.debug("checkGlass: " + Boolean.toString(checkFloor));
@@ -195,7 +194,6 @@ public class SpongeLift {
 					event.getPlayer().sendMessage("Failed to generate lift due to: " + elevator.getFailReason());
 					return;
 				}
-				
 				
 				event.setCancelled(true);
 			}

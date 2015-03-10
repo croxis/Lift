@@ -48,10 +48,9 @@ public class BukkitElevator extends Elevator{
 	private HashMap<Entity, Vector> minecartSpeeds = new HashMap<Entity, Vector>();
 	public HashSet<Chunk> chunks = new HashSet<Chunk>();
 	public Material baseBlockType = Material.IRON_BLOCK;
-	public TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
-	public TreeMap <Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
-	public Floor destFloor = null;
-	public Floor startFloor = null;
+	
+	public BukkitFloor destFloor = null;
+	public BukkitFloor startFloor = null;
 	
 	class FloorBlock{
 		public Material material;
@@ -63,9 +62,8 @@ public class BukkitElevator extends Elevator{
 	}
 	
 	public void clear(){
+		super.clear();
 		baseBlocks.clear();
-		floormap.clear();
-		floormap2.clear();
 		worldFloorMap.clear();
 		passengers.clear();
 		floorBlocks.clear();
@@ -76,12 +74,12 @@ public class BukkitElevator extends Elevator{
 		holders.clear();
 	}
 	
-	public Floor getFloorFromY(int y){
-		return floormap.get(y);
+	public BukkitFloor getFloorFromY(int y){
+		return (BukkitFloor) floormap.get(y);
 	}
 	
-	public Floor getFloorFromN(int n){
-		return floormap2.get(n);
+	public BukkitFloor getFloorFromN(int n){
+		return (BukkitFloor) floormap2.get(n);
 	}
 	
 	public boolean isInShaft(Entity entity){

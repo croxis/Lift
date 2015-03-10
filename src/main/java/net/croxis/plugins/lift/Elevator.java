@@ -18,6 +18,8 @@
  */
 package net.croxis.plugins.lift;
 
+import java.util.TreeMap;
+
 public abstract class Elevator {
 
 	public int destinationY = 0;//Destination y coordinate
@@ -26,6 +28,15 @@ public abstract class Elevator {
 	public double speed = 0.5;
 	private String failReason = "";
 	public String cause = "";
+	
+	public TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
+	public TreeMap <Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
+	
+	public void clear(){
+		floormap.clear();
+		floormap2.clear();
+	}
+	
 	public String getFailReason() {
 		return failReason;
 	}

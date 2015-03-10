@@ -18,6 +18,7 @@
  */
 package net.croxis.plugins.lift;
 
+import java.util.Iterator;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -25,8 +26,10 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.block.data.Sign;
 import org.spongepowered.api.service.scheduler.Task;
 import org.spongepowered.api.util.Direction;
+import org.spongepowered.api.world.extent.Extent;
 
 import com.google.inject.Inject;
 
@@ -95,7 +98,6 @@ public class SpongeElevatorManager extends ElevatorManager{
 			ycursor = baseBlock.getY();
 			int zcursor = baseBlock.getZ();
 			//int scanHeight = 0;
-			
 			while (ycursor - baseBlock.getY() <= maxY){
 				BlockLoc testBlock = baseBlock.getExtent().getFullBlock(xcursor, ycursor, zcursor);
 				if (!isValidShaftBlock(testBlock)){
@@ -105,11 +107,30 @@ public class SpongeElevatorManager extends ElevatorManager{
 					break;
 				}
 				if (testBlock.getType().getId().contains("button")){
-					if (SpongeLift.instance.checkFloor){
-						
-					}
+					if (SpongeLift.instance.checkFloor)
+						if (!isValidFloorAtY(testBlock.getExtent(), testBlock.getY(), elevator))
+							break;
+					SpongeFloor floor = new SpongeFloor(testBlock, testBlock.getY());
+					if (testBlock.getRelative(Direction.DOWN).getType() == BlockTypes.WALL_SIGN)
+						floor.setName(testBlock.getRelative(Direction.DOWN).getData(Sign.class).get().getLine(1).toString());
+					if (testBlock.getRelative(Direction.UP).getType() == BlockTypes.WALL_SIGN)
+						elevator.floormap.put(ycursor, floor);
+					logger.debug("Floor added at lift: " + testBlock.getLocation().toString());
+					logger.debug("Floor y: " + Integer.toString(ycursor));
+					
 				}
 			}
+		}
+		int floorNumber = 1;
+		Iterator<Integer> floorIterator = elevator.floormap.keySet().iterator();
+		while (floorIterator.hasNext()){
+			if (floorIterator.next() >= maxY)
+				floorIterator.remove();
+		}
+		for (Floor floor : elevator.floormap.values()){
+			floor.setFloor(floorNumber);
+			elevator.floormap2.put(floorNumber, floor);
+			floorNumber = floorNumber + 1;
 		}
 	}
 	
@@ -151,6 +172,23 @@ public class SpongeElevatorManager extends ElevatorManager{
 		if (block.getRelative(Direction.WEST).getType() == elevator.baseBlockType)
 			scanBaseBlocks(block.getRelative(Direction.WEST), elevator);
 		return;
+	}
+	
+	public static boolean isValidFloorAtY(Extent extent, int y, SpongeElevator elevator){
+		for(BlockLoc block: elevator.baseBlocks){
+			logger.debug("Scan floor block type: " + extent.getBlock(block.getX(), y, block.getZ()).getType().toString() );
+			if (!SpongeLift.instance.floorMaterials.contains(extent.getBlock(block.getX(), y, block.getZ()).getType())
+					&& !SpongeLift.instance.blockSpeeds.keySet().contains(extent.getBlock(block.getX(), y, block.getZ()).getType())
+					&& !(extent.getFullBlock(block.getX(), y, block.getZ()).getType() == BlockTypes.AIR))//Need isEmpty
+			{
+				logger.debug("Is not valid flooring?: " + Boolean.toString(SpongeLift.instance.floorMaterials.contains(extent.getBlock(block.getX(), y, block.getZ()).getType())));
+				logger.debug("Is not base?: " + Boolean.toString(SpongeLift.instance.blockSpeeds.keySet().contains(extent.getBlock(block.getX(), y, block.getZ()).getType())));
+				logger.debug("Is not air?: " + Boolean.toString((extent.getFullBlock(block.getX(), y, block.getZ()).getType() == BlockTypes.AIR)));
+				logger.debug("Invalid block type in lift shaft.");
+				return false;
+			}
+		}
+		return true;
 	}
 
 }
