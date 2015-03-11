@@ -75,11 +75,11 @@ public class BukkitElevator extends Elevator{
 	}
 	
 	public BukkitFloor getFloorFromY(int y){
-		return (BukkitFloor) floormap.get(y);
+		return (BukkitFloor) super.getFloorFromY(y);
 	}
 	
 	public BukkitFloor getFloorFromN(int n){
-		return (BukkitFloor) floormap2.get(n);
+		return (BukkitFloor) super.getFloorFromN(n);
 	}
 	
 	public boolean isInShaft(Entity entity){
@@ -112,10 +112,6 @@ public class BukkitElevator extends Elevator{
 	public void setPassengers(ArrayList<LivingEntity> entities){
 		passengers.clear();
 		passengers.addAll(entities);
-	}
-	
-	public int getTotalFloors(){
-		return floormap2.size();
 	}
 	
 	public boolean isInLift(Entity entity){

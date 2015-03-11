@@ -76,7 +76,7 @@ public class BukkitLiftPlayerListener implements Listener{
 				event.setCancelled(true);
 				
 				int currentDestinationInt = 1;
-				Floor currentFloor = bukkitElevator.getFloorFromY(buttonBlock.getY());
+				BukkitFloor currentFloor = bukkitElevator.getFloorFromY(buttonBlock.getY());
 				if (currentFloor == null){
 					event.getPlayer().sendMessage("Elevator generator says this floor does not exist. Check shaft for blockage");
 					return;
@@ -91,7 +91,7 @@ public class BukkitLiftPlayerListener implements Listener{
 					currentDestinationInt = Integer.parseInt(splits[1]);	
 				} catch (Exception e){
 					currentDestinationInt = 0;
-					plugin.logDebug("non Valid previous destination");
+					plugin.logDebug("Non valid previous destination");
 				}
 				currentDestinationInt++;
 				if (currentDestinationInt == currentFloor.getFloor()){

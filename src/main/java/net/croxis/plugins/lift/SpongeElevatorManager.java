@@ -81,10 +81,14 @@ public class SpongeElevatorManager extends ElevatorManager{
 				elevator.setFailReason("Obstruction at y= " + Integer.toString(ycursor));
 				return elevator;
 			}
+			
 			ycursor--;
 			ycounter++;
 		}
 		logger.debug("Base size: " + Integer.toString(elevator.baseBlocks.size()) + " at " + elevator.baseBlocks.iterator().next().getLocation().toString());
+		constructFloors(elevator);
+		//Elevator is constructed, pass off to check signs for floor destination, collect all people and move them
+		logger.debug("Elevator gen took: " + (System.currentTimeMillis() - startTime) + " ms.");
 		return elevator;
 	}
 	

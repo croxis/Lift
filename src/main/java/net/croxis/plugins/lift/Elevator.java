@@ -37,6 +37,18 @@ public abstract class Elevator {
 		floormap2.clear();
 	}
 	
+	public Floor getFloorFromN(int n){
+		return floormap2.get(n);
+	}
+	
+	public Floor getFloorFromY(int y){
+		return floormap.get(y);
+	}
+	
+	public int getTotalFloors(){
+		return floormap2.size();
+	}
+	
 	public String getFailReason() {
 		return failReason;
 	}

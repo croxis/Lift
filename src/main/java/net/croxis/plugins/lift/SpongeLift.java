@@ -41,6 +41,9 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.config.DefaultConfig;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.message.Message;
+import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.event.Subscribe;
 
@@ -194,8 +197,49 @@ public class SpongeLift {
 					event.getPlayer().sendMessage("Failed to generate lift due to: " + elevator.getFailReason());
 					return;
 				}
+				if (elevator.getTotalFloors() == 2){
+					event.getPlayer().sendMessage(SpongeLift.instance.stringOneFloor);
+					return;
+				}
+				event.setCancelled(true); // Valid lift. Cancel interaction and lets start lifting up!
 				
-				event.setCancelled(true);
+				int currentDestinationInt = 1;
+				SpongeFloor currentFloor = elevator.getFloorFromY(currentDestinationInt);
+				if (currentFloor == null){
+					event.getPlayer().sendMessage("Elevator generator says this floor does not exist. Check shaft for blockage");
+					return;
+				}
+				
+				String sign0 = stringCurrentFloor;
+				String sign1 = Integer.toString(currentFloor.getFloor());
+				String sign2 = "";
+				String sign3 = "";
+				
+				try {
+					String[] splits = sign.getLine(2).toString().split(": ");
+					currentDestinationInt = Integer.parseInt(splits[1]);
+				} catch (Exception e){
+					currentDestinationInt = 0;
+					logger.debug("Non valid previous destination.");
+				}
+				currentDestinationInt++;
+				if (currentDestinationInt == currentFloor.getFloor()){
+					currentDestinationInt++;
+					logger.debug("Skipping current floor");
+				}
+				if (currentDestinationInt > elevator.getTotalFloors()){
+					if (currentFloor.getFloor() == 1)
+						currentDestinationInt = 2;
+					logger.debug("Rotating back to first floor.");
+				}
+				sign2 = TextColors.GREEN + stringDestination + " " + Integer.toString(currentDestinationInt);
+				sign3 = elevator.getFloorFromN(currentDestinationInt).getName();
+				sign.setLine(0, Messages.of(sign0));
+				sign.setLine(1, Messages.of(sign1));
+				sign.setLine(2, Messages.of(sign2));
+				sign.setLine(3, Messages.of(sign3));
+				//sign.update();
+				logger.debug("Completed sign update");
 			}
 		}
 	}

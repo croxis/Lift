@@ -28,6 +28,14 @@ public class SpongeElevator extends Elevator{
 	public BlockType baseBlockType = null;
 	public HashSet<BlockLoc> baseBlocks = new HashSet<BlockLoc>();
 	
+	public SpongeFloor getFloorFromN(int n){
+		return (SpongeFloor) super.getFloorFromN(n);
+	}
+	
+	public SpongeFloor getFloorFromY(int y){
+		return (SpongeFloor) super.getFloorFromY(y);
+	}
+	
 	@Override
 	public void setFailReason(String failReason) {
 		super.setFailReason(failReason);
