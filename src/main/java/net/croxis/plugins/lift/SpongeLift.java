@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,19 +41,20 @@ import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.config.DefaultConfig;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.message.Message;
 import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.event.Subscribe;
 
-import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
 @Plugin(id="Lift", name="Lift", version="52")
 public class SpongeLift {
 	public static SpongeLift instance;
+	
 	@Inject
 	private Logger logger;
+	
+	static public Game game;
 	
 	@Inject
 	private GameRegistry gameRegistry;
@@ -67,7 +67,7 @@ public class SpongeLift {
 	@DefaultConfig(sharedRoot = true)
 	private ConfigurationLoader<CommentedConfigurationNode> configManager;
 
-	
+	public static SpongeElevatorManager manager;
 	public static boolean debug = false;
 	public static boolean redstone = false;
 	public static int maxLiftArea = 16;
@@ -81,11 +81,16 @@ public class SpongeLift {
 	//public static BukkitElevatorManager manager;
 	private boolean preventEntry = false;
 	public boolean preventLeave = false;
-	public static String stringDestination;
-	public static String stringCurrentFloor;
-	public static String stringOneFloor;
-	public static String stringCantEnter;
-	public static String stringCantLeave;
+	public static String stringDestination = "Dest:";
+	public static String stringCurrentFloor = "Current Floor:";
+	public static String stringOneFloor = "There is only one floor silly.";
+	public static String stringCantEnter = "Can't enter elevator in use";
+	public static String stringCantLeave = "Can't leave elevator in use";
+	
+	@Inject
+	public SpongeLift(Game game){
+		this.game = game;
+	}
 
 	@Subscribe
 	public void onServerStart(ServerStartingEvent event){
@@ -105,10 +110,19 @@ public class SpongeLift {
 		         config.getNode("maxLiftArea").setValue(maxLiftArea);
 		         config.getNode("maxHeight").setValue(maxHeight);
 		         blockSpeeds.put( BlockTypes.IRON_BLOCK, 0.5);
-		         config.getNode("blockSpeeds").setValue(blockSpeeds);
+		         
+		         HashMap<String, Double> blockSpeedsString = new HashMap<String, Double>();
+		         blockSpeedsString.put("minecraft:iron_block", 0.5);
+		         
+		         config.getNode("blockSpeeds").setValue(blockSpeedsString);
 		         floorMaterials.add(BlockTypes.GLASS);
 		         floorMaterials.add(BlockTypes.STAINED_GLASS);
-		         config.getNode("floorMaterials").setValue(floorMaterials);
+		         
+		         HashSet<String> floorMaterialsString = new HashSet<String>();
+		         floorMaterialsString.add("minecraft:glass");
+		         floorMaterialsString.add("minecraft:stained_glass");
+		         
+		         config.getNode("floorMaterials").setValue(floorMaterialsString);
 		         config.getNode("autoPlace").setValue(autoPlace);
 		         config.getNode("checkFloor").setValue(checkFloor);
 		         config.getNode("liftMobs").setValue(liftMobs);
@@ -128,7 +142,7 @@ public class SpongeLift {
 	         maxLiftArea = config.getNode("maxLiftArea").getInt();
 	         maxHeight =config.getNode("maxHeight").getInt();
 	         autoPlace = config.getNode("autoPlace").getBoolean();
-	        checkFloor =  config.getNode("checkFloor").getBoolean();
+	         checkFloor =  config.getNode("checkFloor").getBoolean();
 	         liftMobs = config.getNode("liftMobs").getBoolean();
 	         preventEntry = config.getNode("preventEntry").getBoolean();
 	         preventLeave = config.getNode("preventLeave").getBoolean();
@@ -141,18 +155,22 @@ public class SpongeLift {
 	         
 	         Map<Object, ? extends CommentedConfigurationNode> configSpeeds = config.getNode("blockSpeeds").getChildrenMap();
 	         Set<Object> keys = configSpeeds.keySet();
-	         
+	         logger.info("Loadingin keys: " + keys.toString());
 	         for (Object key: keys){
+	        	 logger.info("Loadingin key: " + key.toString());
 	        	 String stringKey = key.toString();
-	        	 Optional<BlockType> type = gameRegistry.getBlock(stringKey);
+	        	 BlockType type = gameRegistry.getBlock(stringKey).get();
+	        	 logger.info("Loaded block: " + gameRegistry.getBlock("minecraft:iron_block").get());
 	        	 double speed = configSpeeds.get(stringKey).getDouble();
-	        	 blockSpeeds.put(type.get(), speed);
+	        	 blockSpeeds.put(type, speed);
 	         }
+	         logger.info("Block speeds: " + blockSpeeds.toString());
 	         
-	         List<String> configFloorMaterials = config.getNode("floorMaterials").getList(null);
-	         for (String key: configFloorMaterials){
-	        	 floorMaterials.add(gameRegistry.getBlock(key).get());
-	         }
+	         //FIXME
+	         //List<String> configFloorMaterials = config.getNode("floorMaterials").getList(arg0);
+	         //for (String key: configFloorMaterials){
+	        //	 floorMaterials.add(gameRegistry.getBlock(key).get());
+	         //}
 		 } catch (IOException exception) {
 		     getLogger().error("The default configuration could not be loaded or created!");
 		 }
@@ -175,6 +193,8 @@ public class SpongeLift {
 		logger.debug("baseBlocks: " + blockSpeeds.toString());
 		logger.debug("floorBlocks: " + floorMaterials.toString());
 		instance = this;
+		manager = new SpongeElevatorManager(this.game);
+		manager.init();
 		getLogger().info("Lift Initiated");
 	}
 	
@@ -201,7 +221,8 @@ public class SpongeLift {
 					event.getPlayer().sendMessage(SpongeLift.instance.stringOneFloor);
 					return;
 				}
-				event.setCancelled(true); // Valid lift. Cancel interaction and lets start lifting up!
+				//FIXME: Sponge throws errors
+				//event.setCancelled(true); // Valid lift. Cancel interaction and lets start lifting up!
 				
 				int currentDestinationInt = 1;
 				SpongeFloor currentFloor = elevator.getFloorFromY(currentDestinationInt);
@@ -254,5 +275,9 @@ public class SpongeLift {
 
 	public ConfigurationLoader<CommentedConfigurationNode> getConfigManager() {
 	    return configManager;
+	}
+	
+	public void debug(String string){
+		this.logger.info(string);
 	}
 }
