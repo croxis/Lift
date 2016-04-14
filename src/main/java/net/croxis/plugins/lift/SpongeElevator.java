@@ -18,20 +18,27 @@
  */
 package net.croxis.plugins.lift;
 
-import java.util.HashSet;
-
-import org.spongepowered.api.block.BlockLoc;
+import com.flowpowered.math.vector.Vector3i;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.world.World;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 
 public class SpongeElevator extends Elevator{
 	public BlockType baseBlockType = null;
-	public HashSet<BlockLoc> baseBlocks = new HashSet<BlockLoc>();
+	public UUID worldId;
+	public Set<Vector3i> baseBlocks = new HashSet<>();
 	
+	@Override
 	public SpongeFloor getFloorFromN(int n){
 		return (SpongeFloor) super.getFloorFromN(n);
 	}
 	
+	@Override
 	public SpongeFloor getFloorFromY(int y){
 		return (SpongeFloor) super.getFloorFromY(y);
 	}
@@ -42,4 +49,8 @@ public class SpongeElevator extends Elevator{
 		SpongeLift.instance.getLogger().debug(failReason);
 	}
 
+    public World getWorld() {
+        return Sponge.getServer().getWorld(this.worldId)
+                .orElseThrow(() -> new IllegalStateException("Could not find a world by the uuid: " + this.worldId));
+    }
 }

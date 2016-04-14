@@ -22,39 +22,40 @@ import java.util.TreeMap;
 
 public abstract class Elevator {
 
-	public int destinationY = 0;//Destination y coordinate
-	
-	public boolean goingUp = false;
-	public double speed = 0.5;
-	private String failReason = "";
-	public String cause = "";
-	
-	public TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
-	public TreeMap <Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
-	
-	public void clear(){
-		floormap.clear();
-		floormap2.clear();
-	}
-	
-	public Floor getFloorFromN(int n){
-		return floormap2.get(n);
-	}
-	
-	public Floor getFloorFromY(int y){
-		return floormap.get(y);
-	}
-	
-	public int getTotalFloors(){
-		return floormap2.size();
-	}
-	
-	public String getFailReason() {
-		return failReason;
-	}
-	public void setFailReason(String failReason) {
-		this.failReason = failReason;
-	}
-	
-	
+    public int destinationY = 0;//Destination y coordinate
+
+    public boolean goingUp = false;
+    public double speed = 0.5;
+    private String failReason = "";
+    public String cause = "";
+
+    public TreeMap<Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
+    public TreeMap<Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
+
+    public void clear() {
+        this.floormap.clear();
+        this.floormap2.clear();
+    }
+
+    public Floor getFloorFromN(int n) {
+        return this.floormap2.get(n);
+    }
+
+    public Floor getFloorFromY(int y) {
+        return this.floormap.get(y);
+    }
+
+    public int getTotalFloors() {
+        return this.floormap2.size();
+    }
+
+    public String getFailReason() {
+        return this.failReason;
+    }
+
+    public void setFailReason(String failReason) {
+        this.failReason = failReason;
+    }
+
+
 }

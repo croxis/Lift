@@ -18,15 +18,16 @@
  */
 package net.croxis.plugins.lift;
 
-import org.spongepowered.api.block.BlockLoc;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
-public class SpongeFloor extends Floor{
-	
-	private BlockLoc button;
+public class SpongeFloor extends Floor {
 
-	public SpongeFloor(final BlockLoc b, final int y){
-		super(y);
-		button = b;
-	}
+    private Location<World> button;
+
+    public SpongeFloor(final Location<World> buttonLocation, final int y) {
+        super(y);
+        this.button = buttonLocation;
+    }
 
 }
