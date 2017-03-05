@@ -19,6 +19,7 @@
 package net.croxis.plugins.lift;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -127,10 +128,13 @@ public class BukkitElevator extends Elevator{
 	}
 	
 	public Iterator<Entity> getPassengers(){
+		passengers.removeAll(Collections.singleton(null));
 		return passengers.iterator();
 	}
 	
 	public Iterator<Entity> getHolders(){
+		if (holders.containsKey(null))
+			holders.remove(null);
 		return holders.keySet().iterator();
 	}
 	

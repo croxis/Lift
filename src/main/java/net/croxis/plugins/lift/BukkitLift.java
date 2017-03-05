@@ -82,7 +82,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
     	debug = this.getConfig().getBoolean("debug");
     	liftMobs = this.getConfig().getBoolean("liftMobs");
     	autoPlace = this.getConfig().getBoolean("autoPlace");
-    	checkFloor = this.getConfig().getBoolean("checkFloor");
+    	checkFloor = this.getConfig().getBoolean("checkFloor", false);
     	preventEntry = this.getConfig().getBoolean("preventEntry", false);
     	preventLeave = this.getConfig().getBoolean("preventLeave", false);
     	redstone = this.getConfig().getBoolean("redstone", false);

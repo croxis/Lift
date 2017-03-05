@@ -121,7 +121,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 				return;
 			
 			int y = block.getY();
-			BukkitFloor startFloor = (BukkitFloor) bukkitElevator.floormap.get(y);
+			BukkitFloor startFloor = bukkitElevator.getFloorFromY(y);
 			bukkitElevator.startFloor = startFloor;
 			bukkitElevator.destFloor = bukkitElevator.getFloorFromN(destination);			
 			

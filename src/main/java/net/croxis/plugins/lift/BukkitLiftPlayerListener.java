@@ -105,12 +105,12 @@ public class BukkitLiftPlayerListener implements Listener{
 						currentDestinationInt = 2;
 					plugin.logDebug("Rotating back to first floor");
 				}
-				sign2 = ChatColor.GREEN + BukkitLift.stringDestination + " " + Integer.toString(currentDestinationInt);
+				sign2 = BukkitLift.stringDestination + " " + Integer.toString(currentDestinationInt);
 				sign3 = bukkitElevator.getFloorFromN(currentDestinationInt).getName();
-				sign.setLine(0, sign0);
-				sign.setLine(1, sign1);
-				sign.setLine(2, sign2);
-				sign.setLine(3, sign3);
+				sign.setLine(0, sign0 + ChatColor.RESET);
+				sign.setLine(1, sign1 + ChatColor.RESET);
+				sign.setLine(2, sign2 + ChatColor.RESET);
+				sign.setLine(3, sign3 + ChatColor.RESET);
 				sign.update();
 				plugin.logDebug("Completed sign update");
 			}

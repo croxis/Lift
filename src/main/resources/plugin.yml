@@ -6,7 +6,7 @@ name: Lift
 startup: postworld
 version: ${version}
 description: ${project.description}
-softdepend: [Spout,AntiCheat,NoCheatPlus]
+softdepend: [NoCheatPlus]
 permissions:
   lift:
     description: Can ride in a lift

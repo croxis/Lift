@@ -18,6 +18,6 @@ baseBlockSpeeds:
   IRON_BLOCK: 0.5
 STRING_oneFloor: "There is only one floor."
 STRING_currentFloor: "Current Floor:"
-STRING_dest: "Dest:"
+STRING_dest: "§1Dest:"
 STRING_cantEnter: "Can't enter elevator in use"
 STRING_cantLeave: "Can't leave elevator in use"

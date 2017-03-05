@@ -18,8 +18,6 @@
  */
 package net.croxis.plugins.lift;
 
-import java.util.TreeMap;
-
 public class Floor {
 	private String name = "";
 	private int y;
