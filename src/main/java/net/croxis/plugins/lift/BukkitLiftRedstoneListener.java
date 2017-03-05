@@ -102,10 +102,6 @@ public class BukkitLiftRedstoneListener implements Listener {
 			String[] splits = line.split(":");
 			if (splits.length != 2)
 				return;
-			if (!line.startsWith(ChatColor.GREEN.toString())){
-				plugin.logDebug("Sign is inactive. May need to be refreshed.");
-				return;
-			}
 			int destination = Integer.parseInt(splits[1].trim());	
 			
 			//See if lift is in use
