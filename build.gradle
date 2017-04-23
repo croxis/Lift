@@ -1,12 +1,13 @@
-apply plugin: 'java'
-apply plugin: 'maven'
+plugins {
+    id 'org.spongepowered.plugin' version '0.8.1'
+}
 
 defaultTasks 'clean', 'build'
 
 //the naming of this artifact
 group = 'net.croxis.plugins.lift'
 jar.archiveName = 'Lift.jar'
-version = '55' 
+version = '56' 
 
 // Minimum version of Java required
 sourceCompatibility = '1.8'
@@ -14,13 +15,13 @@ targetCompatibility = '1.8'
 
 //dependencies versions
 ext.bukkitVersion = '1.11.2-R0.1-SNAPSHOT'
-ext.spongeVersion = '1.1-SNAPSHOT'
 
 //dependencies declaration
 dependencies {
 	compile group: 'fr.neatmonster', name: 'ncpcore', version: 'static'
 	compile group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
-	compile group: 'org.spongepowered', name: 'spongeapi', version: spongeVersion
+	
+	compile 'org.spongepowered:spongeapi:5.1.0'
 	
 	testCompile group: 'junit', name: 'junit', version: '4.11'
 } 
@@ -53,6 +54,7 @@ repositories {
 	}
 	
 	maven {
-		url "http://repo.spongepowered.org/maven"
-	}
+        name = 'sponge'
+        url = 'https://repo.spongepowered.org/maven'
+    }
 } 

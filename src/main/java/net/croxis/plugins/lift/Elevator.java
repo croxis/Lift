@@ -22,12 +22,14 @@ import java.util.TreeMap;
 
 public abstract class Elevator {
 
-	public int destinationY = 0;//Destination y coordinate
+	//int destinationY = 0; //Destination y coordinate
 	
 	public boolean goingUp = false;
 	public double speed = 0.5;
 	private String failReason = "";
 	public String cause = "";
+	long startTime = 0;
+
 	
 	public TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
 	public TreeMap <Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
@@ -36,6 +38,10 @@ public abstract class Elevator {
 		floormap.clear();
 		floormap2.clear();
 	}
+
+	void setStartTimeToNow () {
+	    startTime = System.currentTimeMillis();
+    }
 	
 	public Floor getFloorFromN(int n){
 		return floormap2.get(n);

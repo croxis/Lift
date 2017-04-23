@@ -64,7 +64,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 				// Do nothing keep going
 			} else if (BukkitElevatorManager.isBaseBlock(checkBlock)) {
 				bukkitElevator.baseBlockType = checkBlock.getType();
-				bukkitElevator.speed = plugin.blockSpeeds.get(bukkitElevator.baseBlockType);
+				bukkitElevator.speed = plugin.getBlockSpeed(checkBlock.getType());
 				scanBaseBlocks(checkBlock, bukkitElevator);
 				for (Block b : bukkitElevator.baseBlocks){
 					// This is for speed optimization for entering lift in use
@@ -293,8 +293,6 @@ public class BukkitElevatorManager extends ElevatorManager{
 				new BukkitCancelRedstoneTask(s.getRelative(BlockFace.EAST).getRelative(BlockFace.EAST)).runTaskLater(plugin, 10);
 			}
 		}
-		
-		
 		bukkitElevator.clear();
 	}
 	
@@ -395,6 +393,10 @@ public class BukkitElevatorManager extends ElevatorManager{
 		
 		while (eleviterator.hasNext()){
 			e = eleviterator.next();
+			if (e == null) {
+			    eleviterator.remove();
+			    continue;
+            }
 			plugin.logDebug("Processing elevator: " + e);
 			passengers = e.getPassengers();
 			if(!passengers.hasNext()){
@@ -402,9 +404,22 @@ public class BukkitElevatorManager extends ElevatorManager{
 				eleviterator.remove();
 				continue;
 			}
+
+			// If the lift has been running 5 seconds longer than it should of
+            // Teleport all players and end the lift
+            // Speed is blocks per second or tick (it is unclear)
+			if (e.startTime + e.speed * 20 * 1000 + 5000 <= System.currentTimeMillis()) {
+                e.quickEndLift();
+                BukkitElevatorManager.endLift(e);
+                eleviterator.remove();
+                continue;
+            }
+
 			while (passengers.hasNext()){
 				passenger = passengers.next();
-				
+				if (passenger == null){
+					continue;
+				}
 				//Check if passengers have left the shaft
 				if (!e.isInShaft(passenger)){
 					plugin.logDebug("Player out of shaft");
@@ -451,6 +466,9 @@ public class BukkitElevatorManager extends ElevatorManager{
 			
 			while (holders.hasNext()){
 				holder = holders.next();
+				if (holder == null) {
+				    continue;
+                }
 				plugin.logDebug("Holding: " + holder.toString() + " at " + e.getHolderPos(holder));
 				holder.teleport(e.getHolderPos(holder));
 				holder.setFallDistance(0.0F);

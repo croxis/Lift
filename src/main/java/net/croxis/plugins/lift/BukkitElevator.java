@@ -36,8 +36,8 @@ import org.bukkit.entity.Minecart;
 import org.bukkit.util.Vector;
 
 public class BukkitElevator extends Elevator{
-	public HashSet<Block> baseBlocks = new HashSet<Block>();
-	public TreeMap <World, TreeMap<Integer, Floor>> worldFloorMap= new TreeMap <World, TreeMap<Integer, Floor>>();
+	HashSet<Block> baseBlocks = new HashSet<Block>();
+	private TreeMap <World, TreeMap<Integer, Floor>> worldFloorMap= new TreeMap <World, TreeMap<Integer, Floor>>();
 	private HashSet<Entity> passengers = new HashSet<Entity>();
 	private HashMap<Entity, Location> holders = new HashMap<Entity, Location>();
 	//public HashSet<Block> glassBlocks = new HashSet<Block>();
@@ -47,8 +47,9 @@ public class BukkitElevator extends Elevator{
 	private HashMap<Location, Byte> carpetBlocks = new HashMap<Location, Byte>();
 	private HashMap<Location, FloorBlock> railBlocks = new HashMap<Location, FloorBlock>();
 	private HashMap<Entity, Vector> minecartSpeeds = new HashMap<Entity, Vector>();
-	public HashSet<Chunk> chunks = new HashSet<Chunk>();
-	public Material baseBlockType = Material.IRON_BLOCK;
+	HashSet<Chunk> chunks = new HashSet<Chunk>();
+	Material baseBlockType = Material.IRON_BLOCK;
+
 	
 	public BukkitFloor destFloor = null;
 	public BukkitFloor startFloor = null;
@@ -114,6 +115,23 @@ public class BukkitElevator extends Elevator{
 		passengers.clear();
 		passengers.addAll(entities);
 	}
+
+    /**
+     * Quickly ends the lift by teleporting all entities to the correct floor height
+     */
+    void quickEndLift() {
+        Iterator<Entity> passiterator = passengers.iterator();
+        while (passiterator.hasNext()) {
+            Entity passenger = passiterator.next();
+            if (passenger == null) {
+                passiterator.remove();
+                continue;
+            }
+            Location destination = passenger.getLocation();
+            destination.setY(destFloor.getY());
+            passenger.teleport(destination);
+        }
+    }
 	
 	public boolean isInLift(Entity entity){
 		return (passengers.contains(entity) || holders.containsKey(entity));

@@ -1,2 +1,10 @@
 /target
 /dependency-reduced-pom.xml
+/.gradle/
+/bin/
+/build/
+/.idea
+.classpath
+.project
+.settings/
+Lift.iml

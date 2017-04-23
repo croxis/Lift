@@ -40,7 +40,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
 	public static boolean redstone = true;
 	public static int liftArea = 16;
 	public static int maxHeight = 256;
-	public HashMap<Material, Double> blockSpeeds = new HashMap<Material, Double>();
+	static HashMap<Material, Double> blockSpeeds = new HashMap<Material, Double>();
 	public HashSet<Material> floorMaterials = new HashSet<Material>();
 	public boolean autoPlace = false;
 	public boolean checkFloor = false;
@@ -55,6 +55,15 @@ public class BukkitLift extends JavaPlugin implements Listener {
 	public static String stringOneFloor;
 	public static String stringCantEnter;
 	public static String stringCantLeave;
+
+	public Double getBlockSpeed(Material material) {
+	    try {
+            return BukkitLift.blockSpeeds.get(material);
+        } catch (Exception e) {
+	        this.getLogger().warning("There was an exception getting the block speed for " + material.toString());
+	        return 0.0;
+        }
+    }
 	
 	public void logDebug(String message){
 		if (debug)
