@@ -18,6 +18,7 @@
  */
 package net.croxis.plugins.lift;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +35,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.*;
+import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
 
 public class BukkitLift extends JavaPlugin implements Listener {
 	public static boolean debug = false;
@@ -55,6 +58,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
 	public static String stringOneFloor;
 	public static String stringCantEnter;
 	public static String stringCantLeave;
+	private boolean metricbool = true;
 
 	public Double getBlockSpeed(Material material) {
 	    try {
@@ -108,7 +112,9 @@ public class BukkitLift extends JavaPlugin implements Listener {
     	stringDestination = getConfig().getString("STRING_dest", "Dest:");
     	stringCantEnter = getConfig().getString("STRING_cantEnter", "Can't enter elevator in use");
     	stringCantLeave = getConfig().getString("STRING_cantLeave", "Can't leave elevator in use");
-    	
+
+    	metricbool = getConfig().getBoolean("metrics", true);
+
         saveConfig();
         
         serverFlight = this.getServer().getAllowFlight();
@@ -133,6 +139,16 @@ public class BukkitLift extends JavaPlugin implements Listener {
 		}
         
         System.out.println(this + " is now enabled!");
+
+        if (metricbool){
+            try {
+                Metrics metrics = new Metrics(this);
+                Graph numberofpassengers = metrics.createGraph("Number of passengers");
+                metrics.start();
+            } catch (IOException e) {
+                logDebug(e.getMessage());
+            }
+        }
     }
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -145,12 +161,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
 					event.setCancelled(true);
 					event.getPlayer().sendMessage(BukkitLift.stringCantEnter);
 					event.getPlayer().setVelocity(event.getPlayer().getLocation().getDirection().multiply(-1));	
-				} /*else if (!bukkitElevator.isInShaft(event.getPlayer())
-						&& bukkitElevator.isInLift(event.getPlayer())
-						&& preventLeave){
-					event.setCancelled(true);
-					event.getPlayer().sendMessage(BukkitLift.stringCantLeave);
-				}*/
+				}
 			}
 		}
 	}
