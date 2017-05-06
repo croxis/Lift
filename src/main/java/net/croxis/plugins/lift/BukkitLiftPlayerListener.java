@@ -133,12 +133,10 @@ public class BukkitLiftPlayerListener implements Listener{
 	public void onEntityDamage(EntityDamageEvent e){
 		if(e.getCause() == DamageCause.FALL){
 			Entity fallerE = e.getEntity();
-			if (fallerE instanceof Player){
-				Player faller = (Player) fallerE;
-				if(BukkitElevatorManager.fallers.contains(faller)){
-					e.setCancelled(true);
-					BukkitElevatorManager.fallers.remove(faller);
-				}
+			Player faller = (Player) fallerE;
+			if(BukkitElevatorManager.fallers.contains(faller)){
+				e.setCancelled(true);
+				BukkitElevatorManager.fallers.remove(faller);
 			}
 		}
 	}
