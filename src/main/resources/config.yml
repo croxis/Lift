@@ -1,7 +1,8 @@
 # Note: Smaller values result in less lag. Lift speed less than 0.4 may not work well for non spout servers.
 # autoPlace will automatically move players to be fully in the elevator
 # checkGlass will make sure all floors have glass blocks (at the cost of possible lag when starting a lift)
-# preventEntry will prevent players from entering an active elevator (at the cost of possible lag when lifts are running) 
+# preventEntry will prevent players from entering an active elevator (at the cost of possible lag when lifts are running)
+metrics: true
 maxLiftArea: 16
 maxHeight: 256
 debug: false

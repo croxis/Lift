@@ -40,9 +40,7 @@ public class BukkitElevator extends Elevator{
 	private TreeMap <World, TreeMap<Integer, Floor>> worldFloorMap= new TreeMap <World, TreeMap<Integer, Floor>>();
 	private HashSet<Entity> passengers = new HashSet<Entity>();
 	private HashMap<Entity, Location> holders = new HashMap<Entity, Location>();
-	//public HashSet<Block> glassBlocks = new HashSet<Block>();
 	private HashMap<Location, FloorBlock> floorBlocks = new HashMap<Location, FloorBlock>();
-	//Integer is the meta "damage" value
 	private HashSet<Location> redstoneBlocks = new HashSet<Location>();
 	private HashMap<Location, Byte> carpetBlocks = new HashMap<Location, Byte>();
 	private HashMap<Location, FloorBlock> railBlocks = new HashMap<Location, FloorBlock>();
