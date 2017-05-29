@@ -99,8 +99,8 @@ public class SpongeElevator extends Elevator{
 		return (Floor) super.getFloorFromY(y);
 	}
 	
-	public Floor getFloorFromN(int n){
-		return (Floor) super.getFloorFromN(n);
+	public SpongeFloor getFloorFromN(int n){
+		return (SpongeFloor) super.getFloorFromN(n);
 	}
 	
 	public boolean isInShaft(Entity entity){

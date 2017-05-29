@@ -18,12 +18,15 @@
  */
 package net.croxis.plugins.lift;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import com.google.inject.Inject;
 
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.plugin.Plugin;
@@ -56,19 +59,41 @@ public class SpongeLift {
 	@Inject
 	@DefaultConfig(sharedRoot = true)
 	private HoconConfigurationLoader configManager;
-	private Path privateConfigDir;
 
-	public static SpongeConfig config = new SpongeConfig();
+    //@Inject
+    //@DefaultConfig(sharedRoot = true)
+    //private ConfigurationLoader<CommentedConfigurationNode> loader;
+
+
+    public static SpongeConfig config = new SpongeConfig();
 	
 	@Listener
     public void onServerStart(GameStartedServerEvent event) {
         // Hey! The server has started!
         // Try instantiating your logger in here.
         // (There's a guide for that)
-		this.getLogger().info("Loading Lift");
-		ConfigurationNode rootNode = configManager.createEmptyNode(ConfigurationOptions.defaults());
+		getLogger().info("Loading Lift");
+		//ConfigurationNode rootNode = configManager.createEmptyNode(ConfigurationOptions.defaults());
+        ConfigurationLoader<CommentedConfigurationNode> loader =
+                HoconConfigurationLoader.builder().setPath(defaultConfig).build();
+        ConfigurationNode rootNode;
+        try {
+            rootNode = loader.load();
+        } catch(IOException e) {
+            //error
+            rootNode = loader.createEmptyNode(ConfigurationOptions.defaults());
+        }
+        ConfigurationNode debugNode = rootNode.getNode("debug");
+        try {
+            loader.save(rootNode);
+        } catch(IOException e) {
+            // error
+        }
+
+
 		redstoneListener = new SpongeLiftRedstoneListener(this);
         playerListener = new SpongeLiftPlayerListener(this);
+        manager = new SpongeElevatorManager(this);
 		startListeners();
     }
 
