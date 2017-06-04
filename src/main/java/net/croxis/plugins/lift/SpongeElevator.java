@@ -19,6 +19,7 @@
 package net.croxis.plugins.lift;
 
 import com.flowpowered.math.vector.Vector3d;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
@@ -31,6 +32,7 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.vehicle.minecart.Minecart;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.BlockChangeFlag;
 import org.spongepowered.api.world.Chunk;
@@ -40,6 +42,9 @@ import org.spongepowered.api.world.World;
 import java.util.*;
 
 public class SpongeElevator extends Elevator{
+    PluginContainer pluginContainer = Sponge.getPluginManager().getPlugin("lift").get();
+    SpongeLift plugin = (SpongeLift) pluginContainer.getInstance().get();
+
 	HashSet<Location<World>> baseBlocks = new HashSet<Location<World>>();
 	private TreeMap <World, TreeMap<Integer, Floor>> worldFloorMap= new TreeMap <World, TreeMap<Integer, Floor>>();
 	private HashSet<Entity> passengers = new HashSet<Entity>();
@@ -208,7 +213,8 @@ public class SpongeElevator extends Elevator{
                 if (!SpongeElevatorManager.isValidShaftBlock(testBlock.getType())){
                     message += " | " + x + " " + y + " " + z + " of type "  + testBlock.getType().toString();
                     maxY = y1;
-                    SpongeLift.debug("Not valid shaft block" + x + " " + y + " " + z + " of type "  + testBlock.getType().toString());
+
+                    plugin.debug("Not valid shaft block" + x + " " + y + " " + z + " of type "  + testBlock.getType().toString());
                     break;
                 }
                 if (testBlock.getType() == BlockTypes.STONE_BUTTON || testBlock.getType() == BlockTypes.WOODEN_BUTTON) {
@@ -224,8 +230,8 @@ public class SpongeElevator extends Elevator{
                     }
                     if (testLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.WALL_SIGN)
                         this.floormap.put(y, floor);
-                    SpongeLift.debug("Floor added at lift: " + testLocation.toString());
-                    SpongeLift.debug("Floor y: " + Integer.toString(y));
+                    plugin.debug("Floor added at lift: " + testLocation.toString());
+                    plugin.debug("Floor y: " + Integer.toString(y));
                 }
             }
         }
@@ -252,15 +258,15 @@ public class SpongeElevator extends Elevator{
     boolean scanFloorAtY(int y){
 	    for (Location<World> location : this.baseBlocks){
 	        BlockState checkBlock = location.getExtent().getBlock(location.getBlockX(), y, location.getBlockZ());
-	        SpongeLift.debug("Scan floor block type: " + checkBlock.toString());
+	        plugin.debug("Scan floor block type: " + checkBlock.toString());
 	        if (!SpongeConfig.floorMaterials.contains(checkBlock.getType())
                     && !SpongeConfig.blockSpeeds.keySet().contains(checkBlock.getType())
                     && !(checkBlock.getType() == BlockTypes.AIR)) {
                 // Check for air as some servers want the floors to magic replace if brokered.
-                SpongeLift.debug("Invalid block type in lift shaft.");
-                SpongeLift.debug("Is valid flooring?: " + SpongeConfig.floorMaterials.contains(checkBlock.getType()));
-                SpongeLift.debug("Is base?: " + Boolean.toString(SpongeConfig.blockSpeeds.keySet().contains(checkBlock.getType())));
-                SpongeLift.debug("Is air?: " + Boolean.toString(checkBlock.getType() == BlockTypes.AIR));
+                plugin.debug("Invalid block type in lift shaft.");
+                plugin.debug("Is valid flooring?: " + SpongeConfig.floorMaterials.contains(checkBlock.getType()));
+                plugin.debug("Is base?: " + Boolean.toString(SpongeConfig.blockSpeeds.keySet().contains(checkBlock.getType())));
+                plugin.debug("Is air?: " + Boolean.toString(checkBlock.getType() == BlockTypes.AIR));
                 return false;
             }
         }
@@ -268,7 +274,7 @@ public class SpongeElevator extends Elevator{
     }
 
     void endLift(){
-        SpongeLift.debug("Halting lift: " + this.toString());
+        plugin.debug("Halting lift: " + this.toString());
         for (Location location : floorBlocks.keySet()){
         	location.restoreSnapshot(floorBlocks.get(location).snapshot, true, BlockChangeFlag.ALL, Cause.source(this).build());
         	if (location.getBlockType() == BlockTypes.AIR && !Config.checkFloor)

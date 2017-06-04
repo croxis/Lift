@@ -41,7 +41,7 @@ public class SpongeLiftPlayerListener{
 	private SpongeLift plugin;
 	private Location<World> buttonBlock = null;
 
-	public SpongeLiftPlayerListener(SpongeLift plugin){
+	SpongeLiftPlayerListener(SpongeLift plugin){
 		this.plugin = plugin;
 	}
 
@@ -107,7 +107,7 @@ public class SpongeLiftPlayerListener{
             entity.offer(sign);
         }
 
-        SpongeLift.debug("Completed sign update");
+        //SpongeLift.debug("Completed sign update");
 
 	}
 	

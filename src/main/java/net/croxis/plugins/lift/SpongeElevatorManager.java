@@ -25,6 +25,7 @@ import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.manipulator.mutable.entity.FallDistanceData;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.filter.type.Include;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Chunk;
@@ -35,37 +36,36 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 public class SpongeElevatorManager extends ElevatorManager{
-	private static SpongeLift plugin;
-	static HashSet<SpongeElevator> elevators = new HashSet<>();
-	static HashSet<Entity> fallers = new HashSet<>();
-	private static HashSet<Player> flyers = new HashSet<>();
-	
+    private static SpongeLift plugin;
+    static HashSet<SpongeElevator> elevators = new HashSet<>();
+    static HashSet<Entity> fallers = new HashSet<>();
+    private static HashSet<Player> flyers = new HashSet<>();
 
-	public SpongeElevatorManager(SpongeLift plugin) {
-	    SpongeElevatorManager.plugin = plugin;
+    public SpongeElevatorManager(SpongeLift plugin) {
+        SpongeElevatorManager.plugin = plugin;
 	}
 	
 	static SpongeElevator createLift(Location<World> buttonLocation, String cause){
         long startTime = System.currentTimeMillis();
         String fullCause = "Starting elevator gen caused by: " + cause + " v" + plugin.toString();
-		SpongeLift.debug(fullCause);
+		plugin.debug(fullCause);
 		SpongeElevator elevator = new SpongeElevator(fullCause);
         int yscan = buttonLocation.getBlockY() - 1;
         while (yscan >= -1) {
             if (yscan == -1) {
                 // Gone below the world. ABORT!
-                SpongeLift.debug("No elevator base found");
+                plugin.debug("No elevator base found");
                 elevator.setFailReason("No elevator base found");
                 return null;
             }
             World world = buttonLocation.getExtent();
-            Vector3i location = buttonLocation.getBlockPosition();
+            Vector3i location = new Vector3i(buttonLocation.getBlockPosition().getX(), yscan, buttonLocation.getBlockPosition().getZ());
             Location<World> checkBlock = new Location<>(world, location);
             if (isValidShaftBlock(checkBlock.getBlock().getType())) {
-                // Do nothing Keep Going
+                //Do nothing keep going
             } else if (isBaseBlock(checkBlock.getBlock().getType())) {
                 elevator.baseBlockType = checkBlock.getBlockType();
-                elevator.speed = SpongeLift.getBlockSpeed(checkBlock.getBlockType());
+                elevator.speed = plugin.getBlockSpeed(checkBlock.getBlockType());
                 elevator.generateBaseBlocks(checkBlock);
                 // Following is a speed optimization for entering a lift in use
                 for (Location<World> l : elevator.baseBlocks) {
@@ -78,21 +78,21 @@ public class SpongeElevatorManager extends ElevatorManager{
                 break;
             } else {
                 // Something is obstructing the elevator, so stop
-                SpongeLift.debug("==Unknown Error Generating Lift==");
-				SpongeLift.debug("Yscan: " + Integer.toString(yscan));
-				SpongeLift.debug("Block: " + checkBlock.getBlock().getType().toString());
-				SpongeLift.debug("Is Valid Block: " + Boolean.toString(isValidShaftBlock(checkBlock.getBlockType())));
-				SpongeLift.debug("Is Base Block: " + Boolean.toString(SpongeElevatorManager.isBaseBlock(checkBlock.getBlockType())));
+                plugin.debug("==Unknown Error Generating Lift==");
+				plugin.debug("Yscan: " + Integer.toString(yscan));
+				plugin.debug("Block: " + checkBlock.getBlock().getType().toString());
+				plugin.debug("Is Valid Block: " + Boolean.toString(isValidShaftBlock(checkBlock.getBlockType())));
+				plugin.debug("Is Base Block: " + Boolean.toString(SpongeElevatorManager.isBaseBlock(checkBlock.getBlockType())));
                 return null;
             }
             yscan--;
         }
-        SpongeLift.debug("Base size: " + Integer.toString(elevator.baseBlocks.size()) + " at " + elevator.baseBlocks.iterator().next().getPosition().toString());
+        plugin.debug("Base size: " + Integer.toString(elevator.baseBlocks.size()) + " at " + elevator.baseBlocks.iterator().next().getPosition().toString());
 
         elevator.constructFloors();
 
         //Elevator is constructed, pass off to check signs for floor destination, collect all people and move them
-        SpongeLift.debug("Elevator gen took: " + (System.currentTimeMillis() - startTime) + " ms.");
+        plugin.debug("Elevator gen took: " + (System.currentTimeMillis() - startTime) + " ms.");
 		return elevator;
 	}
 	
@@ -138,7 +138,7 @@ public class SpongeElevatorManager extends ElevatorManager{
 	public static void removePlayer(Player player, Iterator<Entity> passengers){
 		for (SpongeElevator elevator : elevators){
 			if (elevator.isInLift(player)){
-				SpongeLift.debug("Removing player from lift");
+				plugin.debug("Removing player from lift");
 				restorePlayer(player);
 				passengers.remove();
 			}
@@ -147,9 +147,9 @@ public class SpongeElevatorManager extends ElevatorManager{
 	
 	public static void removePlayer(Player player){
 		for (SpongeElevator elevator : elevators){
-			SpongeLift.debug("Scanning lift");
+			plugin.debug("Scanning lift");
 			if (elevator.isInLift(player)){
-				SpongeLift.debug("Removing player from lift");
+				plugin.debug("Removing player from lift");
 				player.setVelocity(new Vector3d(0, 0, 0));
 				restorePlayer(player);
 				elevator.removePassenger(player);
@@ -164,7 +164,7 @@ public class SpongeElevatorManager extends ElevatorManager{
 				removePlayer((Player) passenger);
 			else
 				for (SpongeElevator elevator : elevators){
-					SpongeLift.debug("Scanning lift");
+					plugin.debug("Scanning lift");
 					if (elevator.isInLift(passenger))
 						elevator.removePassenger(passenger);
 				}
@@ -190,11 +190,11 @@ public class SpongeElevatorManager extends ElevatorManager{
 		// Function which sets up a player for holding or passengering. Anti cheat stuff
 		//if (player.getAllowFlight()){
 		//	SpongeElevatorManager.flyers.add(player);
-		//	SpongeLift.debug(player.getName() + " added to flying list");
+		//	plugin.debug(player.getName() + " added to flying list");
 		//} else {
         //    SpongeElevatorManager.flyers.remove(player);
         //    //player.setAllowFlight(false);
-		//	SpongeLift.debug(player.getName() + " NOT added to flying list");
+		//	plugin.debug(player.getName() + " NOT added to flying list");
         //}
 
 		//player.offer(Keys.CAN_FLY, true);
@@ -212,7 +212,7 @@ public class SpongeElevatorManager extends ElevatorManager{
 			flyers.remove(player);
 		} else {
 			//player.offer(Keys.CAN_FLY, false);
-            SpongeLift.debug("Removing player from flight");
+            plugin.debug("Removing player from flight");
 			//if (plugin.useNoCheatPlus)
 			//	NCPExemptionManager.unexempt(player, fr.neatmonster.nocheatplus.checks.CheckType.FIGHT);
 		}
@@ -229,7 +229,7 @@ public class SpongeElevatorManager extends ElevatorManager{
 		
 		while (eleviterator.hasNext()){
 			e = eleviterator.next();
-            SpongeLift.debug("Processing elevator: " + e);
+            plugin.debug("Processing elevator: " + e);
 			passengers = e.getPassengers();
 			if(!passengers.hasNext()){
 				e.endLift();
@@ -241,7 +241,7 @@ public class SpongeElevatorManager extends ElevatorManager{
 				
 				//Check if passengers have left the shaft
 				if (!e.isInShaft(passenger)){
-                    SpongeLift.debug("Player out of shaft");
+                    plugin.debug("Player out of shaft");
 					if (Config.preventLeave){
 						if (passenger instanceof Player)
 							((Player) passenger).sendMessage(Text.of(Config.stringCantLeave));
@@ -270,9 +270,9 @@ public class SpongeElevatorManager extends ElevatorManager{
 				
 				if((e.goingUp && passenger.getLocation().getY() > e.destFloor.getY() - 0.7)
 						|| (!e.goingUp && passenger.getLocation().getY() < e.destFloor.getY()-0.1)){
-                    SpongeLift.debug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.getLocation().getY()));
-                    SpongeLift.debug("Trigger status: Going up: " + Boolean.toString(e.goingUp));
-                    SpongeLift.debug("Floor Y: " + Double.toString(e.destFloor.getY()));
+                    plugin.debug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.getLocation().getY()));
+                    plugin.debug("Trigger status: Going up: " + Boolean.toString(e.goingUp));
+                    plugin.debug("Floor Y: " + Double.toString(e.destFloor.getY()));
 					passenger.setVelocity(new Vector3d(0, 0, 0));
 					Vector3d pLoc = passenger.getLocation().getPosition();
 					Vector3d newLoc = new Vector3d(pLoc.getX(), e.destFloor.getY()-0.5, pLoc.getZ());
@@ -286,7 +286,7 @@ public class SpongeElevatorManager extends ElevatorManager{
 			
 			while (holders.hasNext()){
 				holder = holders.next();
-                SpongeLift.debug("Holding: " + holder.toString() + " at " + e.getHolderPos(holder));
+                plugin.debug("Holding: " + holder.toString() + " at " + e.getHolderPos(holder));
 				holder.setLocationSafely(e.getHolderPos(holder));
                 FallDistanceData fallData = holder.get(FallDistanceData.class).get();
                 holder.offer(fallData.fallDistance().set(0.0F));

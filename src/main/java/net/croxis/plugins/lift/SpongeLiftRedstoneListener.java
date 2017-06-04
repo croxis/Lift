@@ -76,15 +76,15 @@ public class SpongeLiftRedstoneListener{
         }
 
         if (!canDo) {
-            SpongeLift.debug("Passing button press.");
+            plugin.debug("Passing button press.");
             return;
         }
         long startTime = System.currentTimeMillis();
         elevator = SpongeElevatorManager.createLift(snapshot.getLocation().get(), reason);
         if (elevator == null) {
-            SpongeLift.debug("Redstone elevator generator returned a null object.");
-            SpongeLift.debug("Button block at: " + snapshot.getLocation().get().toString());
-            SpongeLift.debug("Please see previous messages to determine why.");
+            plugin.debug("Redstone elevator generator returned a null object.");
+            plugin.debug("Button block at: " + snapshot.getLocation().get().toString());
+            plugin.debug("Please see previous messages to determine why.");
             return;
         }
         TileEntity signEntity = snapshot.getLocation().get().getRelative(Direction.UP).getTileEntity().get();
@@ -129,14 +129,14 @@ public class SpongeLiftRedstoneListener{
         else
             elevator.goingUp = false;
         
-        SpongeLift.debug("Elevator start floor:" + elevator.startFloor.getFloor());
-        SpongeLift.debug("Elevator start floor y:" + elevator.startFloor.getY());
-        SpongeLift.debug("Elevator destination floor:" + destination);
-        SpongeLift.debug("Elevator destination y:" + elevator.destFloor.getY());
+        plugin.debug("Elevator start floor:" + elevator.startFloor.getFloor());
+        plugin.debug("Elevator start floor y:" + elevator.startFloor.getY());
+        plugin.debug("Elevator destination floor:" + destination);
+        plugin.debug("Elevator destination y:" + elevator.destFloor.getY());
 
         Iterator<Location<World>> baseBlockIterator = elevator.baseBlocks.iterator();
         for (Chunk chunk : elevator.chunks){
-            SpongeLift.debug("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().size()));
+            plugin.debug("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().size()));
             for(Entity entity : chunk.getEntities()){
                 if (!SpongeConfig.liftMobs && !(entity instanceof Player))
                     continue;
@@ -160,9 +160,9 @@ public class SpongeLiftRedstoneListener{
 							}
 							plugin.logDebug("Minecart added to lift");
                     }*/
-                    SpongeLift.debug("Adding passenger " + entity.toString());
+                    plugin.debug("Adding passenger " + entity.toString());
                     SpongeElevatorManager.addPassenger(elevator, entity);
-                    SpongeLift.debug("Added passenger " + entity.toString());
+                    plugin.debug("Added passenger " + entity.toString());
                     if (baseBlockIterator.hasNext() && SpongeConfig.autoPlace){
                         Vector3d loc = baseBlockIterator.next().getPosition();
                         entity.setLocation(new Location<World>(entity.getWorld(), loc.getX() + 0.5D, entity.getLocation().getY(), loc.getZ() + 0.5D));
@@ -212,10 +212,10 @@ public class SpongeLiftRedstoneListener{
 
             SpongeElevatorManager.elevators.add(elevator);
 
-            SpongeLift.debug("Going Up: " + Boolean.toString(elevator.goingUp));
-            SpongeLift.debug("Number of passengers: " + Integer.toString(elevator.getSize()));
-            SpongeLift.debug("Elevator chunks: " + Integer.toString(elevator.chunks.size()));
-            SpongeLift.debug("Total generation time: " + Long.toString(System.currentTimeMillis() - startTime));
+            plugin.debug("Going Up: " + Boolean.toString(elevator.goingUp));
+            plugin.debug("Number of passengers: " + Integer.toString(elevator.getSize()));
+            plugin.debug("Elevator chunks: " + Integer.toString(elevator.chunks.size()));
+            plugin.debug("Total generation time: " + Long.toString(System.currentTimeMillis() - startTime));
         }
     }
 }
