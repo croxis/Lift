@@ -24,6 +24,9 @@ import java.util.HashSet;
 import org.bukkit.Material;
 
 public class BukkitConfig extends Config{
-	public HashMap<Material, Double> blockSpeeds = new HashMap<Material, Double>();
-	public HashSet<Material> floorMaterials = new HashSet<Material>();
+	public static HashMap<Material, Double> blockSpeeds = new HashMap<>();
+	public static HashSet<Material> floorMaterials = new HashSet<>();
+	static boolean useNoCheatPlus = false;
+	static boolean metricbool = true;
+	static boolean serverFlight;
 }

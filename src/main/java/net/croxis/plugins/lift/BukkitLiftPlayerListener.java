@@ -69,7 +69,7 @@ public class BukkitLiftPlayerListener implements Listener{
 					// This is just a button and sign, not an elevator.
 					return;
 				} else if (bukkitElevator.getTotalFloors() == 1){
-					event.getPlayer().sendMessage(BukkitLift.stringOneFloor);
+					event.getPlayer().sendMessage(BukkitConfig.stringOneFloor);
 					return;
 				}
 				
@@ -82,7 +82,7 @@ public class BukkitLiftPlayerListener implements Listener{
 					return;
 				}
 				
-				String sign0 = BukkitLift.stringCurrentFloor;
+				String sign0 = BukkitConfig.stringCurrentFloor;
 				String sign1 = Integer.toString(currentFloor.getFloor());
 				String sign2 = "";
 				String sign3 = "";
@@ -105,7 +105,7 @@ public class BukkitLiftPlayerListener implements Listener{
 						currentDestinationInt = 2;
 					plugin.logDebug("Rotating back to first floor");
 				}
-				sign2 = BukkitLift.stringDestination + " " + Integer.toString(currentDestinationInt);
+				sign2 = BukkitConfig.stringDestination + " " + Integer.toString(currentDestinationInt);
 				sign3 = bukkitElevator.getFloorFromN(currentDestinationInt).getName();
 				sign.setLine(0, sign0 + ChatColor.RESET);
 				sign.setLine(1, sign1 + ChatColor.RESET);

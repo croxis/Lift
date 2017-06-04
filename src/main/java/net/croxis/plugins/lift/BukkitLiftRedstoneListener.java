@@ -23,7 +23,6 @@ import java.util.Iterator;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -59,7 +58,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 				&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN;
 		String reason = "Button press";
 		
-		if (BukkitLift.redstone){
+		if (BukkitConfig.redstone){
 			plugin.logDebug("Redstone scan of " + event.getBlock().toString());
 			reason = "Redstone signal event";
 			Block[] blocks = new Block[4];
@@ -106,9 +105,8 @@ public class BukkitLiftRedstoneListener implements Listener {
 			
 			//See if lift is in use
 			for (BukkitElevator e : BukkitElevatorManager.bukkitElevators){
-				Iterator<Block> iterator = bukkitElevator.baseBlocks.iterator();
-				while (iterator.hasNext()){
-					if (e.baseBlocks.contains(iterator.next()))
+				for (Block baseBlock : bukkitElevator.baseBlocks) {
+					if (e.baseBlocks.contains(baseBlock))
 						return;
 				}
 			}
@@ -134,7 +132,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 				bukkitElevator.goingUp = true;
 			}
 			
-			if (BukkitLift.debug){
+			if (BukkitConfig.debug){
 				System.out.println("Elevator start floor:" + startFloor.getFloor());
 				System.out.println("Elevator start floor y:" + startFloor.getY());
 				System.out.println("Elevator destination floor:" + destination);
@@ -145,7 +143,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 			for(Chunk chunk : bukkitElevator.chunks){
 				plugin.logDebug("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().length));
 				for(Entity entity : chunk.getEntities()){
-					if (!plugin.liftMobs && !(entity instanceof Player))
+					if (!BukkitConfig.liftMobs && !(entity instanceof Player))
 						continue;
 					if (bukkitElevator.isInShaftAtFloor(entity, startFloor)){
 						if (BukkitElevatorManager.isPassenger(entity)){
@@ -170,7 +168,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 						plugin.logDebug("Adding passenger " + entity.toString());
 						BukkitElevatorManager.addPassenger(bukkitElevator, entity);
 						plugin.logDebug("Added passenger " + entity.toString());
-						if (baseBlocksIterator.hasNext() && plugin.autoPlace){
+						if (baseBlocksIterator.hasNext() && BukkitConfig.autoPlace){
 							Location loc = baseBlocksIterator.next().getLocation();
 							entity.teleport(new Location(entity.getWorld(), loc.getX() + 0.5D, entity.getLocation().getY(), loc.getZ() + 0.5D, entity.getLocation().getYaw(), entity.getLocation().getPitch()));
 						}
@@ -226,7 +224,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 			
 			BukkitElevatorManager.bukkitElevators.add(bukkitElevator);
 
-			if (BukkitLift.debug){
+			if (BukkitConfig.debug){
 				System.out.println("Going Up: " + Boolean.toString(bukkitElevator.goingUp));
 				System.out.println("Number of passengers: " + Integer.toString(bukkitElevator.getSize()));
 				System.out.println("Elevator chunks: " + Integer.toString(bukkitElevator.chunks.size()));
