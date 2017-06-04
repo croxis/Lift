@@ -20,10 +20,8 @@ package net.croxis.plugins.lift;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
-import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.FallDistanceData;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
@@ -35,13 +33,12 @@ import org.spongepowered.api.world.World;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Vector;
 
 public class SpongeElevatorManager extends ElevatorManager{
 	private static SpongeLift plugin;
 	static HashSet<SpongeElevator> elevators = new HashSet<>();
 	static HashSet<Entity> fallers = new HashSet<>();
-	static HashSet<Player> flyers = new HashSet<>();
+	private static HashSet<Player> flyers = new HashSet<>();
 	
 
 	public SpongeElevatorManager(SpongeLift plugin) {
@@ -328,4 +325,18 @@ public class SpongeElevatorManager extends ElevatorManager{
 		}
 		plugin.debug("[Manager] Added passenger " + passenger.toString());
 	}
+
+	public static void endAllLifts(){
+	    //TODO: at lift end make sure all passengers are at correct floor
+        for (SpongeElevator elevator : elevators){
+            elevator.endLift();
+        }
+    }
+
+    public static void reset(){
+	    endAllLifts();
+	    fallers.clear();
+	    flyers.clear();
+	    elevators.clear();
+    }
 }

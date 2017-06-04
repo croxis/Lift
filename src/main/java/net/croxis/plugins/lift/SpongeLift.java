@@ -28,7 +28,10 @@ import com.google.inject.Inject;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
@@ -83,11 +86,32 @@ public class SpongeLift {
             //error
             rootNode = loader.createEmptyNode(ConfigurationOptions.defaults());
         }
-        ConfigurationNode debugNode = rootNode.getNode("debug");
+        SpongeConfig.debug = rootNode.getNode("debug").getBoolean(false);
+        SpongeConfig.redstone = rootNode.getNode("redstone").getBoolean(true);
+        SpongeConfig.liftArea = rootNode.getNode("liftArea").getInt(16);
+        SpongeConfig.maxHeight = rootNode.getNode("maxHeight").getInt(256);
+        SpongeConfig.autoPlace = rootNode.getNode("autoPlace").getBoolean(false);
+        SpongeConfig.checkFloor = rootNode.getNode("checkFloor").getBoolean(false);
+        SpongeConfig.serverFlight = false; // TODO: How to get from server config?
+        SpongeConfig.liftMobs = rootNode.getNode("liftMobs").getBoolean(false);
+        SpongeConfig.preventEntry = rootNode.getNode("preventEntry").getBoolean(false);
+        SpongeConfig.preventLeave = rootNode.getNode("preventLeave").getBoolean(false);
+        SpongeConfig.stringDestination = rootNode.getNode("stringDestination").getString("§1Dest");
+        SpongeConfig.stringCurrentFloor = rootNode.getNode("stringCurrentFloor").getString("§4Current Floor");
+        SpongeConfig.stringOneFloor = rootNode.getNode("stringOneFloor").getString("");
+        SpongeConfig.stringCantEnter = rootNode.getNode("stringCantEnter").getString("");
+        SpongeConfig.stringCantLeave = rootNode.getNode("stringCantLeave").getString("");
+
+        boolean metricsbool = rootNode.getNode("metrics").getBoolean(true);
+
         try {
             loader.save(rootNode);
         } catch(IOException e) {
             // error
+        }
+
+        if (SpongeConfig.preventEntry){
+            Sponge.getEventManager().registerListeners(this, new SpongeMovePreventListener());
         }
 
 
@@ -95,6 +119,12 @@ public class SpongeLift {
         playerListener = new SpongeLiftPlayerListener(this);
         manager = new SpongeElevatorManager(this);
 		startListeners();
+    }
+
+    @Listener
+    public void reload(GameReloadEvent event) {
+        SpongeElevatorManager.reset();
+        getLogger().info("Restarting SpongeLift");
     }
 
     private void startListeners() {
