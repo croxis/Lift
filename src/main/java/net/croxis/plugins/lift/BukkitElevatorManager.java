@@ -209,22 +209,11 @@ public class BukkitElevatorManager extends ElevatorManager{
 	
 	public static void endLift(BukkitElevator bukkitElevator){
 		plugin.logDebug("Halting lift");
-		for (Location location : bukkitElevator.getFloorBlocks().keySet()){
-			location.getBlock().setType(bukkitElevator.getFloorBlocks().get(location).material);
-			location.getBlock().setData(bukkitElevator.getFloorBlocks().get(location).data);
-			if (location.getBlock().getType() == Material.AIR && !BukkitConfig.checkFloor)
-				location.getBlock().setType(BukkitConfig.floorMaterials.iterator().next());
+		for (BlockState state : bukkitElevator.getFloorBlocks().values()){
+			state.update();
 		}
-		for (Location location : bukkitElevator.getRedstoneBlocks()){
-			location.getBlock().setType(Material.REDSTONE_WIRE);
-		}
-		for (Location location : bukkitElevator.getCarpetBlocks().keySet()){
-			location.getBlock().setType(Material.CARPET);
-			location.getBlock().setData(bukkitElevator.getCarpetBlocks().get(location));
-		}
-		for (Location location : bukkitElevator.getRailBlocks().keySet()){
-			location.getBlock().setType(bukkitElevator.getRailBlocks().get(location).material);
-			location.getBlock().setData(bukkitElevator.getRailBlocks().get(location).data);
+		for (BlockState state : bukkitElevator.getAboveFloorBlocks().values()){
+			state.update();
 		}
 		
 		Iterator<Entity> passengerIterator = bukkitElevator.getPassengers();

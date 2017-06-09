@@ -24,7 +24,7 @@ public class Config {
 	public static int liftArea = 16;
 	public static int maxHeight = 256;
 	public static boolean autoPlace = false;
-	public static boolean checkFloor = false;
+	public static boolean checkFloor = true;
 	public static boolean serverFlight = false;
 	public static boolean liftMobs = false;
 	public static boolean preventEntry = false;

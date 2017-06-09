@@ -49,7 +49,7 @@ public class SpongeElevator extends Elevator{
 	private TreeMap <World, TreeMap<Integer, Floor>> worldFloorMap= new TreeMap <World, TreeMap<Integer, Floor>>();
 	private HashSet<Entity> passengers = new HashSet<Entity>();
 	private HashMap<Entity, Location> holders = new HashMap<>();
-	private HashMap<Location, FloorBlock> floorBlocks = new HashMap<>();
+	private HashMap<Location, BlockSnapshot> floorBlocks = new HashMap<>();
 	private HashMap<Location, BlockSnapshot> aboveFloorBlocks = new HashMap<>();
 	private HashMap<Entity, Vector3d> minecartSpeeds = new HashMap<>();
 	HashSet<Chunk> chunks = new HashSet<>();
@@ -61,13 +61,6 @@ public class SpongeElevator extends Elevator{
 	public SpongeElevator(String cause){
 	    this.cause = cause;
     }
-	
-	class FloorBlock{
-		BlockSnapshot snapshot;
-		FloorBlock(final BlockSnapshot m){
-			snapshot = m;
-		}
-	}
 	
 	public void clear(){
 		super.clear();
@@ -171,12 +164,12 @@ public class SpongeElevator extends Elevator{
 		return passengers.size() + holders.size();
 	}
 	
-	public HashMap<Location, FloorBlock> getFloorBlocks(){
+	public HashMap<Location, BlockSnapshot> getFloorBlocks(){
 		return floorBlocks;
 	}
 	
 	void addFloorBlock(Location<World> location){
-		floorBlocks.put(location, new FloorBlock(location.createSnapshot()));
+		floorBlocks.put(location, location.createSnapshot());
 	}
 	
 	public void addCarpetBlock(Location<World> block){
@@ -276,7 +269,7 @@ public class SpongeElevator extends Elevator{
     void endLift(){
         plugin.debug("Halting lift: " + this.toString());
         for (Location location : floorBlocks.keySet()){
-        	location.restoreSnapshot(floorBlocks.get(location).snapshot, true, BlockChangeFlag.ALL, Cause.source(this).build());
+        	location.restoreSnapshot(floorBlocks.get(location), true, BlockChangeFlag.ALL, Cause.source(this).build());
         	if (location.getBlockType() == BlockTypes.AIR && !Config.checkFloor)
         	    location.setBlockType(SpongeConfig.floorMaterials.iterator().next(), Cause.source(this).build());
         }

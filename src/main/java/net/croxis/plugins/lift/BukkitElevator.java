@@ -30,6 +30,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Minecart;
@@ -38,51 +39,38 @@ import org.bukkit.util.Vector;
 public class BukkitElevator extends Elevator{
 	HashSet<Block> baseBlocks = new HashSet<Block>();
 	private TreeMap <World, TreeMap<Integer, Floor>> worldFloorMap= new TreeMap <World, TreeMap<Integer, Floor>>();
-	private HashSet<Entity> passengers = new HashSet<Entity>();
-	private HashMap<Entity, Location> holders = new HashMap<Entity, Location>();
-	private HashMap<Location, FloorBlock> floorBlocks = new HashMap<Location, FloorBlock>();
-	private HashSet<Location> redstoneBlocks = new HashSet<Location>();
-	private HashMap<Location, Byte> carpetBlocks = new HashMap<Location, Byte>();
-	private HashMap<Location, FloorBlock> railBlocks = new HashMap<Location, FloorBlock>();
-	private HashMap<Entity, Vector> minecartSpeeds = new HashMap<Entity, Vector>();
-	HashSet<Chunk> chunks = new HashSet<Chunk>();
+	private HashSet<Entity> passengers = new HashSet<>();
+	private HashMap<Entity, Location> holders = new HashMap<>();
+	private HashMap<Location, BlockState> floorBlocks = new HashMap<>();
+	private HashMap<Location, BlockState> aboveFloorBlocks = new HashMap<>();
+	private HashMap<Entity, Vector> minecartSpeeds = new HashMap<>();
+	HashSet<Chunk> chunks = new HashSet<>();
 	Material baseBlockType = Material.IRON_BLOCK;
 
-	
-	public BukkitFloor destFloor = null;
-	public BukkitFloor startFloor = null;
-	
-	class FloorBlock{
-		public Material material;
-		public Byte data;
-		public FloorBlock(final Material m, final Byte d){
-			material = m;
-			data = d;
-		}
-	}
-	
+
+	BukkitFloor destFloor = null;
+	BukkitFloor startFloor = null;
+
 	public void clear(){
 		super.clear();
 		baseBlocks.clear();
 		worldFloorMap.clear();
 		passengers.clear();
 		floorBlocks.clear();
-		carpetBlocks.clear();
-		railBlocks.clear();
-		redstoneBlocks.clear();
+		aboveFloorBlocks.clear();
 		minecartSpeeds.clear();
 		holders.clear();
 	}
-	
+
 	public BukkitFloor getFloorFromY(int y){
 		return (BukkitFloor) super.getFloorFromY(y);
 	}
-	
+
 	public BukkitFloor getFloorFromN(int n){
 		return (BukkitFloor) super.getFloorFromN(n);
 	}
-	
-	public boolean isInShaft(Entity entity){
+
+	boolean isInShaft(Entity entity){
 		for (Block block : baseBlocks){
 			if (entity.getLocation().getY() >= block.getLocation().getY() - 1.0D &&
 					entity.getLocation().getY() <= floormap2.get(floormap2.lastKey()).getY() + 3.0D &&
@@ -92,23 +80,23 @@ public class BukkitElevator extends Elevator{
 		}
 		return false;
 	}
-	
-	public boolean isInShaftAtFloor(Entity entity, Floor floor){
+
+	boolean isInShaftAtFloor(Entity entity, Floor floor){
 		if (isInShaft(entity)){
 			if (entity.getLocation().getY() >= floor.getY() - 1 && entity.getLocation().getY() <= floor.getY())
 				return true;
 		}
 		return false;
 	}
-	
-	public void addPassenger(Entity entity){
+
+	void addPassenger(Entity entity){
 		passengers.add(entity);
 	}
-	
-	public void addHolder(Entity entity, Location location){
+
+	void addHolder(Entity entity, Location location){
 		holders.put(entity, location);
 	}
-	
+
 	public void setPassengers(ArrayList<LivingEntity> entities){
 		passengers.clear();
 		passengers.addAll(entities);
@@ -130,74 +118,66 @@ public class BukkitElevator extends Elevator{
             passenger.teleport(destination);
         }
     }
-	
-	public boolean isInLift(Entity entity){
+
+	boolean isInLift(Entity entity){
 		return (passengers.contains(entity) || holders.containsKey(entity));
 	}
-	
-	public void removePassenger(Entity passenger){
+
+	void removePassenger(Entity passenger){
 		// NOt thread safe in an interation!
 		if (passengers.contains(passenger))
 			passengers.remove(passenger);
 		else if (holders.containsKey(passenger))
 			holders.remove(passenger);
 	}
-	
-	public Iterator<Entity> getPassengers(){
+
+	Iterator<Entity> getPassengers(){
 		passengers.removeAll(Collections.singleton(null));
 		return passengers.iterator();
 	}
-	
-	public Iterator<Entity> getHolders(){
+
+	Iterator<Entity> getHolders(){
 		if (holders.containsKey(null))
 			holders.remove(null);
 		return holders.keySet().iterator();
 	}
-	
+
 	public Location getHolderPos(Entity entity){
 		return holders.get(entity);
 	}
-	
+
 	public int getSize(){
 		return passengers.size() + holders.size();
 	}
-	
-	public HashMap<Location, FloorBlock> getFloorBlocks(){
+
+	public HashMap<Location, BlockState> getFloorBlocks(){
 		return floorBlocks;
 	}
-	
+
 	public void addFloorBlock(Block block){
-		floorBlocks.put(block.getLocation(), new FloorBlock(block.getType(), block.getData()));
+		floorBlocks.put(block.getLocation(), block.getState());
 	}
-	
-	public HashMap<Location, Byte> getCarpetBlocks(){
-		return carpetBlocks;
+
+	public HashMap<Location, BlockState> getAboveFloorBlocks(){
+		return aboveFloorBlocks;
 	}
-	
+
 	public void addCarpetBlock(Block block){
-		carpetBlocks.put(block.getLocation(), block.getData());
+		aboveFloorBlocks.put(block.getLocation(), block.getState());
 	}
-	
-	public HashMap<Location, FloorBlock> getRailBlocks(){
-		return railBlocks;
-	}
-	
+
 	public void addRailBlock(Block block){
-		railBlocks.put(block.getLocation(), new FloorBlock(block.getType(), block.getData()));
+        aboveFloorBlocks.put(block.getLocation(), block.getState());
 	}
-	
-	public HashSet<Location> getRedstoneBlocks(){
-		return redstoneBlocks;
-	}
-	
+
 	public void addRedstoneBlock(Block block){
-		redstoneBlocks.add(block.getLocation());
+        aboveFloorBlocks.put(block.getLocation(), block.getState());
 	}
-	
+
 	public HashMap<Entity, Vector> getMinecartSpeeds(){
 		return minecartSpeeds;
 	}
-	
+
 	public void addMinecartSpeed(Minecart minecart){
 		minecartSpeeds.put(minecart, minecart.getVelocity());
 	}

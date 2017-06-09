@@ -25,7 +25,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class BukkitCancelRedstoneTask extends BukkitRunnable{
 	private final Block button;
 	
-	public BukkitCancelRedstoneTask(Block b){
+	BukkitCancelRedstoneTask(Block b){
 		button = b;
 	}
 
