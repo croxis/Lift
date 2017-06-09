@@ -132,8 +132,7 @@ public class BukkitLiftPlayerListener implements Listener{
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent e){
 		if(e.getCause() == DamageCause.FALL){
-			Entity fallerE = e.getEntity();
-			Player faller = (Player) fallerE;
+			Entity faller = e.getEntity();
 			if(BukkitElevatorManager.fallers.contains(faller)){
 				e.setCancelled(true);
 				BukkitElevatorManager.fallers.remove(faller);

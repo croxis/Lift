@@ -210,10 +210,10 @@ public class BukkitElevatorManager extends ElevatorManager{
 	public static void endLift(BukkitElevator bukkitElevator){
 		plugin.logDebug("Halting lift");
 		for (BlockState state : bukkitElevator.getFloorBlocks().values()){
-			state.update();
+			state.update(true);
 		}
 		for (BlockState state : bukkitElevator.getAboveFloorBlocks().values()){
-			state.update();
+			state.update(true);
 		}
 		
 		Iterator<Entity> passengerIterator = bukkitElevator.getPassengers();
@@ -283,6 +283,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 			}
 		}
 		bukkitElevator.clear();
+		plugin.logDebug("Ended lift");
 	}
 	
 	public static void removePlayer(Player player, Iterator<Entity> passengers){
@@ -397,7 +398,8 @@ public class BukkitElevatorManager extends ElevatorManager{
 			// If the lift has been running 5 seconds longer than it should of
             // Teleport all players and end the lift
             // Speed is blocks per second or tick (it is unclear)
-			if (e.startTime + e.speed * 20 * 1000 + 5000 <= System.currentTimeMillis()) {
+			if (e.startTime + e.speed * 20 * 1000 + 5000 >= System.currentTimeMillis()) {
+				plugin.logDebug("Ending lift due to timeout.");
                 e.quickEndLift();
                 BukkitElevatorManager.endLift(e);
                 eleviterator.remove();
