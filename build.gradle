@@ -7,7 +7,7 @@ defaultTasks 'clean', 'build'
 //the naming of this artifact
 group = 'net.croxis.plugins.lift'
 jar.archiveName = 'Lift.jar'
-version = '56'
+version = '57'
 description = 'Elevators!'
 
 // Minimum version of Java required
@@ -23,7 +23,7 @@ dependencies {
 	compile group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
     compile group: 'org.mcstats.bukkit', name: 'metrics', version: 'R8-SNAPSHOT'
 	
-	compile 'org.spongepowered:spongeapi:6.0.0-SNAPSHOT'
+	compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
 	
 	testCompile group: 'junit', name: 'junit', version: '4.11'
 } 

@@ -37,6 +37,7 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.ConfigurationOptions;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 
 
@@ -51,6 +52,9 @@ public class SpongeLift {
 
 	@Inject
 	private Logger logger;
+
+    @Inject
+    PluginContainer container;
 	
 	@Inject
 	@DefaultConfig(sharedRoot = true)

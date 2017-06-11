@@ -18,13 +18,21 @@
  */
 package net.croxis.plugins.lift;
 
+import java.util.UUID;
+
 public class Floor {
 	private String name = "";
-	private int y;
 	private int floor;
+	int buttonX;
+    int buttonY;
+	int buttonZ;
+	UUID worldID;
 	
-	public Floor(final int y){
-		this.y = y;
+	public Floor(UUID id, final int x, final int y, final int z){
+	    this.worldID = id;
+		this.buttonX = x;
+	    this.buttonY = y;
+	    this.buttonZ = z;
 	}
 	
 	public String getName() {
@@ -36,7 +44,7 @@ public class Floor {
 			this.name = "";
 	}
 	public int getY() {
-		return y;
+		return buttonY;
 	}
 	public int getFloor() {
 		return floor;

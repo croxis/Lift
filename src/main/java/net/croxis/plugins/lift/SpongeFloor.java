@@ -18,15 +18,16 @@
  */
 package net.croxis.plugins.lift;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 class SpongeFloor extends Floor{
-	private World world;
-	Location<World> buttonLocation;
-
 	SpongeFloor(final Location<World> b){
-		super(b.getBlockY());
-		buttonLocation = b;
-	}
+		super(b.getExtent().getUniqueId(), b.getBlockX(), b.getBlockY(), b.getBlockZ());
+    }
+
+    Location<World> getButton() {
+        return Sponge.getServer().getWorld(worldID).get().getLocation(buttonX, buttonY, buttonZ);
+    }
 }

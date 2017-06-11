@@ -31,8 +31,11 @@ public abstract class Elevator {
 	long startTime = 0;
 
 	
-	public TreeMap <Integer, Floor> floormap = new TreeMap<Integer, Floor>();//Index is y value
-	public TreeMap <Integer, Floor> floormap2 = new TreeMap<Integer, Floor>();//Index is floor value
+	TreeMap <Integer, Floor> floormap = new TreeMap<>();//Index is y value
+	TreeMap <Integer, Floor> floormap2 = new TreeMap<>();//Index is floor value
+
+    Floor destFloor = null;
+    Floor startFloor = null;
 	
 	public void clear(){
 		floormap.clear();

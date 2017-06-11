@@ -32,11 +32,9 @@ import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.vehicle.minecart.Minecart;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Chunk;
@@ -67,6 +65,7 @@ public class SpongeLiftRedstoneListener{
             blockType = block.getType();
             if ((blockType.equals(BlockTypes.STONE_BUTTON) || blockType.equals(BlockTypes.WOODEN_BUTTON))
                     && block.get(Keys.POWERED).isPresent()
+                    && block.get(Keys.POWERED).get()
                     && snapshot.getLocation().get().getRelative(Direction.UP).getBlock().getType().equals(BlockTypes.WALL_SIGN)) {
                 canDo = true;
                 reason = "Button Press";
@@ -76,7 +75,6 @@ public class SpongeLiftRedstoneListener{
         }
 
         if (!canDo) {
-            plugin.debug("Passing button press.");
             return;
         }
         long startTime = System.currentTimeMillis();
@@ -89,13 +87,18 @@ public class SpongeLiftRedstoneListener{
         }
         TileEntity signEntity = snapshot.getLocation().get().getRelative(Direction.UP).getTileEntity().get();
         Sign sign = (Sign) signEntity;
-        String line = sign.getSignData().get(1).get().toPlain();
-        if (line.isEmpty())
+
+        LiftSign liftSign = new LiftSign(SpongeLift.config,
+                sign.getSignData().get(0).get().toPlain(),
+                sign.getSignData().get(1).get().toPlain(),
+                sign.getSignData().get(2).get().toPlain(),
+                sign.getSignData().get(3).get().toPlain());
+        int destination = liftSign.getDestinationFloor();
+        if (destination == 0){
+            plugin.debug("Not a valid lift sign:" + liftSign.sign2);
+            plugin.debug("Not a valid lift sign:" + liftSign.sign2.split(":")[1].replaceAll("\\s",""));
             return;
-        String[] splits = line.split(":");
-        if (splits.length != 2)
-            return;
-        int destination = Integer.parseInt(splits[1].trim());
+        }
 
         //See if lift is in use
         for (SpongeElevator e : SpongeElevatorManager.elevators) {
@@ -103,13 +106,16 @@ public class SpongeLiftRedstoneListener{
             Iterator<Location<World>> i = e.baseBlocks.iterator();
             while (iterator.hasNext())
                 while (i.hasNext())
-                    if (i.next().getPosition().sub(iterator.next().getPosition()) == new Vector3d(0, 0, 0))
+                    if (i.next().getPosition().sub(iterator.next().getPosition()) == new Vector3d(0, 0, 0)) {
+                        plugin.debug("Lift is in use.");
                         return;
-
+                    }
         }
 
-        if (elevator.getTotalFloors() < 2)
+        if (elevator.getTotalFloors() < 2) {
+            plugin.debug("Only one floor.");
             return;
+        }
 
         int y = snapshot.getLocation().get().getBlockY();
         elevator.startFloor = elevator.getFloorFromY(y);
@@ -133,6 +139,9 @@ public class SpongeLiftRedstoneListener{
         plugin.debug("Elevator start floor y:" + elevator.startFloor.getY());
         plugin.debug("Elevator destination floor:" + destination);
         plugin.debug("Elevator destination y:" + elevator.destFloor.getY());
+
+        plugin.debug("Floormap: " + elevator.floormap.toString());
+        plugin.debug("Floormap: " + elevator.floormap2.toString());
 
         Iterator<Location<World>> baseBlockIterator = elevator.baseBlocks.iterator();
         for (Chunk chunk : elevator.chunks){
@@ -207,7 +216,7 @@ public class SpongeLiftRedstoneListener{
                     elevator.addRedstoneBlock(floorBlockLocation.getRelative(Direction.UP));
                     floorBlockLocation.getRelative(Direction.UP).setBlockType(BlockTypes.AIR, Cause.source(plugin).build());
                 }
-                floorBlockLocation.setBlockType(BlockTypes.AIR, Cause.source(plugin).build());
+                floorBlockLocation.setBlockType(BlockTypes.AIR, Cause.source(plugin.container).build());
             }
 
             SpongeElevatorManager.elevators.add(elevator);

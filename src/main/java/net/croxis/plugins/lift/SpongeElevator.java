@@ -54,9 +54,6 @@ public class SpongeElevator extends Elevator{
 	private HashMap<Entity, Vector3d> minecartSpeeds = new HashMap<>();
 	HashSet<Chunk> chunks = new HashSet<>();
 	BlockType baseBlockType = BlockTypes.IRON_BLOCK;
-	
-	SpongeFloor destFloor = null;
-	Floor startFloor = null;
 
 	public SpongeElevator(String cause){
 	    this.cause = cause;
@@ -93,8 +90,8 @@ public class SpongeElevator extends Elevator{
             generateBaseBlocks(blockLoc.getRelative(Direction.WEST));
 	}
 	
-	public Floor getFloorFromY(int y){
-		return (Floor) super.getFloorFromY(y);
+	public SpongeFloor getFloorFromY(int y){
+		return (SpongeFloor) super.getFloorFromY(y);
 	}
 	
 	public SpongeFloor getFloorFromN(int n){
@@ -214,8 +211,7 @@ public class SpongeElevator extends Elevator{
                     if (Config.checkFloor)
                         if (!scanFloorAtY(y-2))
                             break;
-                    //SpongeFloor floor = new SpongeFloor(b.getExtent().getLocation(x, y, z));
-                    Floor floor = new Floor(y);
+                    SpongeFloor floor = new SpongeFloor(testLocation);
                     if (testLocation.getRelative(Direction.DOWN).getBlockType() == BlockTypes.WALL_SIGN){
                         TileEntity entity = testLocation.getRelative(Direction.DOWN).getTileEntity().get();
                         Sign sign = (Sign) entity;
@@ -271,10 +267,10 @@ public class SpongeElevator extends Elevator{
         for (Location location : floorBlocks.keySet()){
         	location.restoreSnapshot(floorBlocks.get(location), true, BlockChangeFlag.ALL, Cause.source(this).build());
         	if (location.getBlockType() == BlockTypes.AIR && !Config.checkFloor)
-        	    location.setBlockType(SpongeConfig.floorMaterials.iterator().next(), Cause.source(this).build());
+        	    location.setBlockType(SpongeConfig.floorMaterials.iterator().next(), Cause.source(plugin.container).build());
         }
         for (Location location : aboveFloorBlocks.keySet()){
-            location.restoreSnapshot(aboveFloorBlocks.get(location), true, BlockChangeFlag.ALL, Cause.source(this).build());
+            location.restoreSnapshot(aboveFloorBlocks.get(location), true, BlockChangeFlag.ALL, Cause.source(plugin.container).build());
         }
 
         for (Iterator<Entity> iter = passengers.iterator(); iter.hasNext(); ){
@@ -299,7 +295,7 @@ public class SpongeElevator extends Elevator{
         //Fire off redstone signal for arrival
         // TileEntity entity = testLocation.getRelative(Direction.DOWN).getTileEntity().get();
         //Sign sign = (Sign) entity;
-        Location<World> signLocation = destFloor.buttonLocation.getRelative(Direction.UP);
+        Location<World> signLocation = ((SpongeFloor) destFloor).getButton().getRelative(Direction.UP);
         Direction direction = signLocation.get(DirectionalData.class).get().direction().get();
         Direction behindBlock = Direction.NORTH;
         if (direction.equals(Direction.NORTH))
@@ -313,7 +309,7 @@ public class SpongeElevator extends Elevator{
 
         Location<World> testBlock = signLocation.getRelative(behindBlock).getRelative(behindBlock);
         if (testBlock.getBlockType().equals(BlockTypes.STONE_BUTTON) || testBlock.getBlockType().equals(BlockTypes.WOODEN_BUTTON)){
-            testBlock.offer(Keys.POWERED, true, Cause.source(this).build());
+            testBlock.offer(Keys.POWERED, true, Cause.source(plugin.container).build());
         }
 
         clear();

@@ -47,10 +47,6 @@ public class BukkitElevator extends Elevator{
 	HashSet<Chunk> chunks = new HashSet<>();
 	Material baseBlockType = Material.IRON_BLOCK;
 
-
-	BukkitFloor destFloor = null;
-	BukkitFloor startFloor = null;
-
 	public void clear(){
 		super.clear();
 		baseBlocks.clear();

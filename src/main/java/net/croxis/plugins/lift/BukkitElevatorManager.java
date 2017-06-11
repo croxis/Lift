@@ -236,7 +236,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 				((Minecart) passenger).setVelocity(bukkitElevator.getMinecartSpeeds().get(passenger));
 		}
 		//Fire off redstone signal for arrival
-		Block s = bukkitElevator.destFloor.getButton().getRelative(BlockFace.UP);
+		Block s = ((BukkitFloor) bukkitElevator.destFloor).getButton().getRelative(BlockFace.UP);
 		org.bukkit.material.Sign sign;
 		try{
 			sign = (org.bukkit.material.Sign) s.getState().getData();

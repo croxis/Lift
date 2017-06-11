@@ -18,28 +18,28 @@
  */
 package net.croxis.plugins.lift;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
 public class BukkitFloor extends Floor{
-	private World world;
-	private Block button;
 
 	public BukkitFloor(final Block b, final int y){
-		super(y);
-		button = b;
+		super(b.getWorld().getUID(), b.getX(), b.getY(), b.getZ());
 	}
 
 	public World getWorld() {
-		return world;
+		return Bukkit.getWorld(worldID);
 	}
 	public void setWorld(World world) {
-		this.world = world;
+		worldID = world.getUID();
 	}
-	public Block getButton() {
-		return button;
+	Block getButton() {
+		return Bukkit.getWorld(worldID).getBlockAt(buttonX, buttonY, buttonZ);
 	}
 	public void setButton(Block button) {
-		this.button = button;
+		buttonX = button.getX();
+        buttonY = button.getY();
+        buttonZ = button.getZ();
 	}
 }

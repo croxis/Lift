@@ -218,7 +218,7 @@ public class SpongeElevatorManager extends ElevatorManager{
 		}
 	}
 	
-	public void run() {
+    public void run() {
 		//Using while loop iterator so we can remove lifts in a sane way
 		Iterator<SpongeElevator> eleviterator = elevators.iterator();
 		// Various variables to reduce variable spawning

@@ -18,17 +18,16 @@
  */
 package net.croxis.plugins.lift;
 
-import java.lang.reflect.Array;
 
 /**
  * Created by croxis on 4/28/17.
  */
 public class LiftSign {
-    private int signVersion = 0; // 0=hmod, 1=lift till 55, 2=lift>=56
+    int signVersion = 0; // 0=hmod, 1=lift till 55, 2=lift>=56
     private Config config;
     private String sign0 = ": 0";
     private String sign1 = "";
-    private String sign2 = ": 0";
+    String sign2 = ": 0";
     private String sign3 = "";
 
     /**
@@ -37,9 +36,11 @@ public class LiftSign {
      * @param line2
      * @param line3
      */
-    LiftSign (Config config, String line0, String line1, String line2, String line3) {
-        this.config = config;
-        if (line0.split(":").length == 1)
+    LiftSign (Config c, String line0, String line1, String line2, String line3) {
+        config = c;
+        if (line0.isEmpty())
+            signVersion = 2;
+        else if (line0.split(":").length == 1)
             signVersion = 1;
         else if (line0.split(":").length == 2)
             signVersion = 2;
@@ -47,6 +48,7 @@ public class LiftSign {
         this.sign1 = line1;
         this.sign2 = line2;
         this.sign3 = line3;
+        System.out.print(Integer.toString(signVersion));
         if (signVersion < 2)
             updateFormat();
     }
@@ -64,8 +66,8 @@ public class LiftSign {
 
     int getCurrentFloor() {
         try{
-            String[] splits = sign0.split(":");
-            return Integer.parseInt(splits[1]);
+            String[] splits = sign0.split(": ");
+            return Integer.parseInt(splits[1].replaceAll("\\s","").replaceAll("\\§r", ""));
         } catch (Exception e){
             return 0;
         }
@@ -74,7 +76,7 @@ public class LiftSign {
     int getDestinationFloor() {
         try{
             String[] splits = sign2.split(": ");
-            return Integer.parseInt(splits[1]);
+            return Integer.parseInt(splits[1].replaceAll("\\s","").replaceAll("\\§r", ""));
         } catch (Exception e){
             return 0;
         }
@@ -95,5 +97,9 @@ public class LiftSign {
         data[2] = this.sign2;
         data[3] = this.sign3;
         return data;
+    }
+
+    void setCurrentName(String name){
+        sign1 = name + "§r";
     }
 }

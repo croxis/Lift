@@ -38,21 +38,25 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 public class SpongeLiftPlayerListener{
-	private SpongeLift plugin;
-	private Location<World> buttonBlock = null;
+    private SpongeLift plugin;
+    private Location<World> buttonBlock = null;
 
-	SpongeLiftPlayerListener(SpongeLift plugin){
+    SpongeLiftPlayerListener(SpongeLift plugin){
 		this.plugin = plugin;
 	}
 
-	@Listener
+    @Listener
     public void onPlayerInteract(InteractBlockEvent event, @Root Player player){
-	    if (!event.getTargetBlock().getLocation().isPresent())
-	        return;
-        if (!player.hasPermission("lift.change"))
+        plugin.debug("Start click");
+	    if (!event.getTargetBlock().getLocation().isPresent()){
+	        return;}
+        if (!player.hasPermission("lift.change")){
             return;
+        }
+
         if (!(event.getTargetBlock().getLocation().get().getBlockType() == BlockTypes.WALL_SIGN))
             return;
+        plugin.debug("Sign click by: " + player.getName());
 	    Location<World> signLoc = event.getTargetBlock().getLocation().get();
 	    Location<World> buttonLoc = signLoc.getRelative(Direction.DOWN);
 	    if (!(buttonLoc.getBlockType() == BlockTypes.WOODEN_BUTTON || buttonLoc.getBlockType() == BlockTypes.STONE_BUTTON))
@@ -84,8 +88,24 @@ public class SpongeLiftPlayerListener{
         TileEntity entity = signLoc.getTileEntity().get();
 		if (entity.supports(SignData.class)){
 		    SignData sign = entity.getOrCreate(SignData.class).get();
-            LiftSign liftSign = new LiftSign(SpongeLift.config, sign.lines().get(0).toString(), sign.lines().get(1).toString(), sign.lines().get(2).toString(), sign.lines().get(3).toString());
+            plugin.debug("Creating sign: " +  sign.lines().get(0).toPlain());
+            plugin.debug("Creating sign: " +  sign.lines().get(1).toPlain());
+            plugin.debug("Creating sign: " +  sign.lines().get(2).toPlain());
+            plugin.debug("Creating sign: " +  sign.lines().get(3).toPlain());
+            LiftSign liftSign = new LiftSign(SpongeLift.config, sign.lines().get(0).toPlain(), sign.lines().get(1).toPlain(), sign.lines().get(2).toPlain(), sign.lines().get(3).toPlain());
+            plugin.debug("Sign version: " + Integer.toString(liftSign.signVersion));
+
             liftSign.setCurrentFloor(currentFloor.getFloor());
+
+            if (signLoc.getRelative(Direction.DOWN).getRelative(Direction.DOWN).getBlockType().equals(BlockTypes.WALL_SIGN)){
+                TileEntity nameEntity = signLoc.getRelative(Direction.DOWN).getRelative(Direction.DOWN).getTileEntity().get();
+                SignData nameSign = nameEntity.getOrCreate(SignData.class).get();
+                Text currentName = nameSign.get(0).get();
+                if (currentName.isEmpty())
+                    currentName = nameSign.get(1).get();
+                liftSign.setCurrentName(currentName.toPlain());
+            }
+
             currentDestinationInt = liftSign.getDestinationFloor();
             currentDestinationInt++;
             if (currentDestinationInt == currentFloor.getFloor())
@@ -99,7 +119,10 @@ public class SpongeLiftPlayerListener{
             liftSign.setDestinationFloor(currentDestinationInt);
             liftSign.setDestinationName(elevator.getFloorFromN(currentDestinationInt).getName());
 
-
+            plugin.debug("Sign text: " + liftSign.getDump()[0]);
+            plugin.debug("Sign text: " + liftSign.getDump()[1]);
+            plugin.debug("Sign text: " + liftSign.getDump()[2]);
+            plugin.debug("Sign text: " + liftSign.getDump()[3]);
 		    sign.set(sign.lines().set(0, Text.of(liftSign.getDump()[0])));
             sign.set(sign.lines().set(1, Text.of(liftSign.getDump()[1])));
             sign.set(sign.lines().set(2, Text.of(liftSign.getDump()[2])));
