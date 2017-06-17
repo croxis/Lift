@@ -232,8 +232,10 @@ public class BukkitElevatorManager extends ElevatorManager{
 			Entity passenger = holdersIterators.next();
 			if (passenger instanceof Player){
 				removePlayer((Player) passenger, holdersIterators);
-			} else if (passenger instanceof Minecart)
-				((Minecart) passenger).setVelocity(bukkitElevator.getMinecartSpeeds().get(passenger));
+			} else if (passenger instanceof Minecart) {
+				final Vector v = bukkitElevator.getMinecartSpeeds().get(passenger);
+				((Minecart) passenger).setVelocity(v != null ? v : new Vector(0, 0, 0));
+			}
 		}
 		//Fire off redstone signal for arrival
 		Block s = ((BukkitFloor) bukkitElevator.destFloor).getButton().getRelative(BlockFace.UP);
