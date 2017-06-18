@@ -174,7 +174,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 						}
 						if (entity instanceof Player){
 							Player player = (Player) entity;
-							plugin.logDebug("Flyers: " + BukkitElevatorManager.flyers.toString());
+							plugin.logDebug("Flyers: " + BukkitElevatorManager.fliers.toString());
 							if (!player.hasPermission("lift")){
 								BukkitElevatorManager.addHolder(bukkitElevator, entity, entity.getLocation());
 							}

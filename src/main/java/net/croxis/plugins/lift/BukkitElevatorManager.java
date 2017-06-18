@@ -36,10 +36,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class BukkitElevatorManager extends ElevatorManager{
-	private static BukkitLift plugin;
-	public static HashSet<BukkitElevator> bukkitElevators = new HashSet<BukkitElevator>();
-	public static HashSet<Entity> fallers = new HashSet<Entity>();
-	public static HashSet<Player> flyers = new HashSet<Player>();
+    private static BukkitLift plugin;
+    public static HashSet<BukkitElevator> bukkitElevators = new HashSet<>();
+    public static HashSet<Entity> fallers = new HashSet<>();
+    public static HashSet<Player> fliers = new HashSet<>();
 	
 
 	public BukkitElevatorManager(BukkitLift plugin) {
@@ -131,7 +131,6 @@ public class BukkitElevatorManager extends ElevatorManager{
 			scanBaseBlocks(block.getRelative(BlockFace.SOUTH), bukkitElevator);
 		if (block.getRelative(BlockFace.WEST, 1).getType() == bukkitElevator.baseBlockType)
 			scanBaseBlocks(block.getRelative(BlockFace.WEST), bukkitElevator);
-		return;
 	}
 	
 	public static String constructFloors(BukkitElevator bukkitElevator){
@@ -223,8 +222,10 @@ public class BukkitElevatorManager extends ElevatorManager{
 			e.setVelocity(new Vector(0, 0, 0));
 			if (e instanceof Player)
 				removePlayer((Player) e);
-			else if (e instanceof Minecart)
-				((Minecart) e).setVelocity(bukkitElevator.getMinecartSpeeds().get(e));
+			else if (e instanceof Minecart) {
+			    final Vector v = bukkitElevator.getMinecartSpeeds().get(e);
+			    ((Minecart) e).setVelocity(v != null ? v : new Vector(0, 0, 0));
+			}
 			passengerIterator.remove();
 		}
 		Iterator<Entity> holdersIterators = bukkitElevator.getHolders();
@@ -233,8 +234,8 @@ public class BukkitElevatorManager extends ElevatorManager{
 			if (passenger instanceof Player){
 				removePlayer((Player) passenger, holdersIterators);
 			} else if (passenger instanceof Minecart) {
-				final Vector v = bukkitElevator.getMinecartSpeeds().get(passenger);
-				((Minecart) passenger).setVelocity(v != null ? v : new Vector(0, 0, 0));
+			    final Vector v = bukkitElevator.getMinecartSpeeds().get(passenger);
+			    ((Minecart) passenger).setVelocity(v != null ? v : new Vector(0, 0, 0));
 			}
 		}
 		//Fire off redstone signal for arrival
@@ -333,22 +334,20 @@ public class BukkitElevatorManager extends ElevatorManager{
 	}
 	
 	public static boolean isPassenger(Entity entity){
-		Iterator<BukkitElevator> iterator = bukkitElevators.iterator();
-		while (iterator.hasNext()){
-			BukkitElevator bukkitElevator = iterator.next();
-			if (bukkitElevator.isInLift(entity))
-				return true;
-		}
+        for (BukkitElevator bukkitElevator : bukkitElevators) {
+            if (bukkitElevator.isInLift(entity))
+                return true;
+        }
 		return false;
 	}
 	
 	public static void setupPlayer(Player player){
 		// Function which sets up a player for holding or passengering. Anti cheat stuff
 		if (player.getAllowFlight()){
-			BukkitElevatorManager.flyers.add(player);
+			BukkitElevatorManager.fliers.add(player);
 			plugin.logDebug(player.getName() + " added to flying list");
 		} else {
-            BukkitElevatorManager.flyers.remove(player);
+            BukkitElevatorManager.fliers.remove(player);
             //player.setAllowFlight(false);
             plugin.logDebug(player.getName() + " NOT added to flying list");
         }
@@ -359,13 +358,13 @@ public class BukkitElevatorManager extends ElevatorManager{
 			NCPExemptionManager.isExempted(player, fr.neatmonster.nocheatplus.checks.CheckType.FIGHT);
 	}
 	
-	public static void restorePlayer(Player player){
+	static void restorePlayer(Player player){
 		// Restores a player's previous stats.
 		if (fallers.contains(player)){
 			fallers.remove(player);
 		}
-		if (flyers.contains(player)){
-			flyers.remove(player);
+		if (fliers.contains(player)){
+			fliers.remove(player);
 		} else {
 			player.setAllowFlight(false);
 			plugin.logDebug("Removing player from flight");

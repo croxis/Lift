@@ -176,9 +176,7 @@ public class SpongeElevatorManager extends ElevatorManager{
 	}
 	
 	public static boolean isPassenger(Entity entity){
-		Iterator<SpongeElevator> iterator = elevators.iterator();
-		while (iterator.hasNext()){
-			SpongeElevator elevator = iterator.next();
+		for (SpongeElevator elevator : elevators) {
 			if (elevator.isInLift(entity))
 				return true;
 		}
@@ -189,10 +187,10 @@ public class SpongeElevatorManager extends ElevatorManager{
 		// Needed with modern servers?
 		// Function which sets up a player for holding or passengering. Anti cheat stuff
 		//if (player.getAllowFlight()){
-		//	SpongeElevatorManager.flyers.add(player);
+		//	SpongeElevatorManager.fliers.add(player);
 		//	plugin.debug(player.getName() + " added to flying list");
 		//} else {
-        //    SpongeElevatorManager.flyers.remove(player);
+        //    SpongeElevatorManager.fliers.remove(player);
         //    //player.setAllowFlight(false);
 		//	plugin.debug(player.getName() + " NOT added to flying list");
         //}
