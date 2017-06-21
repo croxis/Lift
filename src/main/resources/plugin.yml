@@ -14,6 +14,9 @@ permissions:
   lift.change:
     description: Can change lift floors
     default: true
+  lift.reload:
+    description: Reloads the lift plugin
+    default: false
 commands:
    lift:
       description: Scans a lift.

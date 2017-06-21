@@ -18,9 +18,6 @@
  */
 package net.croxis.plugins.lift;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -35,8 +32,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.*;
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Graph;
 
 public class BukkitLift extends JavaPlugin implements Listener {
 	public static BukkitElevatorManager manager;
@@ -71,45 +66,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
     	new BukkitLiftPlayerListener(this);
     	manager = new BukkitElevatorManager(this);
     	
-    	this.getConfig().options().copyDefaults(true);
-        BukkitConfig.liftArea = this.getConfig().getInt("maxLiftArea");
-        BukkitConfig.maxHeight = this.getConfig().getInt("maxHeight");
-        BukkitConfig.debug = this.getConfig().getBoolean("debug");
-        BukkitConfig.liftMobs = this.getConfig().getBoolean("liftMobs");
-        BukkitConfig.autoPlace = this.getConfig().getBoolean("autoPlace");
-        BukkitConfig.checkFloor = this.getConfig().getBoolean("checkFloor", false);
-        BukkitConfig.preventEntry = this.getConfig().getBoolean("preventEntry", false);
-        BukkitConfig.preventLeave = this.getConfig().getBoolean("preventLeave", false);
-        BukkitConfig.redstone = this.getConfig().getBoolean("redstone", false);
-    	Set<String> baseBlockKeys = this.getConfig().getConfigurationSection("baseBlockSpeeds").getKeys(false);
-    	for (String key : baseBlockKeys){
-            BukkitConfig.blockSpeeds.put(Material.valueOf(key), this.getConfig().getDouble("baseBlockSpeeds." + key));
-    	}
-    	List<String> configFloorMaterials = this.getConfig().getStringList("floorBlocks");
-    	for (String key : configFloorMaterials){
-            BukkitConfig.floorMaterials.add(Material.valueOf(key));
-    	}
-        BukkitConfig.stringOneFloor = getConfig().getString("STRING_oneFloor", "There is only one floor silly.");
-        BukkitConfig.stringCurrentFloor = getConfig().getString("STRING_currentFloor", "Current Floor:");
-        BukkitConfig.stringDestination = getConfig().getString("STRING_dest", "Dest:");
-        BukkitConfig.stringCantEnter = getConfig().getString("STRING_cantEnter", "Can't enter elevator in use");
-        BukkitConfig.stringCantLeave = getConfig().getString("STRING_cantLeave", "Can't leave elevator in use");
-
-        BukkitConfig.metricbool = getConfig().getBoolean("metrics", true);
-
-        saveConfig();
-
-        BukkitConfig.serverFlight = this.getServer().getAllowFlight();
-        
-        //if (preventEntry || preventLeave){
-        if (BukkitConfig.preventEntry){
-        	Bukkit.getServer().getPluginManager().registerEvents(this, this);
-        }
-        
-        if(getServer().getPluginManager().getPlugin("NoCheatPlus") != null){
-            BukkitConfig.useNoCheatPlus = true;
-          logDebug("Hooked into NoCheatPlus");
-        }
+    	config.loadConfig(this);
         
         logDebug("maxArea: " + Integer.toString(BukkitConfig.liftArea));
         logDebug("autoPlace: " + Boolean.toString(BukkitConfig.autoPlace));
@@ -118,16 +75,6 @@ public class BukkitLift extends JavaPlugin implements Listener {
         logDebug("floorBlocks: " + BukkitConfig.floorMaterials.toString());
         
         System.out.println(this + " is now enabled!");
-
-        if (BukkitConfig.metricbool){
-            try {
-                Metrics metrics = new Metrics(this);
-                Graph numberofpassengers = metrics.createGraph("Number of passengers");
-                metrics.start();
-            } catch (IOException e) {
-                logDebug(e.getMessage());
-            }
-        }
     }
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -146,7 +93,9 @@ public class BukkitLift extends JavaPlugin implements Listener {
 	}
 	
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-    	if(cmd.getName().equalsIgnoreCase("lift") && sender instanceof Player){ // If the player typed /basic then do the following...
+    	if(cmd.getName().equalsIgnoreCase("lift")
+                && sender instanceof Player
+                && args.length == 0){ // If the player typed /basic then do the following...
     		long time = System.currentTimeMillis();
     		Player player = (Player) sender;
     		player.sendMessage("Starting scan");
@@ -163,7 +112,14 @@ public class BukkitLift extends JavaPlugin implements Listener {
     		player.sendMessage("Floor scan reports: " + BukkitElevatorManager.constructFloors(bukkitElevator));
     		player.sendMessage("Total time generating elevator: " + Long.toString(System.currentTimeMillis() - time));
     		return true;
-    	}
+    	} else if(cmd.getName().equalsIgnoreCase("lift") && args[0].equalsIgnoreCase("reload")) {
+            BukkitElevatorManager.quickEndLifts();
+            BukkitElevatorManager.clear();
+
+            config = new BukkitConfig();
+            config.loadConfig(this);
+    	    return true;
+        }
     	return false; 
     }
 

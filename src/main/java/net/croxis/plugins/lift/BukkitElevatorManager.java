@@ -46,6 +46,12 @@ public class BukkitElevatorManager extends ElevatorManager{
 		BukkitElevatorManager.plugin = plugin;
 		taskid = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, 1, 1);
 	}
+
+	public static void clear(){
+        bukkitElevators = new HashSet<>();
+        fallers = new HashSet<>();
+        fliers = new HashSet<>();
+    }
 	
 	public static BukkitElevator createLift(Block block, String cause){
 		long startTime = System.currentTimeMillis();
@@ -498,4 +504,13 @@ public class BukkitElevatorManager extends ElevatorManager{
 		}
 		plugin.logDebug("[Manager] Added passenger " + passenger.toString());
 	}
+
+	public static void quickEndLifts(){
+        Iterator<BukkitElevator> iterator = bukkitElevators.iterator();
+	    while (iterator.hasNext()){
+            BukkitElevator elevator = iterator.next();
+            elevator.quickEndLift();
+            iterator.remove();
+        }
+    }
 }
