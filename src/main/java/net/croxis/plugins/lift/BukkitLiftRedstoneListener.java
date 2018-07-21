@@ -156,7 +156,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 							bukkitElevator.addMinecartSpeed((Minecart) entity);
 							//A minecart wont go up if attached to a rail, so we temp remove the rail.  
 							if (bukkitElevator.goingUp
-									&& (entity.getLocation().getBlock().getType() == Material.RAIL
+									&& (entity.getLocation().getBlock().getType() == Material.RAILS
 									|| entity.getLocation().getBlock().getType() == Material.DETECTOR_RAIL
 									|| entity.getLocation().getBlock().getType() == Material.ACTIVATOR_RAIL
 									|| entity.getLocation().getBlock().getType() == Material.POWERED_RAIL)){
@@ -207,7 +207,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 					if (gb.getRelative(BlockFace.UP).getType().toString().contains("CARPET")){
 						bukkitElevator.addCarpetBlock(gb.getRelative(BlockFace.UP));
 						gb.getRelative(BlockFace.UP).setType(Material.AIR);
-					} else if (gb.getRelative(BlockFace.UP).getType() == Material.RAIL
+					} else if (gb.getRelative(BlockFace.UP).getType() == Material.RAILS
 							|| gb.getRelative(BlockFace.UP).getType() == Material.DETECTOR_RAIL
 							|| gb.getRelative(BlockFace.UP).getType() == Material.POWERED_RAIL
 							|| gb.getRelative(BlockFace.UP).getType() == Material.ACTIVATOR_RAIL){

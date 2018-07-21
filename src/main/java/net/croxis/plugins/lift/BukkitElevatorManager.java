@@ -113,7 +113,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 				|| checkBlock.getType() == Material.VINE 
 				|| checkBlock.getType() == Material.WALL_SIGN
 				|| checkBlock.getType() == Material.WATER
-				|| checkBlock.getType() == Material.RAIL
+				|| checkBlock.getType() == Material.RAILS
 				|| checkBlock.getType() == Material.DETECTOR_RAIL
 				|| checkBlock.getType() == Material.ACTIVATOR_RAIL
 				|| checkBlock.getType() == Material.POWERED_RAIL
