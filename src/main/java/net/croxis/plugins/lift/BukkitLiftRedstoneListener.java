@@ -53,7 +53,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 	public void onBlockRedstoneChange(BlockRedstoneEvent event){
 		block = event.getBlock();
 		canDo = false;
-		canDo = (event.getBlock().getType() == Material.STONE_BUTTON || event.getBlock().getType() == Material.WOOD_BUTTON) 
+		canDo = BukkitElevatorManager.isButton(event.getBlock())
 				&& (!event.getBlock().isBlockIndirectlyPowered())
 				&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN;
 		String reason = "Button press";
@@ -75,7 +75,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 				blocks2[3] = b.getRelative(BlockFace.SOUTH);
 				for (Block b2 : blocks2){
 					//plugin.logDebug("Block Type " + b.toString());
-					if ((b2.getType() == Material.STONE_BUTTON || b2.getType() == Material.WOOD_BUTTON)
+					if (BukkitElevatorManager.isButton(b2)
 							&& b2.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
 						canDo = true;
 						block = b2;
@@ -156,7 +156,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 							bukkitElevator.addMinecartSpeed((Minecart) entity);
 							//A minecart wont go up if attached to a rail, so we temp remove the rail.  
 							if (bukkitElevator.goingUp
-									&& (entity.getLocation().getBlock().getType() == Material.RAILS
+									&& (entity.getLocation().getBlock().getType() == Material.RAIL
 									|| entity.getLocation().getBlock().getType() == Material.DETECTOR_RAIL
 									|| entity.getLocation().getBlock().getType() == Material.ACTIVATOR_RAIL
 									|| entity.getLocation().getBlock().getType() == Material.POWERED_RAIL)){
@@ -204,10 +204,10 @@ public class BukkitLiftRedstoneListener implements Listener {
 					Block gb = event.getBlock().getWorld().getBlockAt(b.getX(), f.getY()-2, b.getZ());
 					bukkitElevator.addFloorBlock(gb);
 					
-					if (gb.getRelative(BlockFace.UP).getType() == Material.CARPET){
+					if (gb.getRelative(BlockFace.UP).getType().toString().contains("CARPET")){
 						bukkitElevator.addCarpetBlock(gb.getRelative(BlockFace.UP));
 						gb.getRelative(BlockFace.UP).setType(Material.AIR);
-					} else if (gb.getRelative(BlockFace.UP).getType() == Material.RAILS
+					} else if (gb.getRelative(BlockFace.UP).getType() == Material.RAIL
 							|| gb.getRelative(BlockFace.UP).getType() == Material.DETECTOR_RAIL
 							|| gb.getRelative(BlockFace.UP).getType() == Material.POWERED_RAIL
 							|| gb.getRelative(BlockFace.UP).getType() == Material.ACTIVATOR_RAIL){

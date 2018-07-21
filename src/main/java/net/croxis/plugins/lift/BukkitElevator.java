@@ -112,6 +112,7 @@ public class BukkitElevator extends Elevator{
             Location destination = passenger.getLocation();
             destination.setY(destFloor.getY());
             passenger.teleport(destination);
+            passenger.setFallDistance(0);
         }
     }
 
@@ -121,6 +122,7 @@ public class BukkitElevator extends Elevator{
 
 	void removePassenger(Entity passenger){
 		// NOt thread safe in an interation!
+        passenger.setFallDistance(0);
 		if (passengers.contains(passenger))
 			passengers.remove(passenger);
 		else if (holders.containsKey(passenger))

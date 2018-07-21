@@ -104,18 +104,16 @@ public class BukkitElevatorManager extends ElevatorManager{
 	public static boolean isValidShaftBlock(Block checkBlock){
 		return (BukkitConfig.floorMaterials.contains(checkBlock.getType())
 				|| checkBlock.isEmpty()
+                || !checkBlock.getType().isSolid()
 				|| checkBlock.getType() == Material.AIR 
 				|| checkBlock.getType() == Material.LADDER
 				|| checkBlock.getType() == Material.SNOW
-				|| checkBlock.getType() == Material.STATIONARY_WATER
 				|| checkBlock.getType() == Material.STONE_BUTTON
 				|| checkBlock.getType() == Material.TORCH 
 				|| checkBlock.getType() == Material.VINE 
 				|| checkBlock.getType() == Material.WALL_SIGN
 				|| checkBlock.getType() == Material.WATER
-				|| checkBlock.getType() == Material.WOOD_BUTTON
-				|| checkBlock.getType() == Material.CARPET
-				|| checkBlock.getType() == Material.RAILS
+				|| checkBlock.getType() == Material.RAIL
 				|| checkBlock.getType() == Material.DETECTOR_RAIL
 				|| checkBlock.getType() == Material.ACTIVATOR_RAIL
 				|| checkBlock.getType() == Material.POWERED_RAIL
@@ -138,6 +136,18 @@ public class BukkitElevatorManager extends ElevatorManager{
 		if (block.getRelative(BlockFace.WEST, 1).getType() == bukkitElevator.baseBlockType)
 			scanBaseBlocks(block.getRelative(BlockFace.WEST), bukkitElevator);
 	}
+
+	public static boolean isButton(Block testBlock){
+		if (testBlock.getType().toString().contains("BUTTON"))
+		    return true;
+		return false;
+    }
+
+    public static boolean isCarpet(Block testBlock){
+	    if (testBlock.getType().toString().contains("CARPET"))
+	        return true;
+	    return false;
+    }
 	
 	public static String constructFloors(BukkitElevator bukkitElevator){
 		String message = "";
@@ -165,7 +175,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 					plugin.logDebug("Not valid shaft block" + x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString());
 					break;
 				}
-				if (testBlock.getType() == Material.STONE_BUTTON || testBlock.getType() == Material.WOOD_BUTTON){
+				if (isButton(testBlock)){
 					if (BukkitConfig.checkFloor)
 						if (!scanFloorAtY(currentWorld, testBlock.getY() - 2, bukkitElevator)){
 							break;
@@ -224,6 +234,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 		Iterator<Entity> passengerIterator = bukkitElevator.getPassengers();
 		while (passengerIterator.hasNext()){
 			Entity e = passengerIterator.next();
+			e.setFallDistance(0);
 			fallers.remove(e);
 			e.setVelocity(new Vector(0, 0, 0));
 			if (e instanceof Player)
@@ -237,6 +248,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 		Iterator<Entity> holdersIterators = bukkitElevator.getHolders();
 		while (holdersIterators.hasNext()){
 			Entity passenger = holdersIterators.next();
+			passenger.setFallDistance(0);
 			if (passenger instanceof Player){
 				removePlayer((Player) passenger, holdersIterators);
 			} else if (passenger instanceof Minecart) {
@@ -259,32 +271,28 @@ public class BukkitElevatorManager extends ElevatorManager{
 		
 		BlockFace directionFacing = sign.getFacing();
 		if (directionFacing == BlockFace.NORTH){
-			if (s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH).getType() == Material.STONE_BUTTON
-					|| s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH).getType() == Material.WOOD_BUTTON){
+			if (isButton(s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH))){
 				BlockState state = s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH).getState();
 				((org.bukkit.material.Button) state.getData()).setPowered(true);
 				state.update();
 				new BukkitCancelRedstoneTask(s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH)).runTaskLater(plugin, 10);
 			}
 		} else if (directionFacing == BlockFace.EAST){
-			if (s.getRelative(BlockFace.WEST).getRelative(BlockFace.WEST).getType() == Material.STONE_BUTTON
-					|| s.getRelative(BlockFace.WEST).getRelative(BlockFace.WEST).getType() == Material.WOOD_BUTTON){
+			if (isButton(s.getRelative(BlockFace.WEST).getRelative(BlockFace.WEST))){
 				BlockState state = s.getRelative(BlockFace.WEST).getRelative(BlockFace.WEST).getState();
 				((org.bukkit.material.Button) state.getData()).setPowered(true);
 				state.update();
 				new BukkitCancelRedstoneTask(s.getRelative(BlockFace.WEST).getRelative(BlockFace.WEST)).runTaskLater(plugin, 10);
 			}
 		} else if (directionFacing == BlockFace.SOUTH){
-			if (s.getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH).getType() == Material.STONE_BUTTON
-					|| s.getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH).getType() == Material.WOOD_BUTTON){
+			if (isButton(s.getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH))){
 				BlockState state = s.getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH).getState();
 				((org.bukkit.material.Button) state.getData()).setPowered(true);
 				state.update();
 				new BukkitCancelRedstoneTask(s.getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH)).runTaskLater(plugin, 10);
 			}
 		} else if (directionFacing == BlockFace.WEST){
-			if (s.getRelative(BlockFace.EAST).getRelative(BlockFace.EAST).getType() == Material.STONE_BUTTON
-					|| s.getRelative(BlockFace.EAST).getRelative(BlockFace.EAST).getType() == Material.WOOD_BUTTON){
+			if (isButton(s.getRelative(BlockFace.EAST).getRelative(BlockFace.EAST))){
 				BlockState state = s.getRelative(BlockFace.EAST).getRelative(BlockFace.EAST).getState();
 				((org.bukkit.material.Button) state.getData()).setPowered(true);
 				state.update();
@@ -301,6 +309,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 			plugin.logDebug("Scanning lift");
 			if (bukkitElevator.isInLift(player)){
 				plugin.logDebug("Removing player from lift");
+				player.setFallDistance(0);
 				restorePlayer(player);			
 				passengers.remove();
 			}
@@ -314,6 +323,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 			if (bukkitElevator.isInLift(player)){
 				plugin.logDebug("Removing player from lift");
 				player.setVelocity(new Vector(0, 0, 0));
+				player.setFallDistance(0);
 				restorePlayer(player);
 				bukkitElevator.removePassenger(player);
 			}
@@ -324,6 +334,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 		if (isPassenger(passenger)){
 			plugin.logDebug("Removing entity " + passenger.toString() + " from El: " + bukkitElevators.toString());
 			passenger.setVelocity(new Vector(0, 0, 0));
+			passenger.setFallDistance(0);
 			if (passenger instanceof Player)
 				removePlayer((Player) passenger);
 			else
@@ -361,7 +372,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 		player.setAllowFlight(true);
 		
 		if (BukkitConfig.useNoCheatPlus)
-			NCPExemptionManager.isExempted(player, fr.neatmonster.nocheatplus.checks.CheckType.FIGHT);
+			NCPExemptionManager.exemptPermanently(player, fr.neatmonster.nocheatplus.checks.CheckType.FIGHT);
 	}
 	
 	static void restorePlayer(Player player){

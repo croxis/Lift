@@ -136,8 +136,8 @@ public class SpongeLiftPlayerListener{
 	
 	@Listener
 	public void onPlayerItemPickup(ChangeInventoryEvent.Pickup event){
-		if (SpongeElevatorManager.isPassenger(event.getTargetEntity()))
-			SpongeElevatorManager.removePassenger(event.getTargetEntity());
+		//if (SpongeElevatorManager.isPassenger(event.getTargetEntity()))
+		//	SpongeElevatorManager.removePassenger(event.getTargetEntity());
 	}
 	
 	@Listener

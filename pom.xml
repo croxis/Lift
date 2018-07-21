@@ -21,7 +21,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<bukkitVersion>1.12-R0.1-SNAPSHOT</bukkitVersion>
+		<bukkitVersion>1.13-pre7-R0.1-SNAPSHOT</bukkitVersion>
 		<spongeVersion>7.0.0-SNAPSHOT</spongeVersion>
 	</properties>
   	
@@ -57,6 +57,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
+        <repository>
+            <id>md_5-snapshots</id>
+            <url>https://repo.md-5.net/content/repositories/snapshots/</url>
+        </repository>
 		<repository>
 			<id>md5-repo</id>
 			<url>http://repo.md-5.net/content/repositories/releases/</url>
@@ -175,7 +179,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <dependency>
             <groupId>fr.neatmonster</groupId>
             <artifactId>nocheatplus</artifactId>
-            <version>3.15.1-RC</version>
+            <version>3.16.0-RC</version>
         </dependency>
         <dependency>
 			<groupId>org.spongepowered</groupId>

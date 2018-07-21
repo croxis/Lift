@@ -1,5 +1,5 @@
 /*
- * plugin file is part of Lift.
+ * This file is part of Lift.
  *
  * Copyright (c) ${project.inceptionYear}-2013, croxis <https://github.com/croxis/>
  *

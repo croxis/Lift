@@ -205,7 +205,7 @@ public class SpongeLiftRedstoneListener{
 
                 if (floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.CARPET){
                     elevator.addCarpetBlock(floorBlockLocation.getRelative(Direction.UP));
-                    floorBlockLocation.getRelative(Direction.UP).setBlockType(BlockTypes.AIR, Cause.source(plugin).build());
+                    //floorBlockLocation.getRelative(Direction.UP).setBlockType(BlockTypes.AIR, Cause.source(plugin).build());
                 } else if (floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.RAIL
                         || floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.ACTIVATOR_RAIL
                         || floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.DETECTOR_RAIL
@@ -214,9 +214,9 @@ public class SpongeLiftRedstoneListener{
                     //gb.getRelative(BlockFace.UP).setType(Material.AIR);
                 } else if (floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.REDSTONE_WIRE) {
                     elevator.addRedstoneBlock(floorBlockLocation.getRelative(Direction.UP));
-                    floorBlockLocation.getRelative(Direction.UP).setBlockType(BlockTypes.AIR, Cause.source(plugin).build());
+                    //floorBlockLocation.getRelative(Direction.UP).setBlockType(BlockTypes.AIR, Cause.source(plugin).build());
                 }
-                floorBlockLocation.setBlockType(BlockTypes.AIR, Cause.source(plugin.container).build());
+                //floorBlockLocation.setBlockType(BlockTypes.AIR, Cause.source(plugin.container).build());
             }
 
             SpongeElevatorManager.elevators.add(elevator);
