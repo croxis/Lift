@@ -21,6 +21,7 @@ package net.croxis.plugins.lift;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import fr.neatmonster.nocheatplus.checks.CheckType;
 import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
 
 import org.bukkit.Location;
@@ -371,8 +372,10 @@ public class BukkitElevatorManager extends ElevatorManager{
 
 		player.setAllowFlight(true);
 		
-		if (BukkitConfig.useNoCheatPlus)
-			NCPExemptionManager.exemptPermanently(player, fr.neatmonster.nocheatplus.checks.CheckType.FIGHT);
+		if (BukkitConfig.useNoCheatPlus){
+            NCPExemptionManager.exemptPermanently(player, CheckType.MOVING_NOFALL);
+            NCPExemptionManager.exemptPermanently(player, CheckType.MOVING_SURVIVALFLY);
+        }
 	}
 	
 	static void restorePlayer(Player player){
@@ -385,8 +388,10 @@ public class BukkitElevatorManager extends ElevatorManager{
 		} else {
 			player.setAllowFlight(false);
 			plugin.logDebug("Removing player from flight");
-			if (BukkitConfig.useNoCheatPlus)
-				NCPExemptionManager.unexempt(player, fr.neatmonster.nocheatplus.checks.CheckType.FIGHT);
+			if (BukkitConfig.useNoCheatPlus){
+                NCPExemptionManager.unexempt(player, CheckType.MOVING_NOFALL);
+                NCPExemptionManager.unexempt(player, CheckType.MOVING_SURVIVALFLY);
+            }
 		}
 	}
 	

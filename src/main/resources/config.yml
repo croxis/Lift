@@ -1,6 +1,7 @@
-# Note: Smaller values result in less lag. Lift speed less than 0.4 may not work well for non spout servers.
+# Note: Smaller area and height values result in less lag.
+# baseBlockSpeeds speed less than 0.4 may not work well.
 # autoPlace will automatically move players to be fully in the elevator
-# checkGlass will make sure all floors have glass blocks (at the cost of possible lag when starting a lift)
+# checkFloor will make sure all floors have glass blocks (at the cost of possible lag when starting a lift)
 # preventEntry will prevent players from entering an active elevator (at the cost of possible lag when lifts are running)
 metrics: true
 maxLiftArea: 16
@@ -12,8 +13,8 @@ preventLeave: true
 checkFloor: false
 liftMobs: true
 floorBlocks:
-- GLASS
-- STAINED_GLASS
+  - GLASS
+  - "!_STAINED_GLASS"
 redstone: false
 baseBlockSpeeds:
   IRON_BLOCK: 0.5

@@ -25,14 +25,13 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -118,7 +117,7 @@ public class BukkitLiftPlayerListener implements Listener{
 	}
 	
 	@EventHandler
-	public void onPlayerItemPickup(PlayerPickupItemEvent event){
+	public void onPlayerItemPickup(EntityPickupItemEvent event){
 		if (BukkitElevatorManager.isPassenger(event.getItem()))
 			BukkitElevatorManager.removePassenger(event.getItem());
 	}

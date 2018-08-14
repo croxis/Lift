@@ -15,7 +15,7 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 //dependencies versions
-ext.bukkitVersion = '1.13-pre7-R0.1-SNAPSHOT'
+ext.bukkitVersion = '1.13-R0.1-SNAPSHOT'
 
 //dependencies declaration
 dependencies {
@@ -25,7 +25,15 @@ dependencies {
 	compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
 	
 	testCompile group: 'junit', name: 'junit', version: '4.11'
-} 
+}
+
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
+}
 
 repositories {
 	mavenCentral()

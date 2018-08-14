@@ -50,7 +50,19 @@ public class BukkitConfig extends Config{
         }
         List<String> configFloorMaterials = plugin.getConfig().getStringList("floorBlocks");
         for (String key : configFloorMaterials){
-            BukkitConfig.floorMaterials.add(Material.valueOf(key));
+            if (key.contains("*")){
+                // Probably be smarter to iterate through the material list first, then see if config matches
+                for (Material material : Material.values()){
+                    if (material.toString().matches(key.replace("*", ".*?"))){
+                        BukkitConfig.floorMaterials.add(material);
+                        plugin.logInfo("Floor material added: " + material.toString());
+                    }
+
+                };
+            } else {
+                BukkitConfig.floorMaterials.add(Material.valueOf(key));
+                plugin.logInfo("Floor material added: " + key);
+            }
         }
         BukkitConfig.stringOneFloor = plugin.getConfig().getString("STRING_oneFloor", "There is only one floor silly.");
         BukkitConfig.stringCurrentFloor = plugin.getConfig().getString("STRING_currentFloor", "Current Floor:");
