@@ -18,17 +18,36 @@
  */
 package net.croxis.plugins.lift;
 
+/**
+ * Sign Formats
+ * Version 1
+ * Line 0: "Current floor" string
+ * Line 1: Current floor int only
+ * Line 2: "Dest Floor" and int
+ * Line 3: Dest floor name string
+ *
+ * Version 2
+ * Line 0: "Current floor" string and int
+ * Line 1: Current floor name
+ * Line 2: "Dest Floor" and int
+ * Line 3: Dest floor name string
+ */
+
 
 /**
  * Created by croxis on 4/28/17.
  */
-public class LiftSign {
+class LiftSign {
     int signVersion = 0; // 0=hmod, 1=lift till 55, 2=lift>=56
-    private Config config;
+    Config config;
     private String sign0 = ": 0";
     private String sign1 = "";
-    String sign2 = ": 0";
+    private String sign2 = ": 0";
     private String sign3 = "";
+    private int currentFloor = 0;
+    private int destFloor = 0;
+    private String currentName = "";
+    private String destName = "";
 
     /**
      * @param line0
@@ -36,24 +55,52 @@ public class LiftSign {
      * @param line2
      * @param line3
      */
-    LiftSign (Config c, String line0, String line1, String line2, String line3) {
-        config = c;
-        if (line0.isEmpty())
-            signVersion = 2;
-        else if (line0.split(":").length == 1)
-            signVersion = 1;
-        else if (line0.split(":").length == 2)
-            signVersion = 2;
+
+    LiftSign (Config config, String line0, String line1, String line2, String line3) {
+        this.config = config;
         this.sign0 = line0;
         this.sign1 = line1;
         this.sign2 = line2;
         this.sign3 = line3;
+        if (line0.isEmpty())
+            signVersion = Config.signVersion;
+        else if (line0.split(":").length == 1)
+            readVersion1();
+        else if (line0.split(":").length == 2)
+            readVersion2();
+
         System.out.print(Integer.toString(signVersion));
         if (signVersion < 2)
             updateFormat();
     }
 
-    void updateFormat(){
+    private void readVersion1(){
+        try {
+            signVersion = 1;
+            this.currentFloor = Integer.parseInt(this.sign1);
+            this.destFloor = Integer.parseInt(this.sign2.split(":")[1].trim().replaceAll("\\§r", ""));
+            this.destName = this.sign3;
+        } catch (Exception e){
+            this.currentFloor = 0;
+            this.destFloor = 0;
+        }
+    }
+
+    private void readVersion2(){
+        try {
+            signVersion = 2;
+            this.currentFloor = Integer.parseInt(this.sign0.split(":")[1].trim().replaceAll("\\§r", ""));
+            this.currentName = this.sign1;
+            this.destFloor = Integer.parseInt(this.sign2.split(":")[1].trim().replaceAll("\\§r", ""));
+            this.destName = this.sign3;
+        } catch (Exception e){
+            this.currentFloor = 0;
+            this.destFloor = 0;
+        }
+
+    }
+
+    private void updateFormat(){
         if (signVersion == 1){
             setCurrentFloor(Integer.parseInt(this.sign1));
             signVersion = 2;
@@ -61,7 +108,7 @@ public class LiftSign {
     }
 
     void setCurrentFloor(int currentFloor) {
-        this.sign0 = config.stringCurrentFloor + ": " + Integer.toString(currentFloor) + "§r";
+        this.sign0 = Config.stringCurrentFloor + ": " + Integer.toString(currentFloor) + "§r";
     }
 
     int getCurrentFloor() {
@@ -83,14 +130,14 @@ public class LiftSign {
     }
 
     void setDestinationFloor(int destination){
-        this.sign2 = config.stringDestination + ": " + Integer.toString(destination) + "§r";
+        this.sign2 = this.config.stringDestination + ": " + Integer.toString(destination) + "§r";
     }
 
     void setDestinationName(String destinationName) {
         this.sign3 = destinationName + "§r";
     }
 
-    String[] getDump() {
+    String[] saveSign() {
         String[] data = new String[4];
         data[0] = this.sign0;
         data[1] = this.sign1;

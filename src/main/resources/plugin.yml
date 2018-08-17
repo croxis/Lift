@@ -4,7 +4,7 @@ generator: http://dinnerbone.com/minecraft/tools/pluginator/
 main: net.croxis.plugins.lift.BukkitLift
 name: Lift
 startup: postworld
-version: ${version}
+version: 59
 description: ${project.description}
 softdepend: [NoCheatPlus]
 permissions:

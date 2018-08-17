@@ -72,7 +72,7 @@ public class BukkitLiftPlayerListener implements Listener{
 					return;
 				}
 				
-				event.setCancelled(true);
+				//event.setCancelled(true);
 				
 				int currentDestinationInt = 1;
 				BukkitFloor currentFloor = bukkitElevator.getFloorFromY(buttonBlock.getY());
