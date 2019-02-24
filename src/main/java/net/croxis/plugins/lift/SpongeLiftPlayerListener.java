@@ -119,14 +119,12 @@ public class SpongeLiftPlayerListener{
             liftSign.setDestinationFloor(currentDestinationInt);
             liftSign.setDestinationName(elevator.getFloorFromN(currentDestinationInt).getName());
 
-            plugin.debug("Sign text: " + liftSign.getDump()[0]);
-            plugin.debug("Sign text: " + liftSign.getDump()[1]);
-            plugin.debug("Sign text: " + liftSign.getDump()[2]);
-            plugin.debug("Sign text: " + liftSign.getDump()[3]);
-		    sign.set(sign.lines().set(0, Text.of(liftSign.getDump()[0])));
-            sign.set(sign.lines().set(1, Text.of(liftSign.getDump()[1])));
-            sign.set(sign.lines().set(2, Text.of(liftSign.getDump()[2])));
-            sign.set(sign.lines().set(3, Text.of(liftSign.getDump()[3])));
+            plugin.debug("Sign text: " + liftSign.getDebug());
+            String[] data = liftSign.saveSign();
+		    sign.set(sign.lines().set(0, Text.of(data[0])));
+            sign.set(sign.lines().set(1, Text.of(data[1])));
+            sign.set(sign.lines().set(2, Text.of(data[2])));
+            sign.set(sign.lines().set(3, Text.of(data[3])));
             entity.offer(sign);
         }
 

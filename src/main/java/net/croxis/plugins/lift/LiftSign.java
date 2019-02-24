@@ -149,4 +149,7 @@ class LiftSign {
     void setCurrentName(String name){
         sign1 = name + "§r";
     }
+    String getDebug(){
+        return this.sign0 + '\n' + this.sign1 + '\n' + this.sign2 + '\n' + this.sign3;
+    }
 }

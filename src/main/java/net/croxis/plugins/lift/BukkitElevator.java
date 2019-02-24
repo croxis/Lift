@@ -121,7 +121,7 @@ public class BukkitElevator extends Elevator{
 	}
 
 	void removePassenger(Entity passenger){
-		// NOt thread safe in an interation!
+		// Not thread safe in an interaction!
         passenger.setFallDistance(0);
 		if (passengers.contains(passenger))
 			passengers.remove(passenger);

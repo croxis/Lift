@@ -85,8 +85,10 @@ public class BukkitLiftRedstoneListener implements Listener {
 			}
 			plugin.logDebug("Redstone scan no match");
 		}
-			
+		plugin.logDebug("CanDo: " + Boolean.toString(canDo));
+
 		if (canDo){
+            plugin.logDebug("Initializing elevator for run");
 			long startTime = System.currentTimeMillis();
 			bukkitElevator = BukkitElevatorManager.createLift(block, reason);
 			if (bukkitElevator == null){
@@ -94,15 +96,13 @@ public class BukkitLiftRedstoneListener implements Listener {
 				plugin.logDebug("Please see previous messages to determine why.");
 				return;
 			}
-			
-			String line = ((Sign) block.getRelative(BlockFace.UP).getState()).getLine(2);
-			if (line.isEmpty())
-				return;
-			String[] splits = line.split(":");
-			if (splits.length != 2)
-				return;
-			int destination = Integer.parseInt(splits[1].trim());	
-			
+
+            if (bukkitElevator.getTotalFloors() < 2)
+                return;
+
+            Sign sign = (Sign) block.getRelative(BlockFace.UP).getState();
+			LiftSign liftSign = new LiftSign(plugin.config, sign.getLine(0), sign.getLine(1), sign.getLine(2), sign.getLine(3));
+			int destination = liftSign.getDestinationFloor();
 			//See if lift is in use
 			for (BukkitElevator e : BukkitElevatorManager.bukkitElevators){
 				for (Block baseBlock : bukkitElevator.baseBlocks) {
@@ -111,20 +111,18 @@ public class BukkitLiftRedstoneListener implements Listener {
 				}
 			}
 			
-			if (bukkitElevator.getTotalFloors() < 2)
-				return;
-			
 			int y = block.getY();
 			BukkitFloor startFloor = bukkitElevator.getFloorFromY(y);
 			bukkitElevator.startFloor = startFloor;
-			bukkitElevator.destFloor = bukkitElevator.getFloorFromN(destination);			
+			bukkitElevator.destFloor = bukkitElevator.getFloorFromN(destination);
+
+            plugin.logDebug("Sign destination: " + Integer.toString(destination));
+            plugin.logDebug("Floormap: " + bukkitElevator.floormap.toString());
+            plugin.logDebug("Floormap2: " + bukkitElevator.floormap2.toString());
+            plugin.logDebug("Start y: " + Integer.toString(y));
 			
 			if (startFloor == null || bukkitElevator.destFloor == null){
 				plugin.logInfo("Critical Error. Startfloor||DestFloor is null. Please report entire stacktrace plus the following error codes.");
-				plugin.logInfo("Sign destination: " + Integer.toString(destination));
-				plugin.logInfo("Floormap: " + bukkitElevator.floormap.toString());
-				plugin.logInfo("Floormap2: " + bukkitElevator.floormap2.toString());
-				plugin.logInfo("Start y: " + Integer.toString(y));
 				return;
 			}
 			

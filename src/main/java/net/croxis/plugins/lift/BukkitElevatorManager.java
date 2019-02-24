@@ -38,7 +38,7 @@ import org.bukkit.util.Vector;
 
 public class BukkitElevatorManager extends ElevatorManager{
     private static BukkitLift plugin;
-    public static HashSet<BukkitElevator> bukkitElevators = new HashSet<>();
+    static HashSet<BukkitElevator> bukkitElevators = new HashSet<>();
     public static HashSet<Entity> fallers = new HashSet<>();
     public static HashSet<Player> fliers = new HashSet<>();
 	

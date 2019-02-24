@@ -95,8 +95,7 @@ public class SpongeLiftRedstoneListener{
                 sign.getSignData().get(3).get().toPlain());
         int destination = liftSign.getDestinationFloor();
         if (destination == 0){
-            plugin.debug("Not a valid lift sign:" + liftSign.sign2);
-            plugin.debug("Not a valid lift sign:" + liftSign.sign2.split(":")[1].replaceAll("\\s",""));
+            plugin.debug("Not a valid lift sign:" + liftSign.getDebug());
             return;
         }
 
