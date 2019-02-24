@@ -20,19 +20,19 @@ package net.croxis.plugins.lift;
 
 public class Config {
 	public static boolean debug = true;
-	public static boolean redstone = true;
-	public static int liftArea = 16;
-	public static int maxHeight = 256;
-	public static boolean autoPlace = false;
-	public static boolean checkFloor = true;
-	public static boolean serverFlight = false;
-	public static boolean liftMobs = false;
-	public static boolean preventEntry = false;
-	public static boolean preventLeave = false;
-	public static String stringDestination = "§1Dest";
-	public static String stringCurrentFloor = "§4Current Floor";
-	public static String stringOneFloor;
-	public static String stringCantEnter;
-	public static String stringCantLeave;
+	static boolean redstone = true;
+	static int liftArea = 16;
+	static int maxHeight = 256;
+	static boolean autoPlace = false;
+	static boolean checkFloor = true;
+	static boolean serverFlight = false;
+	static boolean liftMobs = false;
+	static boolean preventEntry = false;
+	static boolean preventLeave = false;
+	static String stringDestination = "§1Dest";
+	static String stringCurrentFloor = "§4Current Floor";
+	static String stringOneFloor;
+	static String stringCantEnter;
+	static String stringCantLeave;
     static int signVersion = 2;
 }

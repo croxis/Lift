@@ -14,7 +14,7 @@ checkFloor: false
 liftMobs: true
 floorBlocks:
   - GLASS
-  - "!_STAINED_GLASS"
+  - "*_STAINED_GLASS"
 redstone: false
 baseBlockSpeeds:
   IRON_BLOCK: 0.5

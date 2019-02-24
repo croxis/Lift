@@ -31,10 +31,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.*;
 
 public class BukkitLift extends JavaPlugin implements Listener {
-	public static BukkitElevatorManager manager;
+	static BukkitElevatorManager manager;
 	static BukkitConfig config = new BukkitConfig();
 
-	public Double getBlockSpeed(Material material) {
+	Double getBlockSpeed(Material material) {
 	    try {
             return BukkitConfig.blockSpeeds.get(material);
         } catch (Exception e) {
@@ -43,12 +43,12 @@ public class BukkitLift extends JavaPlugin implements Listener {
         }
     }
 	
-	public void logDebug(String message){
+	void logDebug(String message){
 		if (BukkitConfig.debug)
 			this.getLogger().log(Level.INFO, "[DEBUG] " + message);
 	}
 	
-	public void logInfo(String message){
+	void logInfo(String message){
 		this.getLogger().log(Level.INFO, message);
 	}
 	
