@@ -42,7 +42,7 @@ class LiftSign {
     Config config;
     private String sign0 = ": 0";
     private String sign1 = "";
-    private String sign2 = ": 0";
+    public String sign2 = ": 0";
     private String sign3 = "";
     private int currentFloor = 0;
     private int destFloor = 0;
@@ -148,5 +148,9 @@ class LiftSign {
 
     void setCurrentName(String name){
         sign1 = name + "§r";
+    }
+    String[] getDump() {
+        String[] data = new String[4];
+        return data;
     }
 }
