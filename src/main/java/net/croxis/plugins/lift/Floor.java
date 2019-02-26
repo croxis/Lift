@@ -52,6 +52,5 @@ public class Floor {
 	public void setFloor(int floor) {
 		this.floor = floor;
 	}
-	
 
 }

@@ -49,7 +49,12 @@ class LiftSign {
     private String currentName = "";
     private String destName = "";
 
+    LiftSign (Config config, String[] lines){
+        this(config, lines[0], lines[1], lines[2], lines[3]);
+    }
+
     /**
+     * @param config
      * @param line0
      * @param line1
      * @param line2
@@ -62,7 +67,13 @@ class LiftSign {
         this.sign1 = line1;
         this.sign2 = line2;
         this.sign3 = line3;
-        if (line0.isEmpty())
+
+        // Check to see if it is a new sign with just a floor name. No : allowed for floor name.
+        if (!line0.isEmpty() && !line0.contains(":") && line1.isEmpty() && line2.isEmpty() && line3.isEmpty()){
+            signVersion = Config.signVersion;
+            this.setCurrentName(line0);
+        }
+        else if (line0.isEmpty()) // Just an empty sign, no floor name
             signVersion = Config.signVersion;
         else if (line0.split(":").length == 1)
             readVersion1();
@@ -130,10 +141,11 @@ class LiftSign {
     }
 
     void setDestinationFloor(int destination){
-        this.sign2 = this.config.stringDestination + ": " + Integer.toString(destination) + "§r";
+        this.sign2 = Config.stringDestination + ": " + Integer.toString(destination) + "§r";
     }
 
     void setDestinationName(String destinationName) {
+        this.destName = destinationName;
         this.sign3 = destinationName + "§r";
     }
 
@@ -147,8 +159,14 @@ class LiftSign {
     }
 
     void setCurrentName(String name){
+        this.currentName = name;
         sign1 = name + "§r";
     }
+
+    String getCurrentName(){
+        return this.currentName;
+    }
+
     String getDebug(){
         return this.sign0 + '\n' + this.sign1 + '\n' + this.sign2 + '\n' + this.sign3;
     }

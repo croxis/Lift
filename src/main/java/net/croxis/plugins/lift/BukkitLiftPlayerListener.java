@@ -56,6 +56,7 @@ public class BukkitLiftPlayerListener implements Listener{
 			    && BukkitElevatorManager.isButton(buttonBlock)) {
 
 				Sign sign = (Sign) event.getClickedBlock().getState();
+
 				BukkitElevator bukkitElevator = BukkitElevatorManager.createLift(buttonBlock, event.getPlayer().getName());
 				
 				if (bukkitElevator == null){
@@ -71,6 +72,9 @@ public class BukkitLiftPlayerListener implements Listener{
 					event.getPlayer().sendMessage(BukkitConfig.stringOneFloor);
 					return;
 				}
+
+				// Located here in case sign above button is for another mod/plugin
+				LiftSign liftSign = new LiftSign(BukkitLift.config, sign.getLines());
 				
 				//event.setCancelled(true);
 				
@@ -80,18 +84,9 @@ public class BukkitLiftPlayerListener implements Listener{
 					event.getPlayer().sendMessage("Elevator generator says this floor does not exist. Check shaft for blockage");
 					return;
 				}
-				
-				String sign0 = BukkitConfig.stringCurrentFloor;
-				String sign1 = Integer.toString(currentFloor.getFloor());
-				String sign2 = "";
-				String sign3 = "";
-				try{
-					String[] splits = sign.getLine(2).split(": ");
-					currentDestinationInt = Integer.parseInt(splits[1]);	
-				} catch (Exception e){
-					currentDestinationInt = 0;
-					plugin.logDebug("Non valid previous destination");
-				}
+
+				liftSign.setCurrentFloor(currentFloor.getFloor());
+				currentDestinationInt = liftSign.getDestinationFloor();
 				currentDestinationInt++;
 				if (currentDestinationInt == currentFloor.getFloor()){
 					currentDestinationInt++;
@@ -104,12 +99,13 @@ public class BukkitLiftPlayerListener implements Listener{
 						currentDestinationInt = 2;
 					plugin.logDebug("Rotating back to first floor");
 				}
-				sign2 = BukkitConfig.stringDestination + " " + Integer.toString(currentDestinationInt);
-				sign3 = bukkitElevator.getFloorFromN(currentDestinationInt).getName();
-				sign.setLine(0, sign0 + ChatColor.RESET);
-				sign.setLine(1, sign1 + ChatColor.RESET);
-				sign.setLine(2, sign2 + ChatColor.RESET);
-				sign.setLine(3, sign3 + ChatColor.RESET);
+				liftSign.setDestinationFloor(currentDestinationInt);
+				liftSign.setDestinationName(bukkitElevator.getFloorFromN(currentDestinationInt).getName());
+				String[] data = liftSign.saveSign();
+				sign.setLine(0, data[0]);
+				sign.setLine(1, data[1]);
+				sign.setLine(2, data[2]);
+				sign.setLine(3, data[3]);
 				sign.update();
 				plugin.logDebug("Completed sign update");
 			}

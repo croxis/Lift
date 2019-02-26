@@ -182,10 +182,20 @@ public class BukkitElevatorManager extends ElevatorManager{
 							break;
 						}
 					BukkitFloor floor = new BukkitFloor(testBlock, y1);
-					if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN)
-						floor.setName(((Sign) testBlock.getRelative(BlockFace.DOWN).getState()).getLine(1));
-					if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN)
-						bukkitElevator.floormap.put(y1, floor);
+
+					// Use old signs first for compatibility.
+					if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN){
+						Sign sign = (Sign) testBlock.getRelative(BlockFace.DOWN).getState();
+						if (!sign.getLine(0).isEmpty())
+							floor.setName(sign.getLine(0));
+						else if (!sign.getLine(1).isEmpty())
+							floor.setName(sign.getLine(1));
+					}
+					else if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
+						LiftSign liftSign = new LiftSign(BukkitLift.config, ((Sign) testBlock.getRelative(BlockFace.UP).getState()).getLines());
+						floor.setName(liftSign.getCurrentName());
+					}
+					bukkitElevator.floormap.put(y1, floor);
 					plugin.logDebug("Floor added at lift: " + testBlock.getLocation().toString());
 					plugin.logDebug("Floor y: " + Integer.toString(y1));
 				}				
