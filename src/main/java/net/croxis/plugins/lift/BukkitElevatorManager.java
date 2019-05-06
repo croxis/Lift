@@ -273,10 +273,11 @@ public class BukkitElevatorManager extends ElevatorManager{
 		try{
 			sign = (org.bukkit.material.Sign) s.getState().getData();
 		} catch(Exception exception) {
-			plugin.logInfo("WARNING: Unable to get sign for redstone pulse.");
+			plugin.logInfo("WARNING: Unable to get sign at destination for redstone pulse.");
 			plugin.logInfo("Sign coords: " + s.getLocation().toString());
 			plugin.logInfo("Sign material: " + s.getType().toString());
 			bukkitElevator.clear();
+			plugin.logDebug("Ended lift");
 			return;
 		}
 		

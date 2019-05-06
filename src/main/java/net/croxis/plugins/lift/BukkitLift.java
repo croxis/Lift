@@ -30,6 +30,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.*;
 
+
 public class BukkitLift extends JavaPlugin implements Listener {
 	static BukkitElevatorManager manager;
 	static BukkitConfig config = new BukkitConfig();

@@ -21,6 +21,7 @@ ext.bukkitVersion = '1.13.2-R0.1-SNAPSHOT'
 dependencies {
 	compile group: 'fr.neatmonster', name: 'nocheatplus', version: '3.16.1-SNAPSHOT'
 	compile group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
+	//compileOnly 'org.spigotmc:plugin-annotations:1.2.0-SNAPSHOT'
 	
 	compile 'org.spongepowered:spongeapi:7.0.0'
 	
