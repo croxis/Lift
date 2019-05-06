@@ -139,7 +139,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 	}
 
 	public static boolean isButton(Block testBlock){
-		if (testBlock.getType().toString().contains("BUTTON"))
+		if (BukkitConfig.buttonMaterials.contains(testBlock.getType()))
 		    return true;
 		return false;
     }

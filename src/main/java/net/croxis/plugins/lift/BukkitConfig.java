@@ -29,6 +29,8 @@ import org.bukkit.Material;
 public class BukkitConfig extends Config{
 	public static HashMap<Material, Double> blockSpeeds = new HashMap<>();
 	public static HashSet<Material> floorMaterials = new HashSet<>();
+    public static HashSet<Material> buttonMaterials = new HashSet<>();
+    public static HashSet<Material> signMaterials = new HashSet<>();
 	static boolean useNoCheatPlus = false;
 	static boolean metricbool = true;
 	static boolean serverFlight;
@@ -64,6 +66,41 @@ public class BukkitConfig extends Config{
                 plugin.logInfo("Floor material added: " + key);
             }
         }
+
+        List<String> configButtonMaterials = plugin.getConfig().getStringList("buttonBlocks");
+        for (String key : configButtonMaterials){
+            if (key.contains("*")){
+                // Probably be smarter to iterate through the material list first, then see if config matches
+                for (Material material : Material.values()){
+                    if (material.toString().matches(key.replace("*", ".*?"))){
+                        BukkitConfig.buttonMaterials.add(material);
+                        plugin.logInfo("Button material added: " + material.toString());
+                    }
+
+                };
+            } else {
+                BukkitConfig.buttonMaterials.add(Material.valueOf(key));
+                plugin.logInfo("Button material added: " + key);
+            }
+        }
+
+        List<String> configSignMaterials = plugin.getConfig().getStringList("signBlocks");
+        for (String key : configSignMaterials){
+            if (key.contains("*")){
+                // Probably be smarter to iterate through the material list first, then see if config matches
+                for (Material material : Material.values()){
+                    if (material.toString().matches(key.replace("*", ".*?"))){
+                        BukkitConfig.signMaterials.add(material);
+                        plugin.logInfo("Sign material added: " + material.toString());
+                    }
+
+                };
+            } else {
+                BukkitConfig.signMaterials.add(Material.valueOf(key));
+                plugin.logInfo("Sign material added: " + key);
+            }
+        }
+
         BukkitConfig.stringOneFloor = plugin.getConfig().getString("STRING_oneFloor", "There is only one floor silly.");
         BukkitConfig.stringCurrentFloor = plugin.getConfig().getString("STRING_currentFloor", "Current Floor:");
         BukkitConfig.stringDestination = plugin.getConfig().getString("STRING_dest", "Dest:");

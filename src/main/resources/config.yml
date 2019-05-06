@@ -15,6 +15,10 @@ liftMobs: true
 floorBlocks:
   - GLASS
   - "*_STAINED_GLASS"
+buttonBlocks:
+  - "*BUTTON"
+signBlocks:
+  - "*WALL_SIGN"
 redstone: false
 baseBlockSpeeds:
   IRON_BLOCK: 0.5

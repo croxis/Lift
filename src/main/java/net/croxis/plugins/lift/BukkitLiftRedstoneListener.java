@@ -76,7 +76,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 				for (Block b2 : blocks2){
 					//plugin.logDebug("Block Type " + b.toString());
 					if (BukkitElevatorManager.isButton(b2)
-							&& b2.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
+							&& BukkitConfig.signMaterials.contains(b2.getRelative(BlockFace.UP).getType())){
 						canDo = true;
 						block = b2;
 						break;
