@@ -51,7 +51,7 @@ public class BukkitLiftPlayerListener implements Listener{
 				&& event.getPlayer().hasPermission("lift.change")) {
 			buttonBlock = event.getClickedBlock().getRelative(BlockFace.DOWN);
 
-			if (event.getClickedBlock().getType() == Material.WALL_SIGN
+			if (event.getClickedBlock().getType() == Material.LEGACY_WALL_SIGN
                 && buttonBlock != null
 			    && BukkitElevatorManager.isButton(buttonBlock)) {
 

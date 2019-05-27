@@ -55,7 +55,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 		canDo = false;
 		canDo = BukkitElevatorManager.isButton(event.getBlock())
 				&& (!event.getBlock().isBlockIndirectlyPowered())
-				&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN;
+				&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.LEGACY_WALL_SIGN;
 		String reason = "Button press";
 		
 		if (BukkitConfig.redstone){

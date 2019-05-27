@@ -1,0 +1,16 @@
+[
+    {
+        "modid": "lift",
+        "name": "Lift",
+        "version": "56",
+        "authorList": [
+            "croxis"
+        ],
+        "dependencies": [
+            "spongeapi@7.1.0"
+        ],
+        "requiredMods": [
+            "spongeapi@7.1.0"
+        ]
+    }
+]

@@ -112,7 +112,13 @@ public class BukkitElevatorManager extends ElevatorManager{
 				|| checkBlock.getType() == Material.STONE_BUTTON
 				|| checkBlock.getType() == Material.TORCH 
 				|| checkBlock.getType() == Material.VINE 
-				|| checkBlock.getType() == Material.WALL_SIGN
+				|| checkBlock.getType() == Material.OAK_WALL_SIGN
+				|| checkBlock.getType() == Material.SPRUCE_WALL_SIGN
+				|| checkBlock.getType() == Material.BIRCH_WALL_SIGN
+				|| checkBlock.getType() == Material.JUNGLE_WALL_SIGN
+				|| checkBlock.getType() == Material.ACACIA_WALL_SIGN
+				|| checkBlock.getType() == Material.DARK_OAK_WALL_SIGN
+			    || checkBlock.getType() == Material.LEGACY_WALL_SIGN
 				|| checkBlock.getType() == Material.WATER
 				|| checkBlock.getType() == Material.RAIL
 				|| checkBlock.getType() == Material.DETECTOR_RAIL
@@ -184,14 +190,14 @@ public class BukkitElevatorManager extends ElevatorManager{
 					BukkitFloor floor = new BukkitFloor(testBlock, y1);
 
 					// Use old signs first for compatibility.
-					if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.WALL_SIGN){
+					if (testBlock.getRelative(BlockFace.DOWN).getType() == Material.LEGACY_WALL_SIGN){
 						Sign sign = (Sign) testBlock.getRelative(BlockFace.DOWN).getState();
 						if (!sign.getLine(0).isEmpty())
 							floor.setName(sign.getLine(0));
 						else if (!sign.getLine(1).isEmpty())
 							floor.setName(sign.getLine(1));
 					}
-					else if (testBlock.getRelative(BlockFace.UP).getType() == Material.WALL_SIGN){
+					else if (testBlock.getRelative(BlockFace.UP).getType() == Material.LEGACY_WALL_SIGN){
 						LiftSign liftSign = new LiftSign(BukkitLift.config, ((Sign) testBlock.getRelative(BlockFace.UP).getState()).getLines());
 						floor.setName(liftSign.getCurrentName());
 					}

@@ -1,0 +1,26 @@
+author: croxis
+database: false
+generator: http://dinnerbone.com/minecraft/tools/pluginator/
+main: net.croxis.plugins.lift.BukkitLift
+name: Lift
+startup: postworld
+version: 60
+description: Simple and easy Lifts and Elevators for Bukkit
+softdepend: [NoCheatPlus]
+permissions:
+  lift:
+    description: Can ride in a lift
+    default: true
+  lift.change:
+    description: Can change lift floors
+    default: true
+  lift.reload:
+    description: Reloads the lift plugin
+    default: false
+commands:
+   lift:
+      description: Scans a lift.
+      usage: /<command>
+      permission: lift
+      permission-message: You don't have lift permissions
+api-version: 1.13
