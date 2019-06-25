@@ -55,7 +55,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 		canDo = false;
 		canDo = BukkitElevatorManager.isButton(event.getBlock())
 				&& (!event.getBlock().isBlockIndirectlyPowered())
-				&& event.getBlock().getRelative(BlockFace.UP).getType() == Material.WALL_SIGN;
+				&& event.getBlock().getRelative(BlockFace.UP).getType().toString().matches(".*?WALL_SIGN");
 		String reason = "Button press";
 		
 		if (BukkitConfig.redstone){
@@ -74,7 +74,6 @@ public class BukkitLiftRedstoneListener implements Listener {
 				blocks2[2] = b.getRelative(BlockFace.NORTH);
 				blocks2[3] = b.getRelative(BlockFace.SOUTH);
 				for (Block b2 : blocks2){
-					//plugin.logDebug("Block Type " + b.toString());
 					if (BukkitElevatorManager.isButton(b2)
 							&& BukkitConfig.signMaterials.contains(b2.getRelative(BlockFace.UP).getType())){
 						canDo = true;
@@ -85,7 +84,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 			}
 			plugin.logDebug("Redstone scan no match");
 		}
-		plugin.logDebug("CanDo: " + Boolean.toString(canDo));
+		plugin.logDebug("CanDo: " + canDo);
 
 		if (canDo){
             plugin.logDebug("Initializing elevator for run");
@@ -116,10 +115,10 @@ public class BukkitLiftRedstoneListener implements Listener {
 			bukkitElevator.startFloor = startFloor;
 			bukkitElevator.destFloor = bukkitElevator.getFloorFromN(destination);
 
-            plugin.logDebug("Sign destination: " + Integer.toString(destination));
+            plugin.logDebug("Sign destination: " + destination);
             plugin.logDebug("Floormap: " + bukkitElevator.floormap.toString());
             plugin.logDebug("Floormap2: " + bukkitElevator.floormap2.toString());
-            plugin.logDebug("Start y: " + Integer.toString(y));
+            plugin.logDebug("Start y: " + y);
 			
 			if (startFloor == null || bukkitElevator.destFloor == null){
 				plugin.logInfo("Critical Error. Startfloor||DestFloor is null. Please report entire stacktrace plus the following error codes.");
@@ -129,24 +128,22 @@ public class BukkitLiftRedstoneListener implements Listener {
 			if (bukkitElevator.destFloor.getY() > startFloor.getY()){
 				bukkitElevator.goingUp = true;
 			}
-			
-			if (BukkitConfig.debug){
-				System.out.println("Elevator start floor:" + startFloor.getFloor());
-				System.out.println("Elevator start floor y:" + startFloor.getY());
-				System.out.println("Elevator destination floor:" + destination);
-				System.out.println("Elevator destination y:" + bukkitElevator.destFloor.getY());
-			}
+
+			plugin.logDebug("Elevator start floor:" + startFloor.getFloor());
+			plugin.logDebug("Elevator start floor y:" + startFloor.getY());
+			plugin.logDebug("Elevator destination floor:" + destination);
+			plugin.logDebug("Elevator destination y:" + bukkitElevator.destFloor.getY());
 			
 			Iterator<Block> baseBlocksIterator = bukkitElevator.baseBlocks.iterator();
 			for(Chunk chunk : bukkitElevator.chunks){
-				plugin.logDebug("Number of entities in this chunk: " + Integer.toString(chunk.getEntities().length));
+				plugin.logDebug("Number of entities in this chunk: " + chunk.getEntities().length);
 				for(Entity entity : chunk.getEntities()){
 					if (!BukkitConfig.liftMobs && !(entity instanceof Player))
 						continue;
 					if (bukkitElevator.isInShaftAtFloor(entity, startFloor)){
 						if (BukkitElevatorManager.isPassenger(entity)){
 							if (entity instanceof Player)
-								((Player) entity).sendMessage("You are already in a lift. Relog in case this is an error.");
+								entity.sendMessage("You are already in a lift. Relog in case this is an error.");
 							continue;
 						}
 						
@@ -174,11 +171,13 @@ public class BukkitLiftRedstoneListener implements Listener {
 							Player player = (Player) entity;
 							plugin.logDebug("Flyers: " + BukkitElevatorManager.fliers.toString());
 							if (!player.hasPermission("lift")){
-								BukkitElevatorManager.addHolder(bukkitElevator, entity, entity.getLocation());
+								BukkitElevatorManager.addHolder(bukkitElevator, entity, entity.getLocation(), "Does not have lift permission.");
 							}
 						}
-					} else if (!bukkitElevator.isInShaftAtFloor(entity, startFloor) && bukkitElevator.isInShaft(entity)){
-						BukkitElevatorManager.addHolder(bukkitElevator, entity, entity.getLocation());
+					} else if (!bukkitElevator.isInShaftAtFloor(entity, startFloor)
+							&& bukkitElevator.isInShaft(entity)
+							&& !entity.isInsideVehicle()){
+						BukkitElevatorManager.addHolder(bukkitElevator, entity, entity.getLocation(), "In active shaft but not at floor.");
 					}
 				}
 			}
@@ -222,12 +221,10 @@ public class BukkitLiftRedstoneListener implements Listener {
 			
 			BukkitElevatorManager.bukkitElevators.add(bukkitElevator);
 
-			if (BukkitConfig.debug){
-				System.out.println("Going Up: " + Boolean.toString(bukkitElevator.goingUp));
-				System.out.println("Number of passengers: " + Integer.toString(bukkitElevator.getSize()));
-				System.out.println("Elevator chunks: " + Integer.toString(bukkitElevator.chunks.size()));
-				System.out.println("Total generation time: " + Long.toString(System.currentTimeMillis() - startTime));
-			}
+			plugin.logDebug("Going Up: " + bukkitElevator.goingUp);
+			plugin.logDebug("Number of passengers: " + bukkitElevator.getSize());
+			plugin.logDebug("Elevator chunks: " + bukkitElevator.chunks.size());
+			plugin.logDebug("Total generation time: " + (System.currentTimeMillis() - startTime));
 		}
 	}
 }

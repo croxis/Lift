@@ -60,7 +60,7 @@ public class BukkitConfig extends Config{
                         plugin.logInfo("Floor material added: " + material.toString());
                     }
 
-                };
+                }
             } else {
                 BukkitConfig.floorMaterials.add(Material.valueOf(key));
                 plugin.logInfo("Floor material added: " + key);
@@ -77,7 +77,7 @@ public class BukkitConfig extends Config{
                         plugin.logInfo("Button material added: " + material.toString());
                     }
 
-                };
+                }
             } else {
                 BukkitConfig.buttonMaterials.add(Material.valueOf(key));
                 plugin.logInfo("Button material added: " + key);
@@ -94,7 +94,7 @@ public class BukkitConfig extends Config{
                         plugin.logInfo("Sign material added: " + material.toString());
                     }
 
-                };
+                }
             } else {
                 BukkitConfig.signMaterials.add(Material.valueOf(key));
                 plugin.logInfo("Sign material added: " + key);

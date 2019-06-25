@@ -97,7 +97,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
     		long time = System.currentTimeMillis();
     		Player player = (Player) sender;
     		player.sendMessage("Starting scan");
-    		BukkitElevator bukkitElevator = new BukkitElevator();
+    		BukkitElevator bukkitElevator = new BukkitElevator(this);
     		if (BukkitElevatorManager.isBaseBlock(player.getLocation().getBlock().getRelative(BlockFace.DOWN))){
     			bukkitElevator.baseBlockType = player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType();
     			BukkitElevatorManager.scanBaseBlocks(player.getLocation().getBlock().getRelative(BlockFace.DOWN), bukkitElevator);
@@ -108,7 +108,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
     		}
     		player.sendMessage("Base block type: " + bukkitElevator.baseBlockType + " | Size: " + Integer.toString(bukkitElevator.baseBlocks.size()));
     		player.sendMessage("Floor scan reports: " + BukkitElevatorManager.constructFloors(bukkitElevator));
-    		player.sendMessage("Total time generating elevator: " + Long.toString(System.currentTimeMillis() - time));
+    		player.sendMessage("Total time generating elevator: " + (System.currentTimeMillis() - time));
     		return true;
     	} else if(cmd.getName().equalsIgnoreCase("lift") && args[0].equalsIgnoreCase("reload")) {
             BukkitElevatorManager.quickEndLifts();
