@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -50,7 +51,10 @@ public class BukkitElevator extends Elevator{
 
     public BukkitElevator(BukkitLift plugin){
         this.plugin = plugin;
+        this.id = RandomStringUtils.randomAlphanumeric(6);
     }
+
+    public String toString() { return "BukkitElevator[" + this.id.toString() + "]";}
 
     public void clear(){
         super.clear();

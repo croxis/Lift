@@ -254,6 +254,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 		while (holdersIterators.hasNext()){
 			Entity passenger = holdersIterators.next();
 			passenger.setFallDistance(0);
+			passenger.setGravity(true);
 			if (passenger instanceof Player){
 				removePlayer((Player) passenger, holdersIterators);
 			} else if (passenger instanceof Minecart) {

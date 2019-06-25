@@ -23,7 +23,7 @@ import java.util.TreeMap;
 public abstract class Elevator {
 
 	//int destinationY = 0; //Destination y coordinate
-	
+	String id = "";
 	public boolean goingUp = false;
 	public double speed = 0.5;
 	private String failReason = "";
@@ -65,5 +65,5 @@ public abstract class Elevator {
 		this.failReason = failReason;
 	}
 	
-	
+	public String toString() { return "Elevator[" + this.id.toString() + "]";}
 }
