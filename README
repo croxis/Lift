@@ -2,4 +2,6 @@ Simple Elevator lifts for Bukkit Minecraft servers and Spout Servers
 
 Changes:
 
+v60 (1.14.3) - Updated to BlockData. Riding support and ride exit prevention. Added config variable for exit prevention. Support for new button and sign types.
+v59 (1.13.x) - Forgot
 v58 (1.13) - Config: Wildcards can now be used in floorBlocks to set all of the glass and wood blocks.
