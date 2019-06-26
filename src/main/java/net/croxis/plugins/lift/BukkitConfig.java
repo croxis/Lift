@@ -106,6 +106,7 @@ public class BukkitConfig extends Config{
         BukkitConfig.stringDestination = plugin.getConfig().getString("STRING_dest", "Dest:");
         BukkitConfig.stringCantEnter = plugin.getConfig().getString("STRING_cantEnter", "Can't enter elevator in use");
         BukkitConfig.stringCantLeave = plugin.getConfig().getString("STRING_cantLeave", "Can't leave elevator in use");
+        BukkitConfig.stringUnsafe = plugin.getConfig().getString("STRING_unsafe", "It is unsafe to leave a vehicle in a lift!");
 
         BukkitConfig.metricbool = plugin.getConfig().getBoolean("metrics", true);
         plugin.saveConfig();

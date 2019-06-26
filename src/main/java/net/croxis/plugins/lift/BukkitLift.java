@@ -62,6 +62,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
     public void onEnable() {
     	new BukkitLiftRedstoneListener(this);
     	new BukkitLiftPlayerListener(this);
+    	new BukkitVehicleListener(this);
     	manager = new BukkitElevatorManager(this);
     	
     	config.loadConfig(this);

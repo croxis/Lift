@@ -34,5 +34,6 @@ public class Config {
 	static String stringOneFloor;
 	static String stringCantEnter;
 	static String stringCantLeave;
+	static String stringUnsafe;
     static int signVersion = 2;
 }

@@ -19,8 +19,6 @@
 package net.croxis.plugins.lift;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -114,13 +112,13 @@ public class BukkitLiftPlayerListener implements Listener{
 	
 	@EventHandler
 	public void onPlayerItemPickup(EntityPickupItemEvent event){
-		if (BukkitElevatorManager.isPassenger(event.getItem()))
+		if (BukkitElevatorManager.isInALift(event.getItem()))
 			BukkitElevatorManager.removePassenger(event.getItem());
 	}
 	
 	@EventHandler
 	public void onItemPickup(InventoryPickupItemEvent event){
-		if (BukkitElevatorManager.isPassenger(event.getItem()))
+		if (BukkitElevatorManager.isInALift(event.getItem()))
 			BukkitElevatorManager.removePassenger(event.getItem());
 	}
 	

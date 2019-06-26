@@ -20,6 +20,7 @@ package net.croxis.plugins.lift;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import fr.neatmonster.nocheatplus.checks.CheckType;
 import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
@@ -31,9 +32,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Powerable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 
 public class BukkitElevatorManager extends ElevatorManager{
@@ -245,7 +249,13 @@ public class BukkitElevatorManager extends ElevatorManager{
 				removePlayer((Player) e);
 			else if (e instanceof Minecart) {
 			    final Vector v = bukkitElevator.getMinecartSpeeds().get(e);
-			    ((Minecart) e).setVelocity(v != null ? v : new Vector(0, 0, 0));
+			    e.setVelocity(v != null ? v : new Vector(0, 0, 0));
+			} else if (e instanceof Vehicle){
+				List<Entity> vehiclePassengers = e.getPassengers();
+				for (Entity vehiclePassenger : vehiclePassengers) {
+					if (vehiclePassenger instanceof Player)
+						restorePlayer((Player) vehiclePassenger);
+				}
 			}
 			e.setGravity(true);
 			passengerIterator.remove();
@@ -260,14 +270,19 @@ public class BukkitElevatorManager extends ElevatorManager{
 			} else if (passenger instanceof Minecart) {
 			    final Vector v = bukkitElevator.getMinecartSpeeds().get(passenger);
 			    passenger.setVelocity(v != null ? v : new Vector(0, 0, 0));
+			} else if (passenger instanceof Vehicle){
+				List<Entity> vehiclePassengers = passenger.getPassengers();
+				for (Entity vehiclePassenger : vehiclePassengers) {
+					if (vehiclePassenger instanceof Player)
+						restorePlayer((Player) vehiclePassenger);
+				}
 			}
 		}
 		//Fire off redstone signal for arrival
+		//org.bukkit.material.Sign sign;
 		Block s = ((BukkitFloor) bukkitElevator.destFloor).getButton().getRelative(BlockFace.UP);
-		org.bukkit.material.Sign sign;
-		try{
-			sign = (org.bukkit.material.Sign) s.getState().getData();
-		} catch(Exception exception) {
+		BlockData data = s.getBlockData();
+		if (!(data instanceof org.bukkit.block.data.type.WallSign)){
 			plugin.logInfo("WARNING: Unable to get sign at destination for redstone pulse.");
 			plugin.logInfo("Sign coords: " + s.getLocation().toString());
 			plugin.logInfo("Sign material: " + s.getType().toString());
@@ -275,35 +290,50 @@ public class BukkitElevatorManager extends ElevatorManager{
 			plugin.logDebug("Ended lift");
 			return;
 		}
-		
+		//try{
+		//	sign = (org.bukkit.material.Sign) s.getState().getData();
+		//} catch(Exception exception) {
+		//	plugin.logInfo("WARNING: Unable to get sign at destination for redstone pulse.");
+		//	plugin.logInfo("Sign coords: " + s.getLocation().toString());
+		//	plugin.logInfo("Sign material: " + s.getType().toString());
+		//	bukkitElevator.clear();
+		//	plugin.logDebug("Ended lift");
+		//	return;
+		//}
+		org.bukkit.block.data.type.WallSign sign = (org.bukkit.block.data.type.WallSign) data;
+
 		BlockFace directionFacing = sign.getFacing();
 		if (directionFacing == BlockFace.NORTH){
-			if (isButton(s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH))){
-				BlockState state = s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH).getState();
-				((org.bukkit.material.Button) state.getData()).setPowered(true);
-				state.update();
-				new BukkitCancelRedstoneTask(s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH)).runTaskLater(plugin, 10);
+			Block checkBlock = s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH);
+			BlockData blockData = checkBlock.getBlockData();
+			if (blockData instanceof Powerable){
+				Powerable powerData = (Powerable) blockData;
+				powerData.setPowered(true);
+				checkBlock.setBlockData(powerData);
 			}
 		} else if (directionFacing == BlockFace.EAST){
-			if (isButton(s.getRelative(BlockFace.WEST).getRelative(BlockFace.WEST))){
-				BlockState state = s.getRelative(BlockFace.WEST).getRelative(BlockFace.WEST).getState();
-				((org.bukkit.material.Button) state.getData()).setPowered(true);
-				state.update();
-				new BukkitCancelRedstoneTask(s.getRelative(BlockFace.WEST).getRelative(BlockFace.WEST)).runTaskLater(plugin, 10);
+			Block checkBlock = s.getRelative(BlockFace.WEST).getRelative(BlockFace.WEST);
+			BlockData blockData = checkBlock.getBlockData();
+			if (blockData instanceof Powerable){
+				Powerable powerData = (Powerable) blockData;
+				powerData.setPowered(true);
+				checkBlock.setBlockData(powerData);
 			}
 		} else if (directionFacing == BlockFace.SOUTH){
-			if (isButton(s.getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH))){
-				BlockState state = s.getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH).getState();
-				((org.bukkit.material.Button) state.getData()).setPowered(true);
-				state.update();
-				new BukkitCancelRedstoneTask(s.getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH)).runTaskLater(plugin, 10);
+			Block checkBlock = s.getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH);
+			BlockData blockData = checkBlock.getBlockData();
+			if (blockData instanceof Powerable){
+				Powerable powerData = (Powerable) blockData;
+				powerData.setPowered(true);
+				checkBlock.setBlockData(powerData);
 			}
 		} else if (directionFacing == BlockFace.WEST){
-			if (isButton(s.getRelative(BlockFace.EAST).getRelative(BlockFace.EAST))){
-				BlockState state = s.getRelative(BlockFace.EAST).getRelative(BlockFace.EAST).getState();
-				((org.bukkit.material.Button) state.getData()).setPowered(true);
-				state.update();
-				new BukkitCancelRedstoneTask(s.getRelative(BlockFace.EAST).getRelative(BlockFace.EAST)).runTaskLater(plugin, 10);
+			Block checkBlock = s.getRelative(BlockFace.EAST).getRelative(BlockFace.EAST);
+			BlockData blockData = checkBlock.getBlockData();
+			if (blockData instanceof Powerable){
+				Powerable powerData = (Powerable) blockData;
+				powerData.setPowered(true);
+				checkBlock.setBlockData(powerData);
 			}
 		}
 		bukkitElevator.clear();
@@ -338,7 +368,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 	}
 	
 	public static void removePassenger(Entity passenger){
-		if (isPassenger(passenger)){
+		if (isInALift(passenger)){
 			plugin.logDebug("Removing entity " + passenger.toString() + " from El: " + bukkitElevators.toString());
 			passenger.setVelocity(new Vector(0, 0, 0));
 			passenger.setFallDistance(0);
@@ -358,7 +388,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 		return BukkitConfig.blockSpeeds.containsKey(block.getType());
 	}
 	
-	public static boolean isPassenger(Entity entity){
+	public static boolean isInALift(Entity entity){
         for (BukkitElevator bukkitElevator : bukkitElevators) {
             if (bukkitElevator.isInLift(entity))
                 return true;
@@ -528,6 +558,13 @@ public class BukkitElevatorManager extends ElevatorManager{
 		plugin.logDebug("[Manager] Adding passenger " + passenger.toString());
 		if (passenger instanceof Player)
 			setupPlayer((Player) passenger);
+		if (passenger instanceof Vehicle){
+			List<Entity> vehiclePassengers = passenger.getPassengers();
+			for (Entity vehiclePassenger : vehiclePassengers) {
+				if (vehiclePassenger instanceof Player)
+					setupPlayer((Player) vehiclePassenger);
+			}
+		}
 		elevator.addPassenger(passenger);
 		if (!elevator.goingUp) {
 			BukkitElevatorManager.fallers.add(passenger);

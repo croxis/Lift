@@ -141,7 +141,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 					if (!BukkitConfig.liftMobs && !(entity instanceof Player))
 						continue;
 					if (bukkitElevator.isInShaftAtFloor(entity, startFloor)){
-						if (BukkitElevatorManager.isPassenger(entity)){
+						if (BukkitElevatorManager.isInALift(entity)){
 							if (entity instanceof Player)
 								entity.sendMessage("You are already in a lift. Relog in case this is an error.");
 							continue;
