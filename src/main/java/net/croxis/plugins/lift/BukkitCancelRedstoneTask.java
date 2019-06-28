@@ -18,9 +18,7 @@
  */
 package net.croxis.plugins.lift;
 
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Powerable;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -33,11 +31,6 @@ public class BukkitCancelRedstoneTask extends BukkitRunnable{
 	}
 
 	public void run() {
-		//BlockState state = button.getState();
-		//((org.bukkit.material.Button) state.getData()).setPowered(false);
-		//state.update();
-		//state.update();
-
 		BlockData data = button.getBlockData();
 		if (data instanceof Powerable){
 			Powerable powerData = (Powerable) data;
