@@ -20,12 +20,19 @@ package net.croxis.plugins.lift;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
+import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
 
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.slf4j.Logger;
+import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
@@ -41,7 +48,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 
 
-@Plugin(id = "lift", name = "Lift", version = "56", authors = {"croxis"}, description="")
+@Plugin(id = "lift", name = "Lift", version = "63", authors = {"croxis"}, description="")
 public class SpongeLift {
     public static SpongeElevatorManager manager;
 
@@ -59,15 +66,10 @@ public class SpongeLift {
 	@Inject
 	@DefaultConfig(sharedRoot = true)
 	private Path defaultConfig;
-	
-	//@Inject
-    //@DefaultConfig(sharedRoot = true)
-	HoconConfigurationLoader configManager;
 
     @Inject
     @DefaultConfig(sharedRoot = true)
     private ConfigurationLoader<CommentedConfigurationNode> configLoader;
-
 
     public static SpongeConfig config = new SpongeConfig();
 	
@@ -77,15 +79,19 @@ public class SpongeLift {
         // Try instantiating your logger in here.
         // (There's a guide for that)
 		getLogger().info("Loading Lift");
-		//ConfigurationNode rootNode = configManager.createEmptyNode(ConfigurationOptions.defaults());
+
         configLoader = HoconConfigurationLoader.builder().setPath(defaultConfig).build();
         CommentedConfigurationNode rootNode;
+
+        ConfigurationOptions configOptions = ConfigurationOptions.defaults().setShouldCopyDefaults(true);
+
         try {
-            rootNode = configLoader.load();
+            rootNode = configLoader.load(configOptions);
         } catch(IOException e) {
-            //error
-            rootNode = configLoader.createEmptyNode(ConfigurationOptions.defaults());
+            // config file doesn't exist, create new
+            rootNode = configLoader.createEmptyNode(configOptions);
         }
+        
         SpongeConfig.debug = rootNode.getNode("debug").getBoolean(true);
         SpongeConfig.redstone = rootNode.getNode("redstone").getBoolean(true);
         SpongeConfig.liftArea = rootNode.getNode("liftArea").getInt(16);
@@ -101,21 +107,65 @@ public class SpongeLift {
         SpongeConfig.stringOneFloor = rootNode.getNode("stringOneFloor").getString("");
         SpongeConfig.stringCantEnter = rootNode.getNode("stringCantEnter").getString("");
         SpongeConfig.stringCantLeave = rootNode.getNode("stringCantLeave").getString("");
-        SpongeConfig.blockSpeeds.put(BlockTypes.IRON_BLOCK, 0.5);
-        SpongeConfig.floorMaterials.add(BlockTypes.GLASS);
 
-        boolean metricsbool = rootNode.getNode("metrics").getBoolean(true);
+        GameRegistry registry = Sponge.getRegistry();
+
+        Map<Object, ? extends CommentedConfigurationNode> blockSpeedsNodes = rootNode.getNode("baseBlockSpeeds").getChildrenMap();
+        
+        if (blockSpeedsNodes.isEmpty()) {
+            SpongeConfig.blockSpeeds.put(BlockTypes.IRON_BLOCK, rootNode.getNode("baseBlockSpeeds", BlockTypes.IRON_BLOCK.getId()).getDouble(0.5D));
+        } else {
+            for (Map.Entry<Object, ? extends CommentedConfigurationNode> entry : blockSpeedsNodes.entrySet()) {
+                String id = (String) entry.getKey();
+        
+                BlockType blockType;
+        
+                try {
+                    blockType = registry.getType(BlockType.class, id).orElseThrow(() -> new ObjectMappingException("Block not found: " + id));
+                } catch (Exception e) {
+                    getLogger().error("An error occurred while adding base block material: {}", e.getMessage());
+            
+                    continue;
+                }
+        
+                SpongeConfig.blockSpeeds.put(blockType, entry.getValue().getDouble());
+            }
+        }
+        
+        List<String> floorMaterialsList = new ArrayList<>();
+        
+        try {
+            floorMaterialsList = rootNode.getNode("floorMaterials").getList(TypeToken.of(String.class), Arrays.asList(BlockTypes.GLASS.getId()));
+        } catch (ObjectMappingException e) {
+            getLogger().error("An error occurred while loading floor block list: {}", e.getMessage());
+    
+            floorMaterialsList.add(BlockTypes.GLASS.getId());
+        }
+        
+        for (String id : floorMaterialsList) {
+            BlockType blockType;
+    
+            try {
+                blockType = registry.getType(BlockType.class, id).orElseThrow(() -> new ObjectMappingException("Block not found: " + id));
+            } catch (Exception e) {
+                getLogger().error("An error occurred while adding floor material: {}", e.getMessage());
+        
+                continue;
+            }
+            
+            SpongeConfig.floorMaterials.add(blockType);
+        }
 
         try {
             configLoader.save(rootNode);
         } catch(IOException e) {
             // error
+            e.printStackTrace();
         }
 
         if (SpongeConfig.preventEntry){
             Sponge.getEventManager().registerListeners(this, new SpongeMovePreventListener());
         }
-
 
 		redstoneListener = new SpongeLiftRedstoneListener(this);
         playerListener = new SpongeLiftPlayerListener(this);
@@ -123,11 +173,11 @@ public class SpongeLift {
         Sponge.getEventManager().registerListeners(this, redstoneListener);
         Sponge.getEventManager().registerListeners(this, playerListener);
         startListeners();
-        debug("maxArea: " + Integer.toString(BukkitConfig.liftArea));
-        debug("autoPlace: " + Boolean.toString(BukkitConfig.autoPlace));
-        debug("checkGlass: " + Boolean.toString(BukkitConfig.checkFloor));
-        debug("baseBlocks: " + BukkitConfig.blockSpeeds.toString());
-        debug("floorBlocks: " + BukkitConfig.floorMaterials.toString());
+        debug("maxArea: " + Integer.toString(SpongeConfig.liftArea));
+        debug("autoPlace: " + Boolean.toString(SpongeConfig.autoPlace));
+        debug("checkGlass: " + Boolean.toString(SpongeConfig.checkFloor));
+        debug("baseBlocks: " + SpongeConfig.blockSpeeds.toString());
+        debug("floorBlocks: " + SpongeConfig.floorMaterials.toString());
         getLogger().info("Started SpongeLift");
     }
 
