@@ -250,7 +250,8 @@ public class BukkitElevatorManager extends ElevatorManager{
             else if (e instanceof Minecart) {
                 final Vector v = bukkitElevator.getMinecartSpeeds().get(e);
                 e.setVelocity(v != null ? v : new Vector(0, 0, 0));
-            } else if (e instanceof Vehicle){
+            }
+            if (e instanceof Vehicle){
                 List<Entity> vehiclePassengers = e.getPassengers();
                 for (Entity vehiclePassenger : vehiclePassengers) {
                     if (vehiclePassenger instanceof Player)
@@ -270,7 +271,8 @@ public class BukkitElevatorManager extends ElevatorManager{
             } else if (passenger instanceof Minecart) {
                 final Vector v = bukkitElevator.getMinecartSpeeds().get(passenger);
                 passenger.setVelocity(v != null ? v : new Vector(0, 0, 0));
-            } else if (passenger instanceof Vehicle){
+            }
+            if (passenger instanceof Vehicle){
                 List<Entity> vehiclePassengers = passenger.getPassengers();
                 for (Entity vehiclePassenger : vehiclePassengers) {
                     if (vehiclePassenger instanceof Player)
@@ -398,7 +400,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 
     public static void setupPlayer(Player player){
         // Function which sets up a player for holding or passengering. Anti cheat stuff
-        player.setGravity(false);
+        plugin.logDebug("[Manager][setupPlayer] " + player.getDisplayName());
         if (player.getAllowFlight()){
             BukkitElevatorManager.fliers.add(player);
             plugin.logDebug(player.getName() + " added to flying list");
@@ -408,6 +410,7 @@ public class BukkitElevatorManager extends ElevatorManager{
             plugin.logDebug(player.getName() + " NOT added to flying list");
         }
 
+        player.setGravity(false);
         player.setAllowFlight(true);
 
         if (BukkitConfig.useNoCheatPlus){
@@ -418,6 +421,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 
     static void restorePlayer(Player player){
         // Restores a player's previous stats.
+        plugin.logDebug("[Manager][restorePlayer] " + player.getDisplayName());
         player.setGravity(true);
         if (fallers.contains(player)){
             fallers.remove(player);
@@ -555,7 +559,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 
     public static void addPassenger(BukkitElevator elevator, Entity passenger){
         // Adds a new entity to lift to be held in position
-        plugin.logDebug("[Manager] Adding passenger " + passenger.toString());
+        plugin.logDebug("[Manager][addPassenger] Adding passenger " + passenger.toString());
         if (passenger instanceof Player)
             setupPlayer((Player) passenger);
         if (passenger instanceof Vehicle){
@@ -570,7 +574,7 @@ public class BukkitElevatorManager extends ElevatorManager{
             BukkitElevatorManager.fallers.add(passenger);
         }
         passenger.setGravity(false);
-        plugin.logDebug("[Manager] Added passenger " + passenger.toString());
+        plugin.logDebug("[Manager][addPassenger] Added passenger " + passenger.toString());
     }
 
     public static void quickEndLifts(){
