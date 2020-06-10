@@ -34,10 +34,7 @@ import org.spongepowered.api.entity.vehicle.minecart.Minecart;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.util.Direction;
-import org.spongepowered.api.world.BlockChangeFlag;
-import org.spongepowered.api.world.Chunk;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
+import org.spongepowered.api.world.*;
 
 import java.util.*;
 
@@ -265,12 +262,12 @@ public class SpongeElevator extends Elevator{
     void endLift(){
         plugin.debug("Halting lift: " + this.toString());
         for (Location location : floorBlocks.keySet()){
-        	//location.restoreSnapshot(floorBlocks.get(location), true, BlockChangeFlag.ALL, Cause.source(this).build());
-        	//if (location.getBlockType() == BlockTypes.AIR && !Config.checkFloor)
-        	//    location.setBlockType(SpongeConfig.floorMaterials.iterator().next(), Cause.source(plugin.container).build());
+        	location.restoreSnapshot(floorBlocks.get(location), true, BlockChangeFlags.ALL);
+        	if (location.getBlockType() == BlockTypes.AIR && !Config.checkFloor)
+        	   location.setBlockType(SpongeConfig.floorMaterials.iterator().next());
         }
         for (Location location : aboveFloorBlocks.keySet()){
-            //location.restoreSnapshot(aboveFloorBlocks.get(location), true, BlockChangeFlag.ALL, Cause.source(plugin.container).build());
+            location.restoreSnapshot(aboveFloorBlocks.get(location), true, BlockChangeFlags.ALL);
         }
 
         for (Iterator<Entity> iter = passengers.iterator(); iter.hasNext(); ){
@@ -309,7 +306,7 @@ public class SpongeElevator extends Elevator{
 
         Location<World> testBlock = signLocation.getRelative(behindBlock).getRelative(behindBlock);
         if (testBlock.getBlockType().equals(BlockTypes.STONE_BUTTON) || testBlock.getBlockType().equals(BlockTypes.WOODEN_BUTTON)){
-            //testBlock.offer(Keys.POWERED, true, Cause.source(plugin.container).build());
+            testBlock.offer(Keys.POWERED, true);
         }
 
         clear();

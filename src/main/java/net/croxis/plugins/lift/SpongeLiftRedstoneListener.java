@@ -34,7 +34,6 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
-import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Chunk;
@@ -204,18 +203,18 @@ public class SpongeLiftRedstoneListener{
 
                 if (floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.CARPET){
                     elevator.addCarpetBlock(floorBlockLocation.getRelative(Direction.UP));
-                    //floorBlockLocation.getRelative(Direction.UP).setBlockType(BlockTypes.AIR, Cause.source(plugin).build());
-                } else if (floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.RAIL
-                        || floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.ACTIVATOR_RAIL
-                        || floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.DETECTOR_RAIL
-                        || floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.GOLDEN_RAIL) {
-                    //bukkitElevator.addRailBlock(gb.getRelative(BlockFace.UP));
-                    //gb.getRelative(BlockFace.UP).setType(Material.AIR);
+                    floorBlockLocation.getRelative(Direction.UP).setBlockType(BlockTypes.AIR);
+                // } else if (floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.RAIL
+                //         || floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.ACTIVATOR_RAIL
+                //         || floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.DETECTOR_RAIL
+                //         || floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.GOLDEN_RAIL) {
+                //     bukkitElevator.addRailBlock(gb.getRelative(BlockFace.UP));
+                //     gb.getRelative(BlockFace.UP).setType(Material.AIR);
                 } else if (floorBlockLocation.getRelative(Direction.UP).getBlockType() == BlockTypes.REDSTONE_WIRE) {
                     elevator.addRedstoneBlock(floorBlockLocation.getRelative(Direction.UP));
-                    //floorBlockLocation.getRelative(Direction.UP).setBlockType(BlockTypes.AIR, Cause.source(plugin).build());
+                    floorBlockLocation.getRelative(Direction.UP).setBlockType(BlockTypes.AIR);
                 }
-                //floorBlockLocation.setBlockType(BlockTypes.AIR, Cause.source(plugin.container).build());
+                floorBlockLocation.setBlockType(BlockTypes.AIR);
             }
 
             SpongeElevatorManager.elevators.add(elevator);

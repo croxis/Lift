@@ -22,7 +22,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<bukkitVersion>1.15.2-R0.1-SNAPSHOT</bukkitVersion>
-		<spongeVersion>7.0.0</spongeVersion>
+		<spongeVersion>7.2.0</spongeVersion>
 	</properties>
   	
   	<pluginRepositories>

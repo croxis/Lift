@@ -19,7 +19,7 @@
 package net.croxis.plugins.lift;
 
 public class Config {
-	public static boolean debug = true;
+	public static boolean debug = false;
 	static boolean redstone = true;
 	static int liftArea = 16;
 	static int maxHeight = 256;
