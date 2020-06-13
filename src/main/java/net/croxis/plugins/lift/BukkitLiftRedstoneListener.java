@@ -34,6 +34,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.block.Sign;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 
 public class BukkitLiftRedstoneListener implements Listener {
@@ -165,7 +166,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 						plugin.logDebug("Added passenger " + entity.toString());
 						if (baseBlocksIterator.hasNext() && BukkitConfig.autoPlace){
 							Location loc = baseBlocksIterator.next().getLocation();
-							entity.teleport(new Location(entity.getWorld(), loc.getX() + 0.5D, entity.getLocation().getY(), loc.getZ() + 0.5D, entity.getLocation().getYaw(), entity.getLocation().getPitch()));
+							entity.teleport(new Location(entity.getWorld(), loc.getX() + 0.5D, entity.getLocation().getY(), loc.getZ() + 0.5D, entity.getLocation().getYaw(), entity.getLocation().getPitch()), TeleportCause.UNKNOWN);
 						}
 						if (entity instanceof Player){
 							Player player = (Player) entity;
