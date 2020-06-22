@@ -35,6 +35,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Minecart;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
 
 public class BukkitElevator extends Elevator{
@@ -124,7 +125,7 @@ public class BukkitElevator extends Elevator{
             }
             Location destination = passenger.getLocation();
             destination.setY(destFloor.getY());
-            passenger.teleport(destination);
+            passenger.teleport(destination, TeleportCause.UNKNOWN);
             passenger.setFallDistance(0);
         }
     }
