@@ -38,6 +38,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
 
 public class BukkitElevatorManager extends ElevatorManager{
@@ -487,7 +488,7 @@ public class BukkitElevatorManager extends ElevatorManager{
                         Location playerLoc = passenger.getLocation();
                         playerLoc.setX(baseLoc.getX() + 0.5D);
                         playerLoc.setZ(baseLoc.getZ() + 0.5D);
-                        passenger.teleport(playerLoc);
+                        passenger.teleport(playerLoc, TeleportCause.UNKNOWN);
                     } else {
                         passenger.setVelocity(new Vector(0, 0, 0));
                         if (passenger instanceof Player)
@@ -518,7 +519,7 @@ public class BukkitElevatorManager extends ElevatorManager{
                     passenger.setVelocity(new Vector(0, 0, 0));
                     Location pLoc = passenger.getLocation().clone();
                     pLoc.setY(e.destFloor.getY()-0.5);
-                    passenger.teleport(pLoc);
+                    passenger.teleport(pLoc, TeleportCause.UNKNOWN);
 
                     moveToHolder(e, passengers, passenger, passenger.getLocation(), "Passenger not in floor.");
                 }
@@ -532,7 +533,7 @@ public class BukkitElevatorManager extends ElevatorManager{
                     continue;
                 }
                 plugin.logDebug("Holding: " + holder.toString() + " at " + e.getHolderPos(holder));
-                holder.teleport(e.getHolderPos(holder));
+                holder.teleport(e.getHolderPos(holder), TeleportCause.UNKNOWN);
                 holder.setFallDistance(0.0F);
                 holder.setVelocity(new Vector(0,0,0));
             }
