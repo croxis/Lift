@@ -33,10 +33,18 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.EquipmentSlot;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class BukkitLiftPlayerListener implements Listener{
 	private BukkitLift plugin;
 	private Block buttonBlock = null;
+	private Map<BukkitElevator, UUID> elevatorCache = new HashMap<>();
+	private Map<UUID, BukkitElevator> playerCache = new HashMap<>();
+	private Map<UUID, LiftSign> signCache = new HashMap();
 
 	public BukkitLiftPlayerListener(BukkitLift plugin){
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
@@ -46,7 +54,8 @@ public class BukkitLiftPlayerListener implements Listener{
 	@EventHandler (ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event){
 		if ((event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK) 
-				&& event.getPlayer().hasPermission("lift.change")) {
+				&& event.getPlayer().hasPermission("lift.change")
+				&& !playerCache.containsKey(event.getPlayer().getUniqueId())) {
 			buttonBlock = event.getClickedBlock().getRelative(BlockFace.DOWN);
 
 			if (BukkitConfig.signMaterials.contains(event.getClickedBlock().getType())
@@ -74,38 +83,43 @@ public class BukkitLiftPlayerListener implements Listener{
 				// Located here in case sign above button is for another mod/plugin
 				LiftSign liftSign = new LiftSign(BukkitLift.config, sign.getLines());
 				
-				//event.setCancelled(true);
-				
-				int currentDestinationInt = 1;
-				BukkitFloor currentFloor = bukkitElevator.getFloorFromY(buttonBlock.getY());
-				if (currentFloor == null){
-					event.getPlayer().sendMessage("Elevator generator says this floor does not exist. Check shaft for blockage");
-					return;
-				}
+				// If sign is clicked with an item in hand, just switch to the next floor
+				// If a sign is clicked with an open hand, use the mouse scroll method
+				if (event.getHand() == EquipmentSlot.HAND){
 
-				liftSign.setCurrentFloor(currentFloor.getFloor());
-				currentDestinationInt = liftSign.getDestinationFloor();
-				currentDestinationInt++;
-				if (currentDestinationInt == currentFloor.getFloor()){
+				} else {
+
+					int currentDestinationInt = 1;
+					BukkitFloor currentFloor = bukkitElevator.getFloorFromY(buttonBlock.getY());
+					if (currentFloor == null) {
+						event.getPlayer().sendMessage("Elevator generator says this floor does not exist. Check shaft for blockage");
+						return;
+					}
+
+					liftSign.setCurrentFloor(currentFloor.getFloor());
+					currentDestinationInt = liftSign.getDestinationFloor();
 					currentDestinationInt++;
-					plugin.logDebug("Skipping current floor");
+					if (currentDestinationInt == currentFloor.getFloor()) {
+						currentDestinationInt++;
+						plugin.logDebug("Skipping current floor");
+					}
+					// The following line MAY be what causes a potential bug for max floors
+					if (currentDestinationInt > bukkitElevator.getTotalFloors()) {
+						currentDestinationInt = 1;
+						if (currentFloor.getFloor() == 1)
+							currentDestinationInt = 2;
+						plugin.logDebug("Rotating back to first floor");
+					}
+					liftSign.setDestinationFloor(currentDestinationInt);
+					liftSign.setDestinationName(bukkitElevator.getFloorFromN(currentDestinationInt).getName());
+					String[] data = liftSign.saveSign();
+					sign.setLine(0, data[0]);
+					sign.setLine(1, data[1]);
+					sign.setLine(2, data[2]);
+					sign.setLine(3, data[3]);
+					sign.update();
+					plugin.logDebug("Completed sign update");
 				}
-				// The following line MAY be what causes a potential bug for max floors
-				if (currentDestinationInt > bukkitElevator.getTotalFloors()){
-					currentDestinationInt = 1;
-					if (currentFloor.getFloor() == 1)
-						currentDestinationInt = 2;
-					plugin.logDebug("Rotating back to first floor");
-				}
-				liftSign.setDestinationFloor(currentDestinationInt);
-				liftSign.setDestinationName(bukkitElevator.getFloorFromN(currentDestinationInt).getName());
-				String[] data = liftSign.saveSign();
-				sign.setLine(0, data[0]);
-				sign.setLine(1, data[1]);
-				sign.setLine(2, data[2]);
-				sign.setLine(3, data[3]);
-				sign.update();
-				plugin.logDebug("Completed sign update");
 			}
 		}
 	}
@@ -136,11 +150,19 @@ public class BukkitLiftPlayerListener implements Listener{
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event){
 		BukkitElevatorManager.removePlayer(event.getPlayer());
+		playerCache.remove(event.getPlayer().getUniqueId());
+		signCache.remove(event.getPlayer().getUniqueId());
+		// https://www.geeksforgeeks.org/remove-an-entry-using-value-from-hashmap-while-iterating-over-it/
+		elevatorCache.entrySet().removeIf(entry -> event.getPlayer().getUniqueId().equals(entry.getValue()));
 	}
 	
 	@EventHandler
 	public void onPlayerKick(PlayerKickEvent event){
 		BukkitElevatorManager.removePlayer(event.getPlayer());
+		playerCache.remove(event.getPlayer().getUniqueId());
+		signCache.remove(event.getPlayer().getUniqueId());
+		// https://www.geeksforgeeks.org/remove-an-entry-using-value-from-hashmap-while-iterating-over-it/
+		elevatorCache.entrySet().removeIf(entry -> event.getPlayer().getUniqueId().equals(entry.getValue()));
 	}
 
 }
