@@ -29,7 +29,7 @@ public abstract class Elevator {
 	private String failReason = "";
 	public String cause = "";
 	long startTime = 0;
-
+	boolean cacheLock = false;
 	
 	TreeMap <Integer, Floor> floormap = new TreeMap<>();//Index is y value
 	TreeMap <Integer, Floor> floormap2 = new TreeMap<>();//Index is floor value
@@ -66,4 +66,8 @@ public abstract class Elevator {
 	}
 	
 	public String toString() { return "Elevator[" + this.id.toString() + "]";}
+
+	public void setCacheLock(boolean cacheLock) {
+		this.cacheLock = cacheLock;
+	}
 }

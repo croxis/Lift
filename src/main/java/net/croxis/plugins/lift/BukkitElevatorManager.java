@@ -440,24 +440,24 @@ public class BukkitElevatorManager extends ElevatorManager{
 
     public void run() {
         //Using while loop iterator so we can remove lifts in a sane way
-        Iterator<BukkitElevator> eleviterator = bukkitElevators.iterator();
+        Iterator<BukkitElevator> elevator = bukkitElevators.iterator();
         // Various variables to reduce variable spawning
         BukkitElevator e;
         Iterator<Entity> passengers;
         Entity passenger;
         Entity holder;
 
-        while (eleviterator.hasNext()){
-            e = eleviterator.next();
+        while (elevator.hasNext()){
+            e = elevator.next();
             if (e == null) {
-                eleviterator.remove();
+                elevator.remove();
                 continue;
             }
             plugin.logDebug("Processing elevator: " + e);
             passengers = e.getPassengers();
             if(!passengers.hasNext()){
                 BukkitElevatorManager.endLift(e);
-                eleviterator.remove();
+                elevator.remove();
                 continue;
             }
 
@@ -468,7 +468,7 @@ public class BukkitElevatorManager extends ElevatorManager{
                 plugin.logDebug("Ending lift due to timeout.");
                 e.quickEndLift();
                 BukkitElevatorManager.endLift(e);
-                eleviterator.remove();
+                elevator.remove();
                 continue;
             }
 
