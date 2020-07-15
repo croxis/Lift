@@ -4,7 +4,7 @@ generator: http://dinnerbone.com/minecraft/tools/pluginator/
 main: net.croxis.plugins.lift.BukkitLift
 name: Lift
 startup: postworld
-version: 64
+version: 66
 description: Simple and easy Lifts and Elevators for Bukkit
 softdepend: [NoCheatPlus]
 permissions:

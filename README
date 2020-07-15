@@ -2,6 +2,7 @@ Simple Elevator lifts for Bukkit Minecraft servers and Spout Servers
 
 Changes:
 
+v65 (1.16.1) - When hand is empty, signs can be selected with mousewheel!
 v63 (1.15.1) - Recompiled for that version
 v62 (1.14.4) - Recompiled for that version
 v61 (1.14.3) - Don't remember
