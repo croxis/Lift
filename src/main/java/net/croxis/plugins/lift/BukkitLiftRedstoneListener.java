@@ -30,6 +30,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
@@ -88,6 +89,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 		plugin.logDebug("CanDo: " + canDo);
 
 		if (canDo){
+
             plugin.logDebug("Initializing elevator for run");
 			long startTime = System.currentTimeMillis();
 			bukkitElevator = BukkitElevatorManager.createLift(block, reason);
@@ -99,6 +101,9 @@ public class BukkitLiftRedstoneListener implements Listener {
 
             if (bukkitElevator.getTotalFloors() < 2)
                 return;
+
+			// trigger Event to perform actions in other listeners like in BukkitLiftPlayerListener
+			Bukkit.getPluginManager().callEvent(new ElevatorActivateEvent(bukkitElevator));
 
             Sign sign = (Sign) block.getRelative(BlockFace.UP).getState();
 			LiftSign liftSign = new LiftSign(plugin.config, sign.getLine(0), sign.getLine(1), sign.getLine(2), sign.getLine(3));

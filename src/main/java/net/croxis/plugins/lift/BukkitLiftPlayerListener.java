@@ -245,7 +245,18 @@ public class BukkitLiftPlayerListener implements Listener{
 		removePlayerCache(event.getPlayer());
 	}
 
+	@EventHandler
+	public void onElevatorActivation(ElevatorActivateEvent event) {
+		playerCache.entrySet()
+				.stream()
+				.filter(entry -> entry.getValue().equals(event.getElevator()))
+				.map(entry -> Bukkit.getPlayer(entry.getKey()))
+				.findFirst()
+				.ifPresent(this::removePlayerCache);
+	}
+
 	void removePlayerCache(Player player){
+		player.sendMessage("removePlayerCache");
 		playerCache.remove(player.getUniqueId());
 		signCache.remove(player.getUniqueId());
 		otherSignCache.remove(player.getUniqueId());
