@@ -97,8 +97,9 @@ public class BukkitLiftPlayerListener implements Listener{
 					event.getPlayer().sendMessage(BukkitConfig.stringScrollSelectDisabled);
 					return;
 				}
-				if (event.getPlayer().getInventory().getItemInMainHand() == null
-					|| event.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR){
+				if ((event.getPlayer().getInventory().getItemInMainHand() == null
+						|| event.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR)
+						&& !liftSign.isEmpty()) {
 					plugin.logDebug("HAND: ADD");
 					elevatorCache.put(bukkitElevator, event.getPlayer().getUniqueId());
 					playerCache.put(event.getPlayer().getUniqueId(), bukkitElevator);

@@ -40,10 +40,10 @@ package net.croxis.plugins.lift;
 class LiftSign {
     int signVersion = 0; // 0=hmod, 1=lift till 55, 2=lift>=56
     Config config;
-    private String sign0 = ": 0";
-    private String sign1 = "";
-    private String sign2 = ": 0";
-    private String sign3 = "";
+    private String sign0;
+    private String sign1;
+    private String sign2;
+    private String sign3;
     private int currentFloor = 0;
     private int destFloor = 0;
     private String currentName = "";
@@ -169,5 +169,9 @@ class LiftSign {
 
     String getDebug(){
         return this.sign0 + '\n' + this.sign1 + '\n' + this.sign2 + '\n' + this.sign3;
+    }
+
+    boolean isEmpty() {
+        return "".equals(sign0 + sign1 + sign2 + sign3);
     }
 }
