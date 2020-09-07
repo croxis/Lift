@@ -25,6 +25,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -34,9 +36,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -95,15 +94,18 @@ public class BukkitLiftPlayerListener implements Listener{
 					plugin.logDebug("HAND: REMOVE");
 					removePlayerCache(event.getPlayer());
 					event.setCancelled(true);
+					event.getPlayer().sendMessage(BukkitConfig.stringScrollSelectDisabled);
 					return;
 				}
-				if (event.getPlayer().getInventory().getItemInMainHand() == null
-					|| event.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR){
+				if ((event.getPlayer().getInventory().getItemInMainHand() == null
+						|| event.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR)
+						&& !liftSign.isEmpty()) {
 					plugin.logDebug("HAND: ADD");
 					elevatorCache.put(bukkitElevator, event.getPlayer().getUniqueId());
 					playerCache.put(event.getPlayer().getUniqueId(), bukkitElevator);
 					signCache.put(event.getPlayer().getUniqueId(), liftSign);
 					otherSignCache.put(event.getPlayer().getUniqueId(), sign);
+					event.getPlayer().sendMessage(BukkitConfig.stringScrollSelectEnabled);
 				} else {
 					plugin.logDebug("FULL HAND CYCLE");
 					int currentDestinationInt = 1;
@@ -137,7 +139,6 @@ public class BukkitLiftPlayerListener implements Listener{
 					sign.update();
 					plugin.logDebug("Completed sign update");
 				}
-				event.setCancelled(true);
 			}
 		}
 	}
@@ -163,6 +164,12 @@ public class BukkitLiftPlayerListener implements Listener{
 		BukkitElevator bukkitElevator = playerCache.get(event.getPlayer().getUniqueId());
 		LiftSign liftSign = signCache.get(event.getPlayer().getUniqueId());
 		Sign sign = otherSignCache.get(event.getPlayer().getUniqueId());
+
+		if (event.getPlayer().getLocation().distance(sign.getLocation()) > 3) {
+			removePlayerCache(event.getPlayer());
+			event.getPlayer().sendMessage(BukkitConfig.stringScrollSelectDisabled);
+			return;
+		}
 
 		BukkitFloor currentFloor = bukkitElevator.getFloorFromY(buttonBlock.getY());
 		if (currentFloor == null) {
@@ -236,6 +243,16 @@ public class BukkitLiftPlayerListener implements Listener{
 	public void onPlayerKick(PlayerKickEvent event){
 		BukkitElevatorManager.removePlayer(event.getPlayer());
 		removePlayerCache(event.getPlayer());
+	}
+
+	@EventHandler
+	public void onElevatorActivation(ElevatorActivateEvent event) {
+		playerCache.entrySet()
+				.stream()
+				.filter(entry -> entry.getValue().equals(event.getElevator()))
+				.map(entry -> Bukkit.getPlayer(entry.getKey()))
+				.findFirst()
+				.ifPresent(this::removePlayerCache);
 	}
 
 	void removePlayerCache(Player player){

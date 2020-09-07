@@ -107,6 +107,8 @@ public class BukkitConfig extends Config{
         BukkitConfig.stringCantEnter = plugin.getConfig().getString("STRING_cantEnter", "Can't enter elevator in use");
         BukkitConfig.stringCantLeave = plugin.getConfig().getString("STRING_cantLeave", "Can't leave elevator in use");
         BukkitConfig.stringUnsafe = plugin.getConfig().getString("STRING_unsafe", "It is unsafe to leave a vehicle in a lift!");
+        BukkitConfig.stringScrollSelectEnabled = plugin.getConfig().getString("STRING_scrollSelectEnabled", "§7Scrollable floor selection enabled. Click on sign with an item for default mode");
+        BukkitConfig.stringScrollSelectDisabled = plugin.getConfig().getString("STRING_scrollSelectDisabled", "§7Scrollable floor selection disabled");
 
         BukkitConfig.metricbool = plugin.getConfig().getBoolean("metrics", true);
         plugin.saveConfig();

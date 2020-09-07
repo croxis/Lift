@@ -18,24 +18,29 @@
  */
 package net.croxis.plugins.lift;
 
-public class Config {
-	public static boolean debug = false;
-	static boolean redstone = true;
-	static int liftArea = 16;
-	static int maxHeight = 256;
-	static boolean autoPlace = false;
-	static boolean checkFloor = true;
-	static boolean serverFlight = false;
-	static boolean liftMobs = false;
-	static boolean preventEntry = false;
-	static boolean preventLeave = false;
-	static String stringDestination = "§1Dest";
-	static String stringCurrentFloor = "§4Current Floor";
-	static String stringOneFloor;
-	static String stringCantEnter;
-	static String stringCantLeave;
-	static String stringUnsafe;
-	static String stringScrollSelectEnabled;
-	static String stringScrollSelectDisabled;
-    static int signVersion = 2;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
+
+public class ElevatorActivateEvent extends Event {
+
+    private static final HandlerList handlers = new HandlerList();
+    private BukkitElevator elevator;
+
+    public ElevatorActivateEvent(BukkitElevator elevator) {
+        this.elevator = elevator;
+    }
+
+    public BukkitElevator getElevator() {
+        return elevator;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 }
