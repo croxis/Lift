@@ -94,7 +94,7 @@ public class BukkitLiftPlayerListener implements Listener{
 					plugin.logDebug("HAND: REMOVE");
 					removePlayerCache(event.getPlayer());
 					event.setCancelled(true);
-					event.getPlayer().sendMessage("Scrollable floor selection disabled");
+					event.getPlayer().sendMessage(BukkitConfig.stringScrollSelectDisabled);
 					return;
 				}
 				if (event.getPlayer().getInventory().getItemInMainHand() == null
@@ -104,7 +104,7 @@ public class BukkitLiftPlayerListener implements Listener{
 					playerCache.put(event.getPlayer().getUniqueId(), bukkitElevator);
 					signCache.put(event.getPlayer().getUniqueId(), liftSign);
 					otherSignCache.put(event.getPlayer().getUniqueId(), sign);
-					event.getPlayer().sendMessage("Scrollable floor selection enabled. Click on sign with an item for default mode");
+					event.getPlayer().sendMessage(BukkitConfig.stringScrollSelectEnabled);
 				} else {
 					plugin.logDebug("FULL HAND CYCLE");
 					int currentDestinationInt = 1;
@@ -167,7 +167,7 @@ public class BukkitLiftPlayerListener implements Listener{
 
 		if (event.getPlayer().getLocation().distance(sign.getLocation()) > 3) {
 			removePlayerCache(event.getPlayer());
-			event.getPlayer().sendMessage("Scrollable floor selection disabled");
+			event.getPlayer().sendMessage(BukkitConfig.stringScrollSelectDisabled);
 			return;
 		}
 
@@ -256,7 +256,6 @@ public class BukkitLiftPlayerListener implements Listener{
 	}
 
 	void removePlayerCache(Player player){
-		player.sendMessage("removePlayerCache");
 		playerCache.remove(player.getUniqueId());
 		signCache.remove(player.getUniqueId());
 		otherSignCache.remove(player.getUniqueId());

@@ -35,5 +35,7 @@ public class Config {
 	static String stringCantEnter;
 	static String stringCantLeave;
 	static String stringUnsafe;
+	static String stringScrollSelectEnabled;
+	static String stringScrollSelectDisabled;
     static int signVersion = 2;
 }
