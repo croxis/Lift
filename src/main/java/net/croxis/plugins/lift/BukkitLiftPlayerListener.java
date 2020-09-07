@@ -138,7 +138,6 @@ public class BukkitLiftPlayerListener implements Listener{
 					sign.update();
 					plugin.logDebug("Completed sign update");
 				}
-				event.setCancelled(true);
 			}
 		}
 	}
