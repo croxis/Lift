@@ -49,6 +49,7 @@ public class BukkitLiftPlayerListener implements Listener{
 	private Map<UUID, BukkitElevator> playerCache = new HashMap<>();
 	private Map<UUID, LiftSign> signCache = new HashMap<>();
 	private Map<UUID, Sign> otherSignCache = new HashMap<>();
+	private Map<Player, BukkitFloor> currentFloorCache = new HashMap<>();
 
 	public BukkitLiftPlayerListener(BukkitLift plugin){
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
@@ -98,6 +99,13 @@ public class BukkitLiftPlayerListener implements Listener{
 					event.getPlayer().sendMessage(BukkitConfig.stringScrollSelectDisabled);
 					return;
 				}
+				BukkitFloor currentFloor = bukkitElevator.getFloorFromY(buttonBlock.getY());
+				if (currentFloor == null) {
+					event.getPlayer().sendMessage("Elevator generator says this floor does not exist. Check shaft for blockage");
+					return;
+				}
+				currentFloorCache.put(event.getPlayer(), currentFloor);
+
 				if ((event.getPlayer().getInventory().getItemInMainHand() == null
 						|| event.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR)
 						&& !liftSign.isEmpty()) {
@@ -110,11 +118,6 @@ public class BukkitLiftPlayerListener implements Listener{
 				} else {
 					plugin.logDebug("FULL HAND CYCLE");
 					int currentDestinationInt = 1;
-					BukkitFloor currentFloor = bukkitElevator.getFloorFromY(buttonBlock.getY());
-					if (currentFloor == null) {
-						event.getPlayer().sendMessage("Elevator generator says this floor does not exist. Check shaft for blockage");
-						return;
-					}
 
 					liftSign.setCurrentFloor(currentFloor.getFloor());
 					currentDestinationInt = liftSign.getDestinationFloor();
@@ -172,9 +175,9 @@ public class BukkitLiftPlayerListener implements Listener{
 			return;
 		}
 
-		BukkitFloor currentFloor = bukkitElevator.getFloorFromY(buttonBlock.getY());
+		BukkitFloor currentFloor = currentFloorCache.get(event.getPlayer());
 		if (currentFloor == null) {
-			event.getPlayer().sendMessage("Elevator generator says this floor does not exist. Check shaft for blockage");
+			event.getPlayer().sendMessage("Elevator generator could not get current floor.");
 			return;
 		}
 
@@ -263,6 +266,7 @@ public class BukkitLiftPlayerListener implements Listener{
 		otherSignCache.remove(player.getUniqueId());
 		// https://www.geeksforgeeks.org/remove-an-entry-using-value-from-hashmap-while-iterating-over-it/
 		elevatorCache.entrySet().removeIf(entry -> player.getUniqueId().equals(entry.getValue()));
+		currentFloorCache.remove(player);
 	}
 
 }
