@@ -188,31 +188,6 @@ public class BukkitElevator extends Elevator{
     public void addMinecartSpeed(Minecart minecart){
         minecartSpeeds.put(minecart, minecart.getVelocity());
     }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        BukkitElevator that = (BukkitElevator) o;
-
-        if (!Objects.equals(baseBlocks, that.baseBlocks)) return false;
-        if (!Objects.equals(floorBlocks, that.floorBlocks)) return false;
-        if (!Objects.equals(aboveFloorBlocks, that.aboveFloorBlocks))
-            return false;
-        return Objects.equals(chunks, that.chunks);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = baseBlocks != null ? baseBlocks.hashCode() : 0;
-        result = 31 * result + (floorBlocks != null ? floorBlocks.hashCode() : 0);
-        result = 31 * result + (aboveFloorBlocks != null ? aboveFloorBlocks.hashCode() : 0);
-        result = 31 * result + (chunks != null ? chunks.hashCode() : 0);
-        return result;
-    }
-
 }
 
 
