@@ -85,8 +85,8 @@ public class BukkitLiftRedstoneListener implements Listener {
 				}
 			}
 			plugin.logDebug("Redstone scan no match");
+			plugin.logDebug("CanDo: " + canDo);
 		}
-		plugin.logDebug("CanDo: " + canDo);
 
 		if (canDo){
 
