@@ -37,10 +37,8 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BukkitLiftPlayerListener implements Listener{
 	private BukkitLift plugin;
@@ -251,13 +249,14 @@ public class BukkitLiftPlayerListener implements Listener{
 
 	@EventHandler
 	public void onElevatorActivation(ElevatorActivateEvent event) {
-		playerCache.entrySet()
+		List<Player> cachedPlayersInElevator = playerCache.entrySet()
 				.stream()
 				.filter(entry -> entry.getValue().getFloorBlocks()
 						.equals(event.getElevator().getFloorBlocks()))
 				.map(entry -> Bukkit.getPlayer(entry.getKey()))
 				.filter(Objects::nonNull)
-				.forEach(this::removePlayerCache);
+				.collect(Collectors.toList());
+		cachedPlayersInElevator.forEach(this::removePlayerCache);
 	}
 
 	void removePlayerCache(Player player){
