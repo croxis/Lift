@@ -18,14 +18,12 @@
  */
 package net.croxis.plugins.lift;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.*;
+import java.util.function.BiPredicate;
 
 public class BukkitConfig extends Config{
 	public static HashMap<Material, Double> blockSpeeds = new HashMap<>();
@@ -37,6 +35,7 @@ public class BukkitConfig extends Config{
 	static boolean serverFlight;
 
     public void loadConfig(BukkitLift plugin){
+        plugin.reloadConfig();
         final FileConfiguration configuration = plugin.getConfig();
 
         liftArea = configuration.getInt("maxLiftArea");
@@ -52,56 +51,27 @@ public class BukkitConfig extends Config{
         for (String key : baseBlockKeys){
             blockSpeeds.put(Material.valueOf(key), configuration.getDouble("baseBlockSpeeds." + key));
         }
-        List<String> configFloorMaterials = configuration.getStringList("floorBlocks");
-        for (String key : configFloorMaterials){
-            if (key.contains("*")){
-                // Probably be smarter to iterate through the material list first, then see if config matches
-                for (Material material : Material.values()){
-                    if (material.toString().matches(key.replace("*", ".*?"))){
-                        floorMaterials.add(material);
-                        plugin.logInfo("Floor material added: " + material.toString());
-                    }
 
-                }
-            } else {
-                floorMaterials.add(Material.valueOf(key));
-                plugin.logInfo("Floor material added: " + key);
-            }
-        }
+        BiPredicate<List<String>, Material> anyMaterialMatch = (list, mat) -> list.stream()
+                .anyMatch(configMat -> mat.name().matches(configMat.toUpperCase().replace("*", ".*?")));
+
+        List<String> configFloorMaterials = configuration.getStringList("floorBlocks");
+        Arrays.stream(Material.values())
+                .filter(material -> anyMaterialMatch.test(configFloorMaterials, material))
+                .forEach(floorMaterials::add);
+        plugin.logInfo("Floor materials added: " + floorMaterials);
 
         List<String> configButtonMaterials = configuration.getStringList("buttonBlocks");
-        for (String key : configButtonMaterials){
-            if (key.contains("*")){
-                // Probably be smarter to iterate through the material list first, then see if config matches
-                for (Material material : Material.values()){
-                    if (material.toString().matches(key.replace("*", ".*?"))){
-                        buttonMaterials.add(material);
-                        plugin.logInfo("Button material added: " + material.toString());
-                    }
-
-                }
-            } else {
-                buttonMaterials.add(Material.valueOf(key));
-                plugin.logInfo("Button material added: " + key);
-            }
-        }
+        Arrays.stream(Material.values())
+                .filter(material -> anyMaterialMatch.test(configButtonMaterials, material))
+                .forEach(buttonMaterials::add);
+        plugin.logInfo("Button materials added: " + buttonMaterials);
 
         List<String> configSignMaterials = configuration.getStringList("signBlocks");
-        for (String key : configSignMaterials){
-            if (key.contains("*")){
-                // Probably be smarter to iterate through the material list first, then see if config matches
-                for (Material material : Material.values()){
-                    if (material.toString().matches(key.replace("*", ".*?"))){
-                        signMaterials.add(material);
-                        plugin.logInfo("Sign material added: " + material.toString());
-                    }
-
-                }
-            } else {
-                signMaterials.add(Material.valueOf(key));
-                plugin.logInfo("Sign material added: " + key);
-            }
-        }
+        Arrays.stream(Material.values())
+                .filter(mat -> anyMaterialMatch.test(configSignMaterials, mat))
+                .forEach(signMaterials::add);
+        plugin.logInfo("Sign materials added: " + signMaterials);
 
         stringOneFloor = configuration.getString("STRING_oneFloor", "There is only one floor silly.");
         stringCurrentFloor = configuration.getString("STRING_currentFloor", "Current Floor:");
