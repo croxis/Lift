@@ -46,6 +46,7 @@ public class BukkitConfig extends Config{
         BukkitConfig.preventEntry = plugin.getConfig().getBoolean("preventEntry", false);
         BukkitConfig.preventLeave = plugin.getConfig().getBoolean("preventLeave", false);
         BukkitConfig.redstone = plugin.getConfig().getBoolean("redstone", false);
+        BukkitConfig.mouseScroll = plugin.getConfig().getBoolean("mouseScroll", false);
         Set<String> baseBlockKeys = plugin.getConfig().getConfigurationSection("baseBlockSpeeds").getKeys(false);
         for (String key : baseBlockKeys){
             BukkitConfig.blockSpeeds.put(Material.valueOf(key), plugin.getConfig().getDouble("baseBlockSpeeds." + key));

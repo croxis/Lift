@@ -29,6 +29,7 @@ public class Config {
 	static boolean liftMobs = false;
 	static boolean preventEntry = false;
 	static boolean preventLeave = false;
+	static boolean mouseScroll = false;
 	static String stringDestination = "§1Dest";
 	static String stringCurrentFloor = "§4Current Floor";
 	static String stringOneFloor;
