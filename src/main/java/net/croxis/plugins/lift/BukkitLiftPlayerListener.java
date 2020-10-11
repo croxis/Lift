@@ -104,7 +104,8 @@ public class BukkitLiftPlayerListener implements Listener{
 				}
 				currentFloorCache.put(event.getPlayer(), currentFloor);
 
-				if ((event.getPlayer().getInventory().getItemInMainHand() == null
+				if (Config.mouseScroll &&
+						(event.getPlayer().getInventory().getItemInMainHand() == null
 						|| event.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR)
 						&& !liftSign.isEmpty()) {
 					plugin.logDebug("HAND: ADD");
