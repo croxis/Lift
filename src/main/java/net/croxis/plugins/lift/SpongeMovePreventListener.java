@@ -41,7 +41,7 @@ public class SpongeMovePreventListener {
                     event.setToTransform(event.getFromTransform());
                     //event.getPlayer().setVelocity(event.getPlayer().getLocation().getDirection().multiply(-1));
                     if (event.getTargetEntity() instanceof Player){
-                        ((Player) event.getTargetEntity()).sendMessage(Text.of(SpongeConfig.stringCantEnter));
+                        ((Player) event.getTargetEntity()).sendMessage(Text.of(SpongeConfig.cantEnter));
                     }
                 }
             }

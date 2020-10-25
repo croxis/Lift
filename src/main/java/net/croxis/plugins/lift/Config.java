@@ -18,24 +18,88 @@
  */
 package net.croxis.plugins.lift;
 
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+ * Note that fields that are configurable in config.yml should have the same name, so
+ * {@link #mapConfigurationToClassFields)} maps values correctly to fields of this class.
+ * For that mapping, you should use boxed types instead of primitive types (Integer instead of int, ...)
+ */
 public class Config {
-	public static boolean debug = false;
-	static boolean redstone = true;
-	static int liftArea = 16;
-	static int maxHeight = 256;
-	static boolean autoPlace = false;
-	static boolean checkFloor = true;
-	static boolean serverFlight = false;
-	static boolean liftMobs = false;
-	static boolean preventEntry = false;
-	static boolean preventLeave = false;
-	static String stringDestination = "§1Dest";
-	static String stringCurrentFloor = "§4Current Floor";
-	static String stringOneFloor;
-	static String stringCantEnter;
-	static String stringCantLeave;
-	static String stringUnsafe;
-	static String stringScrollSelectEnabled;
-	static String stringScrollSelectDisabled;
-    static int signVersion = 2;
+
+	static Boolean debug;
+	static Boolean redstone;
+	static Integer maxLiftArea;
+	static Integer maxHeight;
+	static Boolean autoPlace;
+	static Boolean checkFloor;
+	static Boolean serverFlight;
+	static Boolean liftMobs;
+	static Boolean preventEntry;
+	static Boolean preventLeave;
+	static String destination;
+	static String currentFloor;
+	static String oneFloor;
+	static String cantEnter;
+	static String cantLeave;
+	static String unsafe;
+	static String scrollSelectEnabled;
+	static String scrollSelectDisabled;
+    static Integer signVersion = 2;
+
+	protected void mapConfigurationToClassFields(ConfigurationSection section, Class<? extends Config> clazz) {
+		if (section == null) {
+			return;
+		}
+		Map<String, Field> classFields = Arrays.stream(clazz.getDeclaredFields())
+				.collect(Collectors.toMap(Field::getName, field -> field));
+
+		section.getKeys(false)
+				.stream()
+				.filter(classFields::containsKey)
+				.forEach(name -> {
+							try {
+								Class<?> fieldType = classFields.get(name).getType();
+								Object value = fieldType != String.class ? section.getObject(name, fieldType)
+										: section.getString(name).replace("&", "§");
+								classFields.get(name).set(clazz, value);
+							} catch (IllegalAccessException e) {
+								throw new RuntimeException(e);
+							}
+						}
+				);
+	}
+
+	protected static YamlConfiguration getDefaultConfig(BukkitLift plugin) {
+		File defaultConfigFile = new File(plugin.getDataFolder(), File.separator + "default" + File.separator + "config.yml");
+		copyDefaultConfig(plugin, defaultConfigFile);
+		return YamlConfiguration.loadConfiguration(defaultConfigFile);
+	}
+
+	protected static void copyDefaultConfig(BukkitLift plugin, File dest) {
+		try (InputStream in = plugin.getResource("config.yml")) {
+			if (in == null) {
+				throw new IOException("Error while preparing copy of default config");
+			}
+			Path destPath = dest.toPath();
+			Files.createDirectories(destPath.getParent());
+			Files.deleteIfExists(destPath);
+			Files.createFile(destPath);
+			Files.copy(in, destPath, StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			throw new RuntimeException("Lift could not copy default config file!", e);
+		}
+	}
 }

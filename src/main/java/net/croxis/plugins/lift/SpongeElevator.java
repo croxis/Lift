@@ -31,7 +31,6 @@ import org.spongepowered.api.data.manipulator.mutable.block.DirectionalData;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.vehicle.minecart.Minecart;
-import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.*;
@@ -74,7 +73,7 @@ public class SpongeElevator extends Elevator{
      * passed as the parameter.
      */
     public void generateBaseBlocks(Location<World> blockLoc) {
-        if (this.baseBlocks.size() >= Config.liftArea || this.baseBlocks.contains(blockLoc))
+        if (this.baseBlocks.size() >= Config.maxLiftArea || this.baseBlocks.contains(blockLoc))
             return;
         this.baseBlocks.add(blockLoc);
         if (blockLoc.getRelative(Direction.NORTH).getBlockType() == this.baseBlockType)

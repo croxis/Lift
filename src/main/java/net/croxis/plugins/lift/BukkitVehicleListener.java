@@ -38,7 +38,7 @@ public class BukkitVehicleListener implements Listener {
         LivingEntity ejector = event.getExited();
         if (BukkitElevatorManager.isInALift(event.getVehicle())) {
             if (ejector instanceof Player) {
-                ejector.sendMessage(BukkitConfig.stringUnsafe);
+                ejector.sendMessage(BukkitConfig.unsafe);
             }
             event.setCancelled(true);
             this.plugin.logDebug("Canceled ejection for " + ejector);

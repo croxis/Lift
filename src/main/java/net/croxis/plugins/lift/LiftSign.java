@@ -119,7 +119,7 @@ class LiftSign {
     }
 
     void setCurrentFloor(int currentFloor) {
-        this.sign0 = Config.stringCurrentFloor + ": " + Integer.toString(currentFloor) + "§r";
+        this.sign0 = Config.currentFloor + ": " + Integer.toString(currentFloor) + "§r";
     }
 
     int getCurrentFloor() {
@@ -141,7 +141,7 @@ class LiftSign {
     }
 
     void setDestinationFloor(int destination){
-        this.sign2 = Config.stringDestination + ": " + Integer.toString(destination) + "§r";
+        this.sign2 = Config.destination + ": " + Integer.toString(destination) + "§r";
     }
 
     void setDestinationName(String destinationName) {

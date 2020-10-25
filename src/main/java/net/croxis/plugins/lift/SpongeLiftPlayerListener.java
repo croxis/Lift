@@ -73,7 +73,7 @@ public class SpongeLiftPlayerListener{
             // Just a button and sign. Not an elevator.
             return;
         else if (elevator.getTotalFloors() == 1) {
-            player.sendMessage(Text.of(SpongeConfig.stringOneFloor));
+            player.sendMessage(Text.of(SpongeConfig.oneFloor));
             return;
         }
         event.setCancelled(true);
