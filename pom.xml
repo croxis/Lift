@@ -24,35 +24,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<bukkitVersion>1.16.3-R0.1-SNAPSHOT</bukkitVersion>
 		<spongeVersion>7.2.0</spongeVersion>
 	</properties>
-  	
-  	<pluginRepositories>
-    	<pluginRepository>
-	        <id>sonatype-oss-public</id>
-	        <url>https://oss.sonatype.org/content/groups/public</url>
-	        <releases>
-	            <enabled>true</enabled>
-	        </releases>
-	        <snapshots>
-	            <enabled>true</enabled>
-	        </snapshots>
-    	</pluginRepository>
-	</pluginRepositories>
     
     <repositories>
-    	<repository>
-      		<id>sonatype-oss-public</id>
-      		<url>https://oss.sonatype.org/content/groups/public</url>
-      		<releases>
-        		<enabled>true</enabled>
-      		</releases>
-      		<snapshots>
-       			<enabled>true</enabled>
-      		</snapshots>
-    	</repository>
-        <repository>
-            <id>Plugin Metrics</id>
-            <url>http://repo.mcstats.org/content/repositories/public</url>
-        </repository>
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>

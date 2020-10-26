@@ -3,7 +3,6 @@
 # autoPlace will automatically move players to be fully in the elevator
 # checkFloor will make sure all floors have glass blocks (at the cost of possible lag when starting a lift)
 # preventEntry will prevent players from entering an active elevator (at the cost of possible lag when lifts are running)
-metrics: true
 maxLiftArea: 16
 maxHeight: 256
 debug: false
@@ -23,11 +22,12 @@ signBlocks:
 redstone: false
 baseBlockSpeeds:
   IRON_BLOCK: 0.5
-STRING_oneFloor: "There is only one floor."
-STRING_currentFloor: "Current Floor"
-STRING_dest: "§1Dest"
-STRING_cantEnter: "Can't enter elevator in use"
-STRING_cantLeave: "Can't leave elevator in use"
-STRING_unsafe: "It is unsafe to leave a vehicle in a lift!"
-STRING_scrollSelectEnabled: "§7Scrollable floor selection enabled. Click on sign with an item for default mode"
-STRING_scrollSelectDisabled: "§7Scrollable floor selection disabled"
+destination: "&1Dest"
+messages:
+  oneFloor: "There is only one floor."
+  currentFloor: "Current Floor"
+  cantEnter: "Can't enter elevator in use"
+  cantLeave: "Can't leave elevator in use"
+  unsafe: "It is unsafe to leave a vehicle in a lift!"
+  scrollSelectEnabled: "&7Scrollable floor selection enabled. Click on sign with an item for default mode"
+  scrollSelectDisabled: "&7Scrollable floor selection disabled"

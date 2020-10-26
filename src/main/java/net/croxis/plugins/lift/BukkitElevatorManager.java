@@ -128,7 +128,7 @@ public class BukkitElevatorManager extends ElevatorManager{
     //I'd rather it just return a hashset instead of passing elevator
     //But I can't figure out a clean way to do it
     public static void scanBaseBlocks(Block block, BukkitElevator bukkitElevator){
-        if (bukkitElevator.baseBlocks.size() >= BukkitConfig.liftArea || bukkitElevator.baseBlocks.contains(block))
+        if (bukkitElevator.baseBlocks.size() >= BukkitConfig.maxLiftArea || bukkitElevator.baseBlocks.contains(block))
             return; //5x5 max, prevents infinite loops
         bukkitElevator.baseBlocks.add(block);
         if (block.getRelative(BlockFace.NORTH, 1).getType() == bukkitElevator.baseBlockType)
@@ -483,7 +483,7 @@ public class BukkitElevatorManager extends ElevatorManager{
                     plugin.logDebug("Player out of shaft");
                     if (BukkitConfig.preventLeave){
                         if (passenger instanceof Player)
-                            passenger.sendMessage(BukkitConfig.stringCantLeave);
+                            passenger.sendMessage(BukkitConfig.cantLeave);
                         Location baseLoc = e.baseBlocks.iterator().next().getLocation();
                         Location playerLoc = passenger.getLocation();
                         playerLoc.setX(baseLoc.getX() + 0.5D);

@@ -67,7 +67,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
     	
     	config.loadConfig(this);
         
-        logDebug("maxArea: " + Integer.toString(BukkitConfig.liftArea));
+        logDebug("maxArea: " + Integer.toString(BukkitConfig.maxLiftArea));
         logDebug("autoPlace: " + Boolean.toString(BukkitConfig.autoPlace));
         logDebug("checkGlass: " + Boolean.toString(BukkitConfig.checkFloor));
         logDebug("baseBlocks: " + BukkitConfig.blockSpeeds.toString());
@@ -84,7 +84,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
 						&& !bukkitElevator.isInLift(event.getPlayer())
 						&& BukkitConfig.preventEntry){
 					event.setCancelled(true);
-					event.getPlayer().sendMessage(BukkitConfig.stringCantEnter);
+					event.getPlayer().sendMessage(BukkitConfig.cantEnter);
 					event.getPlayer().setVelocity(event.getPlayer().getLocation().getDirection().multiply(-1));	
 				}
 			}
@@ -115,8 +115,8 @@ public class BukkitLift extends JavaPlugin implements Listener {
             BukkitElevatorManager.quickEndLifts();
             BukkitElevatorManager.clear();
 
-            config = new BukkitConfig();
             config.loadConfig(this);
+            sender.sendMessage("Lift successfully reloaded");
     	    return true;
         }
     	return false; 

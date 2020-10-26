@@ -80,7 +80,7 @@ public class BukkitLiftPlayerListener implements Listener{
 					// This is just a button and sign, not an elevator.
 					return;
 				} else if (bukkitElevator.getTotalFloors() == 1){
-					event.getPlayer().sendMessage(BukkitConfig.stringOneFloor);
+					event.getPlayer().sendMessage(BukkitConfig.oneFloor);
 					return;
 				}
 
@@ -94,7 +94,7 @@ public class BukkitLiftPlayerListener implements Listener{
 					plugin.logDebug("HAND: REMOVE");
 					removePlayerCache(event.getPlayer());
 					event.setCancelled(true);
-					event.getPlayer().sendMessage(BukkitConfig.stringScrollSelectDisabled);
+					event.getPlayer().sendMessage(BukkitConfig.scrollSelectDisabled);
 					return;
 				}
 				BukkitFloor currentFloor = bukkitElevator.getFloorFromY(buttonBlock.getY());
@@ -104,7 +104,7 @@ public class BukkitLiftPlayerListener implements Listener{
 				}
 				currentFloorCache.put(event.getPlayer(), currentFloor);
 
-				if (BukkitConfig.mouseScroll &&
+				if (Config.mouseScroll &&
 						(event.getPlayer().getInventory().getItemInMainHand() == null
 						|| event.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR)
 						&& !liftSign.isEmpty()) {
@@ -113,7 +113,7 @@ public class BukkitLiftPlayerListener implements Listener{
 					playerCache.put(event.getPlayer().getUniqueId(), bukkitElevator);
 					signCache.put(event.getPlayer().getUniqueId(), liftSign);
 					otherSignCache.put(event.getPlayer().getUniqueId(), sign);
-					event.getPlayer().sendMessage(BukkitConfig.stringScrollSelectEnabled);
+					event.getPlayer().sendMessage(BukkitConfig.scrollSelectEnabled);
 				} else {
 					plugin.logDebug("FULL HAND CYCLE");
 					int currentDestinationInt = 1;
@@ -170,7 +170,7 @@ public class BukkitLiftPlayerListener implements Listener{
 
 		if (event.getPlayer().getLocation().distance(sign.getLocation()) > 3) {
 			removePlayerCache(event.getPlayer());
-			event.getPlayer().sendMessage(BukkitConfig.stringScrollSelectDisabled);
+			event.getPlayer().sendMessage(BukkitConfig.scrollSelectDisabled);
 			return;
 		}
 

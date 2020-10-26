@@ -18,110 +18,85 @@
  */
 package net.croxis.plugins.lift;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.function.BiPredicate;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
+/**
+ * Note that fields that are configurable in config.yml should have the same name, so
+ * {@link #mapConfigurationToClassFields)} maps values correctly to fields of this class.
+ * For that mapping, you should use boxed types instead of primitive types (Integer instead of int, ...)
+ */
+public class BukkitConfig extends Config {
 
-public class BukkitConfig extends Config{
 	public static HashMap<Material, Double> blockSpeeds = new HashMap<>();
 	public static HashSet<Material> floorMaterials = new HashSet<>();
     public static HashSet<Material> buttonMaterials = new HashSet<>();
     public static HashSet<Material> signMaterials = new HashSet<>();
 	static boolean useNoCheatPlus = false;
-	static boolean metricbool = true;
 	static boolean serverFlight;
 
     public void loadConfig(BukkitLift plugin){
-        plugin.getConfig().options().copyDefaults(true);
-        liftArea = plugin.getConfig().getInt("maxLiftArea");
-        BukkitConfig.maxHeight = plugin.getConfig().getInt("maxHeight");
-        BukkitConfig.debug = plugin.getConfig().getBoolean("debug");
-        BukkitConfig.liftMobs = plugin.getConfig().getBoolean("liftMobs");
-        BukkitConfig.autoPlace = plugin.getConfig().getBoolean("autoPlace");
-        BukkitConfig.checkFloor = plugin.getConfig().getBoolean("checkFloor", false);
-        BukkitConfig.preventEntry = plugin.getConfig().getBoolean("preventEntry", false);
-        BukkitConfig.preventLeave = plugin.getConfig().getBoolean("preventLeave", false);
-        BukkitConfig.redstone = plugin.getConfig().getBoolean("redstone", false);
-        BukkitConfig.mouseScroll = plugin.getConfig().getBoolean("mouseScroll", false);
-        Set<String> baseBlockKeys = plugin.getConfig().getConfigurationSection("baseBlockSpeeds").getKeys(false);
-        for (String key : baseBlockKeys){
-            BukkitConfig.blockSpeeds.put(Material.valueOf(key), plugin.getConfig().getDouble("baseBlockSpeeds." + key));
-        }
-        List<String> configFloorMaterials = plugin.getConfig().getStringList("floorBlocks");
-        for (String key : configFloorMaterials){
-            if (key.contains("*")){
-                // Probably be smarter to iterate through the material list first, then see if config matches
-                for (Material material : Material.values()){
-                    if (material.toString().matches(key.replace("*", ".*?"))){
-                        BukkitConfig.floorMaterials.add(material);
-                        plugin.logInfo("Floor material added: " + material.toString());
-                    }
-
-                }
-            } else {
-                BukkitConfig.floorMaterials.add(Material.valueOf(key));
-                plugin.logInfo("Floor material added: " + key);
-            }
+        File configFile = new File(plugin.getDataFolder(), File.separator + "config.yml");
+        if (!configFile.exists()) {
+            copyDefaultConfig(plugin, configFile);
         }
 
-        List<String> configButtonMaterials = plugin.getConfig().getStringList("buttonBlocks");
-        for (String key : configButtonMaterials){
-            if (key.contains("*")){
-                // Probably be smarter to iterate through the material list first, then see if config matches
-                for (Material material : Material.values()){
-                    if (material.toString().matches(key.replace("*", ".*?"))){
-                        BukkitConfig.buttonMaterials.add(material);
-                        plugin.logInfo("Button material added: " + material.toString());
-                    }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "/config.yml"));
+        config.setDefaults(getDefaultConfig(plugin));
+        config.options().copyDefaults(true);
 
-                }
-            } else {
-                BukkitConfig.buttonMaterials.add(Material.valueOf(key));
-                plugin.logInfo("Button material added: " + key);
-            }
+        mapConfigurationToClassFields(config, Config.class);
+        mapConfigurationToClassFields(config.getConfigurationSection("messages"), Config.class);
+
+        ConfigurationSection baseBlockSpeeds = config.getConfigurationSection("baseBlockSpeeds");
+        baseBlockSpeeds.getKeys(false)
+                .forEach(key -> blockSpeeds.put(Material.valueOf(key), baseBlockSpeeds.getDouble(key)));
+
+        BiPredicate<List<String>, Material> anyMaterialMatch = (list, mat) -> list.stream()
+                .anyMatch(configMat -> mat.name().matches(configMat.toUpperCase().replace("*", ".*?")));
+
+        List<String> configFloorMaterials = config.getStringList("floorBlocks");
+        Arrays.stream(Material.values())
+                .filter(material -> anyMaterialMatch.test(configFloorMaterials, material))
+                .forEach(floorMaterials::add);
+        plugin.logInfo("Floor materials added: " + floorMaterials);
+
+        List<String> configButtonMaterials = config.getStringList("buttonBlocks");
+        Arrays.stream(Material.values())
+                .filter(material -> anyMaterialMatch.test(configButtonMaterials, material))
+                .forEach(buttonMaterials::add);
+        plugin.logInfo("Button materials added: " + buttonMaterials);
+
+        List<String> configSignMaterials = config.getStringList("signBlocks");
+        Arrays.stream(Material.values())
+                .filter(mat -> anyMaterialMatch.test(configSignMaterials, mat))
+                .forEach(signMaterials::add);
+        plugin.logInfo("Sign materials added: " + signMaterials);
+
+        try {
+            config.save(configFile);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not save config to " + configFile, e);
         }
 
-        List<String> configSignMaterials = plugin.getConfig().getStringList("signBlocks");
-        for (String key : configSignMaterials){
-            if (key.contains("*")){
-                // Probably be smarter to iterate through the material list first, then see if config matches
-                for (Material material : Material.values()){
-                    if (material.toString().matches(key.replace("*", ".*?"))){
-                        BukkitConfig.signMaterials.add(material);
-                        plugin.logInfo("Sign material added: " + material.toString());
-                    }
+        serverFlight = plugin.getServer().getAllowFlight();
 
-                }
-            } else {
-                BukkitConfig.signMaterials.add(Material.valueOf(key));
-                plugin.logInfo("Sign material added: " + key);
-            }
-        }
-
-        BukkitConfig.stringOneFloor = plugin.getConfig().getString("STRING_oneFloor", "There is only one floor silly.");
-        BukkitConfig.stringCurrentFloor = plugin.getConfig().getString("STRING_currentFloor", "Current Floor:");
-        BukkitConfig.stringDestination = plugin.getConfig().getString("STRING_dest", "Dest:");
-        BukkitConfig.stringCantEnter = plugin.getConfig().getString("STRING_cantEnter", "Can't enter elevator in use");
-        BukkitConfig.stringCantLeave = plugin.getConfig().getString("STRING_cantLeave", "Can't leave elevator in use");
-        BukkitConfig.stringUnsafe = plugin.getConfig().getString("STRING_unsafe", "It is unsafe to leave a vehicle in a lift!");
-        BukkitConfig.stringScrollSelectEnabled = plugin.getConfig().getString("STRING_scrollSelectEnabled", "§7Scrollable floor selection enabled. Click on sign with an item for default mode");
-        BukkitConfig.stringScrollSelectDisabled = plugin.getConfig().getString("STRING_scrollSelectDisabled", "§7Scrollable floor selection disabled");
-
-        BukkitConfig.metricbool = plugin.getConfig().getBoolean("metrics", true);
-        plugin.saveConfig();
-
-        BukkitConfig.serverFlight = plugin.getServer().getAllowFlight();
-
-        if (BukkitConfig.preventEntry){
+        if (preventEntry){
             Bukkit.getServer().getPluginManager().registerEvents(plugin, plugin);
         }
 
         if(plugin.getServer().getPluginManager().getPlugin("NoCheatPlus") != null){
-            BukkitConfig.useNoCheatPlus = true;
+            useNoCheatPlus = true;
             plugin.logDebug("Hooked into NoCheatPlus");
         }
     }

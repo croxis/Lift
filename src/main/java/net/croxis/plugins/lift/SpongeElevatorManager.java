@@ -25,7 +25,6 @@ import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.manipulator.mutable.entity.FallDistanceData;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.filter.type.Include;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Chunk;
@@ -122,7 +121,7 @@ public class SpongeElevatorManager extends ElevatorManager{
 	//I'd rather it just return a hashset instead of passing elevator
 	//But I can't figure out a clean way to do it
 	static void scanBaseBlocks(Location<World> block, SpongeElevator elevator){
-		if (elevator.baseBlocks.size() >= SpongeConfig.liftArea || elevator.baseBlocks.contains(block))
+		if (elevator.baseBlocks.size() >= SpongeConfig.maxLiftArea || elevator.baseBlocks.contains(block))
 			return; //5x5 max, prevents infinite loops
 		elevator.baseBlocks.add(block);
 		if (block.getRelative(Direction.NORTH).getBlockType() == elevator.baseBlockType)
@@ -242,7 +241,7 @@ public class SpongeElevatorManager extends ElevatorManager{
                     plugin.debug("Player out of shaft");
 					if (Config.preventLeave){
 						if (passenger instanceof Player)
-							((Player) passenger).sendMessage(Text.of(Config.stringCantLeave));
+							((Player) passenger).sendMessage(Text.of(Config.cantLeave));
                         Vector3d baseLoc = e.baseBlocks.iterator().next().getPosition();
 						Location<World> playerLoc = passenger.getLocation();
 						Vector3d newPosition = new Vector3d(baseLoc.getX() + 0.5D, playerLoc.getY(), baseLoc.getZ() + 0.5D);

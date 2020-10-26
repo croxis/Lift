@@ -94,7 +94,7 @@ public class SpongeLift {
         
         SpongeConfig.debug = rootNode.getNode("debug").getBoolean(true);
         SpongeConfig.redstone = rootNode.getNode("redstone").getBoolean(true);
-        SpongeConfig.liftArea = rootNode.getNode("liftArea").getInt(16);
+        SpongeConfig.maxLiftArea = rootNode.getNode("liftArea").getInt(16);
         SpongeConfig.maxHeight = rootNode.getNode("maxHeight").getInt(256);
         SpongeConfig.autoPlace = rootNode.getNode("autoPlace").getBoolean(false);
         SpongeConfig.checkFloor = rootNode.getNode("checkFloor").getBoolean(false);
@@ -102,11 +102,11 @@ public class SpongeLift {
         SpongeConfig.liftMobs = rootNode.getNode("liftMobs").getBoolean(false);
         SpongeConfig.preventEntry = rootNode.getNode("preventEntry").getBoolean(false);
         SpongeConfig.preventLeave = rootNode.getNode("preventLeave").getBoolean(false);
-        SpongeConfig.stringDestination = rootNode.getNode("stringDestination").getString("§1Dest");
-        SpongeConfig.stringCurrentFloor = rootNode.getNode("stringCurrentFloor").getString("§4Current Floor");
-        SpongeConfig.stringOneFloor = rootNode.getNode("stringOneFloor").getString("");
-        SpongeConfig.stringCantEnter = rootNode.getNode("stringCantEnter").getString("");
-        SpongeConfig.stringCantLeave = rootNode.getNode("stringCantLeave").getString("");
+        SpongeConfig.destination = rootNode.getNode("stringDestination").getString("§1Dest");
+        SpongeConfig.currentFloor = rootNode.getNode("stringCurrentFloor").getString("§4Current Floor");
+        SpongeConfig.oneFloor = rootNode.getNode("stringOneFloor").getString("");
+        SpongeConfig.cantEnter = rootNode.getNode("stringCantEnter").getString("");
+        SpongeConfig.cantLeave = rootNode.getNode("stringCantLeave").getString("");
 
         GameRegistry registry = Sponge.getRegistry();
 
@@ -173,7 +173,7 @@ public class SpongeLift {
         Sponge.getEventManager().registerListeners(this, redstoneListener);
         Sponge.getEventManager().registerListeners(this, playerListener);
         startListeners();
-        debug("maxArea: " + Integer.toString(SpongeConfig.liftArea));
+        debug("maxArea: " + Integer.toString(SpongeConfig.maxLiftArea));
         debug("autoPlace: " + Boolean.toString(SpongeConfig.autoPlace));
         debug("checkGlass: " + Boolean.toString(SpongeConfig.checkFloor));
         debug("baseBlocks: " + SpongeConfig.blockSpeeds.toString());
