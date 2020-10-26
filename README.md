@@ -4,6 +4,7 @@ For download see [Lift on spigotmc.org](https://www.spigotmc.org/resources/lift.
 
 ### Changes
 
+v69 (1.16.3) - Config now reloads correctly with /lift reload. Check your messages configuration after updating.  
 v68 (1.16.3) - Added config option for mouse scroll, more bug fixes
 v67 (1.16.1) - Bugfixes  
 v66 (1.16.1) - Improvements for scrollable floor selection  
