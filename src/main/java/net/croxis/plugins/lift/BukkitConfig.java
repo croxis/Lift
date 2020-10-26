@@ -43,7 +43,6 @@ public class BukkitConfig extends Config {
     public static HashSet<Material> buttonMaterials = new HashSet<>();
     public static HashSet<Material> signMaterials = new HashSet<>();
 	static boolean useNoCheatPlus = false;
-	static boolean metrics = true;
 	static boolean serverFlight;
 
     public void loadConfig(BukkitLift plugin){
@@ -58,7 +57,6 @@ public class BukkitConfig extends Config {
 
         mapConfigurationToClassFields(config, Config.class);
         mapConfigurationToClassFields(config.getConfigurationSection("messages"), Config.class);
-        metrics = config.getBoolean("metrics");
 
         ConfigurationSection baseBlockSpeeds = config.getConfigurationSection("baseBlockSpeeds");
         baseBlockSpeeds.getKeys(false)
