@@ -49,7 +49,7 @@ public class Config {
 	static Boolean liftMobs;
 	static Boolean preventEntry;
 	static Boolean preventLeave;
-	static boolean mouseScroll = false;
+	static Boolean mouseScroll = false;
 	static String destination;
 	static String currentFloor;
 	static String oneFloor;
@@ -83,8 +83,7 @@ public class Config {
 				);
 	}
 
-	protected static YamlConfiguration getDefaultConfig(BukkitLift plugin) {
-		File defaultConfigFile = new File(plugin.getDataFolder(), File.separator + "default" + File.separator + "config.yml");
+	protected static YamlConfiguration getDefaultConfig(BukkitLift plugin, File defaultConfigFile) {
 		copyDefaultConfig(plugin, defaultConfigFile);
 		return YamlConfiguration.loadConfiguration(defaultConfigFile);
 	}
@@ -101,6 +100,15 @@ public class Config {
 			Files.copy(in, destPath, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			throw new RuntimeException("Lift could not copy default config file!", e);
+		}
+	}
+
+	protected static void deleteDefaultConfig(BukkitLift plugin, File defaultConfigFile) {
+		try {
+			Files.deleteIfExists(defaultConfigFile.toPath());
+			Files.deleteIfExists(defaultConfigFile.toPath().getParent());
+		} catch (Exception e) {
+			plugin.logWarn("Could not delete default directory");
 		}
 	}
 }

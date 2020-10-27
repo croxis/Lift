@@ -18,17 +18,18 @@
  */
 package net.croxis.plugins.lift;
 
-import java.util.logging.Level;
-
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.command.*;
+
+import java.util.logging.Level;
 
 
 public class BukkitLift extends JavaPlugin implements Listener {
@@ -52,6 +53,10 @@ public class BukkitLift extends JavaPlugin implements Listener {
 	void logInfo(String message){
 		this.getLogger().log(Level.INFO, message);
 	}
+	void logWarn(String message){
+		this.getLogger().log(Level.WARNING, message);
+	}
+
 	
     public void onDisable() {
     	BukkitElevatorManager.bukkitElevators.clear();

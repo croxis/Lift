@@ -47,13 +47,17 @@ public class BukkitConfig extends Config {
 
     public void loadConfig(BukkitLift plugin){
         File configFile = new File(plugin.getDataFolder(), File.separator + "config.yml");
+        File defaultConfigFile = new File(plugin.getDataFolder(), File.separator + "default" + File.separator + "config.yml");
         if (!configFile.exists()) {
             copyDefaultConfig(plugin, configFile);
         }
 
         YamlConfiguration config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "/config.yml"));
-        config.setDefaults(getDefaultConfig(plugin));
+        config.setDefaults(getDefaultConfig(plugin, defaultConfigFile));
         config.options().copyDefaults(true);
+
+        // defaultConfig was just temporarily for setting default config values
+        deleteDefaultConfig(plugin, defaultConfigFile);
 
         mapConfigurationToClassFields(config, Config.class);
         mapConfigurationToClassFields(config.getConfigurationSection("messages"), Config.class);
