@@ -18,13 +18,16 @@
  */
 package net.croxis.plugins.lift;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
@@ -187,6 +190,10 @@ public class BukkitElevator extends Elevator{
 
     public void addMinecartSpeed(Minecart minecart){
         minecartSpeeds.put(minecart, minecart.getVelocity());
+    }
+
+    public BukkitFloor getDestFloor() {
+        return (BukkitFloor) destFloor;
     }
 }
 

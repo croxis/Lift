@@ -22,9 +22,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import fr.neatmonster.nocheatplus.checks.CheckType;
-import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -34,12 +31,16 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Powerable;
+import org.bukkit.block.data.type.WallSign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
+
+import fr.neatmonster.nocheatplus.checks.CheckType;
+import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
 
 public class BukkitElevatorManager extends ElevatorManager{
     private static BukkitLift plugin;
@@ -282,58 +283,21 @@ public class BukkitElevatorManager extends ElevatorManager{
             }
         }
         //Fire off redstone signal for arrival
-        //org.bukkit.material.Sign sign;
-        Block s = ((BukkitFloor) bukkitElevator.destFloor).getButton().getRelative(BlockFace.UP);
-        BlockData data = s.getBlockData();
-        if (!(data instanceof org.bukkit.block.data.type.WallSign)){
-            plugin.logInfo("WARNING: Unable to get sign at destination for redstone pulse.");
-            plugin.logInfo("Sign coords: " + s.getLocation().toString());
-            plugin.logInfo("Sign material: " + s.getType().toString());
-            bukkitElevator.clear();
-            plugin.logDebug("Ended lift");
-            return;
-        }
-        //try{
-        //	sign = (org.bukkit.material.Sign) s.getState().getData();
-        //} catch(Exception exception) {
-        //	plugin.logInfo("WARNING: Unable to get sign at destination for redstone pulse.");
-        //	plugin.logInfo("Sign coords: " + s.getLocation().toString());
-        //	plugin.logInfo("Sign material: " + s.getType().toString());
-        //	bukkitElevator.clear();
-        //	plugin.logDebug("Ended lift");
-        //	return;
-        //}
-        org.bukkit.block.data.type.WallSign sign = (org.bukkit.block.data.type.WallSign) data;
-
-        BlockFace directionFacing = sign.getFacing();
-        if (directionFacing == BlockFace.NORTH){
-            Block checkBlock = s.getRelative(BlockFace.SOUTH).getRelative(BlockFace.SOUTH);
+        Block aboveBtn = bukkitElevator.getDestFloor()
+                .getButton()
+                .getRelative(BlockFace.UP);
+        BlockData data = aboveBtn.getBlockData();
+        if (!(data instanceof WallSign)) {
+            plugin.logWarn("WARNING: Expected sign but found " + aboveBtn.getType() + " at " +
+                    aboveBtn.getLocation() + ". Cannot set redstone pulse.");
+        } else {
+            WallSign sign = (WallSign) data;
+            BlockFace face = sign.getFacing()
+                    .getOppositeFace();
+            Block checkBlock = aboveBtn.getRelative(face)
+                    .getRelative(face);
             BlockData blockData = checkBlock.getBlockData();
-            if (blockData instanceof Powerable){
-                Powerable powerData = (Powerable) blockData;
-                powerData.setPowered(true);
-                checkBlock.setBlockData(powerData);
-            }
-        } else if (directionFacing == BlockFace.EAST){
-            Block checkBlock = s.getRelative(BlockFace.WEST).getRelative(BlockFace.WEST);
-            BlockData blockData = checkBlock.getBlockData();
-            if (blockData instanceof Powerable){
-                Powerable powerData = (Powerable) blockData;
-                powerData.setPowered(true);
-                checkBlock.setBlockData(powerData);
-            }
-        } else if (directionFacing == BlockFace.SOUTH){
-            Block checkBlock = s.getRelative(BlockFace.NORTH).getRelative(BlockFace.NORTH);
-            BlockData blockData = checkBlock.getBlockData();
-            if (blockData instanceof Powerable){
-                Powerable powerData = (Powerable) blockData;
-                powerData.setPowered(true);
-                checkBlock.setBlockData(powerData);
-            }
-        } else if (directionFacing == BlockFace.WEST){
-            Block checkBlock = s.getRelative(BlockFace.EAST).getRelative(BlockFace.EAST);
-            BlockData blockData = checkBlock.getBlockData();
-            if (blockData instanceof Powerable){
+            if (blockData instanceof Powerable) {
                 Powerable powerData = (Powerable) blockData;
                 powerData.setPowered(true);
                 checkBlock.setBlockData(powerData);
