@@ -18,6 +18,8 @@
  */
 package net.croxis.plugins.lift;
 
+import java.util.logging.Level;
+
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
@@ -28,8 +30,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.logging.Level;
 
 
 public class BukkitLift extends JavaPlugin implements Listener {
@@ -72,9 +72,9 @@ public class BukkitLift extends JavaPlugin implements Listener {
     	
     	config.loadConfig(this);
         
-        logDebug("maxArea: " + Integer.toString(BukkitConfig.maxLiftArea));
-        logDebug("autoPlace: " + Boolean.toString(BukkitConfig.autoPlace));
-        logDebug("checkGlass: " + Boolean.toString(BukkitConfig.checkFloor));
+        logDebug("maxArea: " + BukkitConfig.maxLiftArea);
+        logDebug("autoPlace: " + BukkitConfig.autoPlace);
+        logDebug("checkGlass: " + BukkitConfig.checkFloor);
         logDebug("baseBlocks: " + BukkitConfig.blockSpeeds.toString());
         logDebug("floorBlocks: " + BukkitConfig.floorMaterials.toString());
         
@@ -112,7 +112,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
     			player.sendMessage("Options are: " + BukkitConfig.blockSpeeds.toString());
     			return true;
     		}
-    		player.sendMessage("Base block type: " + bukkitElevator.baseBlockType + " | Size: " + Integer.toString(bukkitElevator.baseBlocks.size()));
+    		player.sendMessage("Base block type: " + bukkitElevator.baseBlockType + " | Size: " + bukkitElevator.baseBlocks.size());
     		player.sendMessage("Floor scan reports: " + BukkitElevatorManager.constructFloors(bukkitElevator));
     		player.sendMessage("Total time generating elevator: " + (System.currentTimeMillis() - time));
     		return true;

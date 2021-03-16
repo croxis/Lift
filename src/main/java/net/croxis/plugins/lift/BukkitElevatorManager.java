@@ -21,6 +21,7 @@ package net.croxis.plugins.lift;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,10 +45,9 @@ import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
 
 public class BukkitElevatorManager extends ElevatorManager{
     private static BukkitLift plugin;
-    static HashSet<BukkitElevator> bukkitElevators = new HashSet<>();
-    public static HashSet<Entity> fallers = new HashSet<>();
-    public static HashSet<Player> fliers = new HashSet<>();
-
+    static Set<BukkitElevator> bukkitElevators = new HashSet<>();
+    public static Set<Entity> fallers = new HashSet<>();
+    public static Set<Player> fliers = new HashSet<>();
 
     public BukkitElevatorManager(BukkitLift plugin) {
         BukkitElevatorManager.plugin = plugin;
@@ -81,22 +81,21 @@ public class BukkitElevatorManager extends ElevatorManager{
                 scanBaseBlocks(checkBlock, bukkitElevator);
                 for (Block b : bukkitElevator.baseBlocks){
                     // This is for speed optimization for entering lift in use
-                    if (!bukkitElevator.chunks.contains(b.getChunk()))
-                        bukkitElevator.chunks.add(b.getChunk());
+                    bukkitElevator.chunks.add(b.getChunk());
                 }
                 break;
             } else {
                 // Something is obstructing the elevator so stop
                 plugin.logDebug("==Unknown Error==");
-                plugin.logDebug("Yscan: " + Integer.toString(yscan));
+                plugin.logDebug("Yscan: " + yscan);
                 plugin.logDebug("Block: " + checkBlock.getType().toString());
-                plugin.logDebug("Is Valid Block: " + Boolean.toString(isValidShaftBlock(checkBlock)));
-                plugin.logDebug("Is Base Block: " + Boolean.toString(BukkitElevatorManager.isBaseBlock(checkBlock)));
+                plugin.logDebug("Is Valid Block: " + isValidShaftBlock(checkBlock));
+                plugin.logDebug("Is Base Block: " + BukkitElevatorManager.isBaseBlock(checkBlock));
                 return null;
             }
             yscan--;
         }
-        plugin.logDebug("Base size: " + Integer.toString(bukkitElevator.baseBlocks.size()) + " at " + bukkitElevator.baseBlocks.iterator().next().getLocation().toString());
+        plugin.logDebug("Base size: " + bukkitElevator.baseBlocks.size() + " at " + bukkitElevator.baseBlocks.iterator().next().getLocation().toString());
 
         constructFloors(bukkitElevator);
 
@@ -146,13 +145,9 @@ public class BukkitElevatorManager extends ElevatorManager{
         return BukkitConfig.buttonMaterials.contains(testBlock.getType());
     }
 
-    public static boolean isCarpet(Block testBlock){
-        return testBlock.getType().toString().contains("CARPET");
-    }
-
     public static String constructFloors(BukkitElevator bukkitElevator){
         StringBuilder message = new StringBuilder();
-        //String message = "";
+
         int y1 = bukkitElevator.baseBlocks.iterator().next().getY();
         int maxY = y1 + BukkitConfig.maxHeight;
 
@@ -172,7 +167,14 @@ public class BukkitElevatorManager extends ElevatorManager{
                 }
                 Block testBlock = b.getWorld().getBlockAt(x, y1, z);
                 if (!isValidShaftBlock(testBlock)){
-                    message.append(" | " + x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString());
+                    message.append(" | ")
+                            .append(x)
+                            .append(" ")
+                            .append(y1)
+                            .append(" ")
+                            .append(z)
+                            .append(" of type ")
+                            .append(testBlock.getType());
                     maxY = y1;
                     plugin.logDebug("Not valid shaft block" + x + " " + y1 + " " + z + " of type "  + testBlock.getType().toString());
                     break;
@@ -198,7 +200,7 @@ public class BukkitElevatorManager extends ElevatorManager{
                     }
                     bukkitElevator.floormap.put(y1, floor);
                     plugin.logDebug("Floor added at lift: " + testBlock.getLocation().toString());
-                    plugin.logDebug("Floor y: " + Integer.toString(y1));
+                    plugin.logDebug("Floor y: " + y1);
                 }
             }
         }
@@ -220,11 +222,11 @@ public class BukkitElevatorManager extends ElevatorManager{
         for (Block block : bukkitElevator.baseBlocks){
             plugin.logDebug("Scan floor block type: " + world.getBlockAt(block.getX(), y, block.getZ()).getType().toString());
             if (!BukkitConfig.floorMaterials.contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())
-                    && !BukkitConfig.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType())
+                    && !BukkitConfig.blockSpeeds.containsKey(world.getBlockAt(block.getX(), y, block.getZ()).getType())
                     && !(world.getBlockAt(block.getX(), y, block.getZ()).isEmpty())){
                 plugin.logDebug("Invalid block type in lift shaft.");
                 plugin.logDebug("Is valid flooring?: " + BukkitConfig.floorMaterials.contains(world.getBlockAt(block.getX(), y, block.getZ()).getType()));
-                plugin.logDebug("Is base?: " + BukkitConfig.blockSpeeds.keySet().contains(world.getBlockAt(block.getX(), y, block.getZ()).getType()));
+                plugin.logDebug("Is base?: " + BukkitConfig.blockSpeeds.containsKey(world.getBlockAt(block.getX(), y, block.getZ()).getType()));
                 plugin.logDebug("Is air?: " + (world.getBlockAt(block.getX(), y, block.getZ()).getType() == Material.AIR));
                 return false;
             }
@@ -388,9 +390,7 @@ public class BukkitElevatorManager extends ElevatorManager{
         // Restores a player's previous stats.
         plugin.logDebug("[Manager][restorePlayer] " + player.getDisplayName());
         player.setGravity(true);
-        if (fallers.contains(player)){
-            fallers.remove(player);
-        }
+        fallers.remove(player);
         if (fliers.contains(player)){
             fliers.remove(player);
         } else {
@@ -474,7 +474,7 @@ public class BukkitElevatorManager extends ElevatorManager{
 
                 if((e.goingUp && passenger.getLocation().getY() > e.destFloor.getY() - 0.7)
                         || (!e.goingUp && passenger.getLocation().getY() < e.destFloor.getY()-0.6)){
-                    plugin.logDebug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.getLocation().getY()));
+                    plugin.logDebug("Removing passenger: " + passenger.toString() + " with y " + passenger.getLocation().getY());
                     plugin.logDebug("Passenger Height: " + passenger.getHeight());
                     plugin.logDebug("Upperbound " + (e.destFloor.getY() - 0.7));
                     plugin.logDebug("Lowerbound " + (e.destFloor.getY()-0.6));
@@ -485,7 +485,7 @@ public class BukkitElevatorManager extends ElevatorManager{
                     pLoc.setY(e.destFloor.getY()-0.5);
                     passenger.teleport(pLoc, TeleportCause.UNKNOWN);
 
-                    moveToHolder(e, passengers, passenger, passenger.getLocation(), "Passenger not in floor.");
+                    moveToHolder(e, passengers, passenger, passenger.getLocation());
                 }
             }
 
@@ -504,10 +504,9 @@ public class BukkitElevatorManager extends ElevatorManager{
         }
     }
 
-    private void moveToHolder(BukkitElevator e, Iterator<Entity> passengers,
-                              Entity passenger, Location location, String reason) {
+    private void moveToHolder(BukkitElevator e, Iterator<Entity> passengers, Entity passenger, Location location) {
         passengers.remove();
-        e.addHolder(passenger, location, reason);
+        e.addHolder(passenger, location, "Passenger not in floor.");
         passenger.setVelocity(new Vector(0,0,0));
         passenger.setFallDistance(0.0F);
     }
