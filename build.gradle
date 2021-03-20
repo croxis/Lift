@@ -7,7 +7,7 @@ defaultTasks 'clean', 'build'
 //the naming of this artifact
 group = 'net.croxis.plugins.lift'
 jar.archiveFileName = 'Lift.jar'
-version = '70'
+version = '71'
 description = 'Elevators!'
 
 // Minimum version of Java required
