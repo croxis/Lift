@@ -21,7 +21,6 @@ package net.croxis.plugins.lift;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
@@ -39,6 +38,8 @@ import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
+
+import com.flowpowered.math.vector.Vector3d;
 
 
 public class SpongeLiftRedstoneListener{
@@ -167,9 +168,7 @@ public class SpongeLiftRedstoneListener{
 							}
 							plugin.logDebug("Minecart added to lift");
                     }*/
-                    plugin.debug("Adding passenger " + entity.toString());
                     SpongeElevatorManager.addPassenger(elevator, entity);
-                    plugin.debug("Added passenger " + entity.toString());
                     if (baseBlockIterator.hasNext() && SpongeConfig.autoPlace){
                         Vector3d loc = baseBlockIterator.next().getPosition();
                         entity.setLocation(new Location<World>(entity.getWorld(), loc.getX() + 0.5D, entity.getLocation().getY(), loc.getZ() + 0.5D));
@@ -217,7 +216,7 @@ public class SpongeLiftRedstoneListener{
                 floorBlockLocation.setBlockType(BlockTypes.AIR);
             }
 
-            SpongeElevatorManager.elevators.add(elevator);
+            elevator.start();
 
             plugin.debug("Going Up: " + Boolean.toString(elevator.goingUp));
             plugin.debug("Number of passengers: " + Integer.toString(elevator.getSize()));

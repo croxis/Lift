@@ -18,11 +18,10 @@
  */
 package net.croxis.plugins.lift;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.Chunk;
@@ -31,34 +30,32 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Minecart;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
 
 public class BukkitElevator extends Elevator{
-    HashSet<Block> baseBlocks = new HashSet<Block>();
-    //private TreeMap <World, TreeMap<Integer, Floor>> worldFloorMap= new TreeMap <World, TreeMap<Integer, Floor>>();
-    private HashSet<Entity> passengers = new HashSet<>();
-    private HashMap<Entity, Location> holders = new HashMap<>();
-    private HashMap<Location, BlockState> floorBlocks = new HashMap<>();
-    private HashMap<Location, BlockState> aboveFloorBlocks = new HashMap<>();
-    private HashMap<Entity, Vector> minecartSpeeds = new HashMap<>();
+    Set<Block> baseBlocks = new HashSet<>();
+    private final Set<Entity> passengers = new HashSet<>();
+    private final Map<Entity, Location> holders = new HashMap<>();
+    private final Map<Location, BlockState> floorBlocks = new HashMap<>();
+    private final Map<Location, BlockState> aboveFloorBlocks = new HashMap<>();
+    private final Map<Entity, Vector> minecartSpeeds = new HashMap<>();
     HashSet<Chunk> chunks = new HashSet<>();
     Material baseBlockType = Material.IRON_BLOCK;
-    private BukkitLift plugin;
+    private final BukkitLift plugin;
 
     public BukkitElevator(BukkitLift plugin){
         this.plugin = plugin;
         this.id = RandomStringUtils.randomAlphanumeric(6);
     }
 
-    public String toString() { return "BukkitElevator[" + this.id.toString() + "]";}
+    public String toString() { return "BukkitElevator[" + this.id + "]";}
 
     public void clear(){
         super.clear();
         baseBlocks.clear();
-        //worldFloorMap.clear();
         passengers.clear();
         floorBlocks.clear();
         aboveFloorBlocks.clear();
@@ -90,41 +87,39 @@ public class BukkitElevator extends Elevator{
             double y = entity.getLocation().getY();
             if (entity.isInsideVehicle())
                 y -= entity.getVehicle().getHeight();
-            if (y >= floor.getY() - 1 && y <= floor.getY())
-                return true;
+            return y >= floor.getY() - 1 && y <= floor.getY();
         }
         return false;
     }
 
     void addPassenger(Entity entity){
+        if (entity == null) {
+            plugin.logWarn("Trying to add null as a passenger. Ignore it.");
+            return;
+        }
         passengers.add(entity);
     }
 
     void addHolder(Entity entity, Location location, String reason){
-        plugin.logDebug("Holder " + entity + " added for: " + reason);
+        if (entity == null) {
+            plugin.logWarn("Trying to add null as a holder. Ignore it.");
+        }
+        plugin.logDebug("Freeze holder " + entity + " in Lift. Reason: " + reason);
         holders.put(entity, location);
-    }
-
-    public void setPassengers(ArrayList<LivingEntity> entities){
-        passengers.clear();
-        passengers.addAll(entities);
     }
 
     /**
      * Quickly ends the lift by teleporting all entities to the correct floor height
      */
-    void quickEndLift() {
-        Iterator<Entity> passiterator = passengers.iterator();
-        while (passiterator.hasNext()) {
-            Entity passenger = passiterator.next();
-            if (passenger == null) {
-                passiterator.remove();
-                continue;
-            }
+    void tpPassengersToDest() {
+        for (Entity passenger : passengers) {
             Location destination = passenger.getLocation();
             destination.setY(destFloor.getY());
             passenger.teleport(destination, TeleportCause.UNKNOWN);
             passenger.setFallDistance(0);
+            if (passenger instanceof Player) {
+                passenger.sendMessage("§7Lift timeout - You have been teleported to destination.");
+            }
         }
     }
 
@@ -137,19 +132,16 @@ public class BukkitElevator extends Elevator{
         passenger.setFallDistance(0);
         if (passengers.contains(passenger))
             passengers.remove(passenger);
-        else if (holders.containsKey(passenger))
+        else
             holders.remove(passenger);
     }
 
-    Iterator<Entity> getPassengers(){
-        passengers.removeAll(Collections.singleton(null));
-        return passengers.iterator();
+    Set<Entity> getPassengers(){
+        return passengers;
     }
 
-    Iterator<Entity> getHolders(){
-        if (holders.containsKey(null))
-            holders.remove(null);
-        return holders.keySet().iterator();
+    Set<Entity> getHolders(){
+        return holders.keySet();
     }
 
     public Location getHolderPos(Entity entity){
@@ -160,7 +152,7 @@ public class BukkitElevator extends Elevator{
         return passengers.size() + holders.size();
     }
 
-    public HashMap<Location, BlockState> getFloorBlocks(){
+    public Map<Location, BlockState> getFloorBlocks(){
         return floorBlocks;
     }
 
@@ -168,7 +160,7 @@ public class BukkitElevator extends Elevator{
         floorBlocks.put(block.getLocation(), block.getState());
     }
 
-    public HashMap<Location, BlockState> getAboveFloorBlocks(){
+    public Map<Location, BlockState> getAboveFloorBlocks(){
         return aboveFloorBlocks;
     }
 
@@ -184,7 +176,7 @@ public class BukkitElevator extends Elevator{
         aboveFloorBlocks.put(block.getLocation(), block.getState());
     }
 
-    public HashMap<Entity, Vector> getMinecartSpeeds(){
+    public Map<Entity, Vector> getMinecartSpeeds(){
         return minecartSpeeds;
     }
 

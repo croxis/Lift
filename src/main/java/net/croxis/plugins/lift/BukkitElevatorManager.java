@@ -55,9 +55,9 @@ public class BukkitElevatorManager extends ElevatorManager{
     }
 
     public static void clear(){
-        bukkitElevators = new HashSet<>();
-        fallers = new HashSet<>();
-        fliers = new HashSet<>();
+        bukkitElevators.clear();
+        fallers.clear();
+        fliers.clear();
     }
 
     public static BukkitElevator createLift(Block block, String cause){
@@ -243,29 +243,26 @@ public class BukkitElevatorManager extends ElevatorManager{
             state.update(true);
         }
 
-        Iterator<Entity> passengerIterator = bukkitElevator.getPassengers();
-        while (passengerIterator.hasNext()){
-            Entity e = passengerIterator.next();
-            e.setFallDistance(0);
-            fallers.remove(e);
-            e.setVelocity(new Vector(0, 0, 0));
-            if (e instanceof Player)
-                removePlayer((Player) e);
-            else if (e instanceof Minecart) {
-                final Vector v = bukkitElevator.getMinecartSpeeds().get(e);
-                e.setVelocity(v != null ? v : new Vector(0, 0, 0));
+        for (Entity passenger : bukkitElevator.getPassengers()) {
+            passenger.setFallDistance(0);
+            fallers.remove(passenger);
+            passenger.setVelocity(new Vector(0, 0, 0));
+            if (passenger instanceof Player)
+                removePlayer((Player) passenger);
+            else if (passenger instanceof Minecart) {
+                final Vector v = bukkitElevator.getMinecartSpeeds().get(passenger);
+                passenger.setVelocity(v != null ? v : new Vector(0, 0, 0));
             }
-            if (e instanceof Vehicle){
-                List<Entity> vehiclePassengers = e.getPassengers();
+            if (passenger instanceof Vehicle){
+                List<Entity> vehiclePassengers = passenger.getPassengers();
                 for (Entity vehiclePassenger : vehiclePassengers) {
                     if (vehiclePassenger instanceof Player)
                         restorePlayer((Player) vehiclePassenger);
                 }
             }
-            e.setGravity(true);
-            passengerIterator.remove();
+            passenger.setGravity(true);
         }
-        Iterator<Entity> holdersIterators = bukkitElevator.getHolders();
+        Iterator<Entity> holdersIterators = bukkitElevator.getHolders().iterator();
         while (holdersIterators.hasNext()){
             Entity passenger = holdersIterators.next();
             passenger.setFallDistance(0);
@@ -306,7 +303,7 @@ public class BukkitElevatorManager extends ElevatorManager{
             }
         }
         bukkitElevator.clear();
-        plugin.logDebug("Ended lift");
+        plugin.logDebug("Ended lift (took" + (System.currentTimeMillis() - bukkitElevator.startTime) + "ms)");
     }
 
     public static void removePlayer(Player player, Iterator<Entity> passengers){
@@ -410,7 +407,6 @@ public class BukkitElevatorManager extends ElevatorManager{
         BukkitElevator e;
         Iterator<Entity> passengers;
         Entity passenger;
-        Entity holder;
 
         while (elevator.hasNext()){
             e = elevator.next();
@@ -419,19 +415,18 @@ public class BukkitElevatorManager extends ElevatorManager{
                 continue;
             }
             plugin.logDebug("Processing elevator: " + e);
-            passengers = e.getPassengers();
+            passengers = e.getPassengers().iterator();
             if(!passengers.hasNext()){
                 BukkitElevatorManager.endLift(e);
                 elevator.remove();
                 continue;
             }
 
-            // If the lift has been running 5 seconds longer than it should of
+            // If the lift has been running longer than it should of
             // Teleport all players and end the lift
-            // Speed is blocks per second or tick (it is unclear)
-            if (e.startTime + e.speed * 20 * 1000 + 5000 >= System.currentTimeMillis()) {
+            if (System.currentTimeMillis() > e.maxEndTime) {
                 plugin.logDebug("Ending lift due to timeout.");
-                e.quickEndLift();
+                e.tpPassengersToDest();
                 BukkitElevatorManager.endLift(e);
                 elevator.remove();
                 continue;
@@ -472,43 +467,37 @@ public class BukkitElevatorManager extends ElevatorManager{
                 }
                 passenger.setFallDistance(0.0F);
 
-                if((e.goingUp && passenger.getLocation().getY() > e.destFloor.getY() - 0.7)
-                        || (!e.goingUp && passenger.getLocation().getY() < e.destFloor.getY()-0.6)){
+                if(reachedDestination(e, passenger)) {
                     plugin.logDebug("Removing passenger: " + passenger.toString() + " with y " + passenger.getLocation().getY());
-                    plugin.logDebug("Passenger Height: " + passenger.getHeight());
                     plugin.logDebug("Upperbound " + (e.destFloor.getY() - 0.7));
                     plugin.logDebug("Lowerbound " + (e.destFloor.getY()-0.6));
-                    plugin.logDebug("Trigger status: Going up: " + e.goingUp);
-                    plugin.logDebug("Floor Y: " + e.destFloor.getY());
-                    passenger.setVelocity(new Vector(0, 0, 0));
+                    plugin.logDebug("Trigger status: Going " + (e.goingUp ? "up" : "down"));
+                    plugin.logDebug("Dest Floor Y: " + e.destFloor.getY());
                     Location pLoc = passenger.getLocation().clone();
                     pLoc.setY(e.destFloor.getY()-0.5);
-                    passenger.teleport(pLoc, TeleportCause.UNKNOWN);
 
-                    moveToHolder(e, passengers, passenger, passenger.getLocation());
+                    passengers.remove();
+                    e.addHolder(passenger, pLoc, "Waiting for other passengers");
                 }
             }
 
-            Iterator<Entity> holders = e.getHolders();
-
-            while (holders.hasNext()){
-                holder = holders.next();
-                if (holder == null) {
-                    continue;
-                }
-                plugin.logDebug("Holding: " + holder.toString() + " at " + e.getHolderPos(holder));
-                holder.teleport(e.getHolderPos(holder), TeleportCause.UNKNOWN);
-                holder.setFallDistance(0.0F);
-                holder.setVelocity(new Vector(0,0,0));
+            for (Entity holder : e.getHolders()) {
+                freezeEntity(holder, e.getHolderPos(holder));
             }
         }
     }
 
-    private void moveToHolder(BukkitElevator e, Iterator<Entity> passengers, Entity passenger, Location location) {
-        passengers.remove();
-        e.addHolder(passenger, location, "Passenger not in floor.");
-        passenger.setVelocity(new Vector(0,0,0));
-        passenger.setFallDistance(0.0F);
+    private boolean reachedDestination(BukkitElevator e, Entity passenger) {
+        return (e.goingUp && passenger.getLocation()
+                .getY() > e.destFloor.getY() - 0.7) || (!e.goingUp && passenger.getLocation()
+                .getY() < e.destFloor.getY() - 0.6);
+    }
+
+    private void freezeEntity(Entity entity, Location location) {
+        entity.setVelocity(new Vector(0, 0, 0));
+        entity.setFallDistance(0.0F);
+        entity.teleport(location, TeleportCause.UNKNOWN);
+        plugin.logDebug("Holding " + entity + " at " + location);
     }
 
     public static void addHolder(BukkitElevator elevator, Entity holder, Location location, String reason){
@@ -523,7 +512,6 @@ public class BukkitElevatorManager extends ElevatorManager{
 
     public static void addPassenger(BukkitElevator elevator, Entity passenger){
         // Adds a new entity to lift to be held in position
-        plugin.logDebug("[Manager][addPassenger] Adding passenger " + passenger.toString());
         if (passenger instanceof Player)
             setupPlayer((Player) passenger);
         if (passenger instanceof Vehicle){
@@ -538,15 +526,11 @@ public class BukkitElevatorManager extends ElevatorManager{
             BukkitElevatorManager.fallers.add(passenger);
         }
         passenger.setGravity(false);
-        plugin.logDebug("[Manager][addPassenger] Added passenger " + passenger.toString());
+        plugin.logDebug("[Manager][addPassenger] Added passenger " + passenger);
     }
 
     public static void quickEndLifts(){
-        Iterator<BukkitElevator> iterator = bukkitElevators.iterator();
-        while (iterator.hasNext()){
-            BukkitElevator elevator = iterator.next();
-            elevator.quickEndLift();
-            iterator.remove();
-        }
+        bukkitElevators.forEach(BukkitElevator::tpPassengersToDest);
+        bukkitElevators.clear();
     }
 }

@@ -27,21 +27,19 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.block.Sign;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 
 public class BukkitLiftRedstoneListener implements Listener {
 	private final BukkitLift plugin;
-	BukkitElevator bukkitElevator = null;
-	
+
 	// Supporting annoying out of date servers
 	private boolean canDo = false;
 	private Block block = null;
@@ -49,7 +47,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 	public BukkitLiftRedstoneListener(BukkitLift plugin){
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 		this.plugin = plugin;
-	} 
+	}
 	
 	@EventHandler
 	public void onBlockRedstoneChange(BlockRedstoneEvent event){
@@ -92,7 +90,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 
             plugin.logDebug("Initializing elevator for run");
 			long startTime = System.currentTimeMillis();
-			bukkitElevator = BukkitElevatorManager.createLift(block, reason);
+			BukkitElevator bukkitElevator = BukkitElevatorManager.createLift(block, reason);
 			if (bukkitElevator == null){
 				plugin.logDebug("Redstone elevator generation returned a null object. Button block at: " + block.getLocation().toString());
 				plugin.logDebug("Please see previous messages to determine why.");
@@ -106,7 +104,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 			Bukkit.getPluginManager().callEvent(new ElevatorActivateEvent(bukkitElevator));
 
             Sign sign = (Sign) block.getRelative(BlockFace.UP).getState();
-			LiftSign liftSign = new LiftSign(plugin.config, sign.getLine(0), sign.getLine(1), sign.getLine(2), sign.getLine(3));
+			LiftSign liftSign = new LiftSign(BukkitLift.config, sign.getLine(0), sign.getLine(1), sign.getLine(2), sign.getLine(3));
 			int destination = liftSign.getDestinationFloor();
 			//See if lift is in use
 			for (BukkitElevator e : BukkitElevatorManager.bukkitElevators){
@@ -166,9 +164,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 							}
 							plugin.logDebug("Minecart added to lift");
 						}
-						plugin.logDebug("Adding passenger " + entity.toString());
 						BukkitElevatorManager.addPassenger(bukkitElevator, entity);
-						plugin.logDebug("Added passenger " + entity.toString());
 						if (baseBlocksIterator.hasNext() && BukkitConfig.autoPlace){
 							Location loc = baseBlocksIterator.next().getLocation();
 							entity.teleport(new Location(entity.getWorld(), loc.getX() + 0.5D, entity.getLocation().getY(), loc.getZ() + 0.5D, entity.getLocation().getYaw(), entity.getLocation().getPitch()), TeleportCause.UNKNOWN);
@@ -189,7 +185,7 @@ public class BukkitLiftRedstoneListener implements Listener {
 			}
 			
 			//Disable all glass inbetween players and destination
-			ArrayList<Floor> glassfloors = new ArrayList<Floor>();
+			ArrayList<Floor> glassfloors = new ArrayList<>();
 			//Going up
 			if (bukkitElevator.goingUp){
 				for(int i = startFloor.getFloor() + 1; i<= bukkitElevator.destFloor.getFloor(); i++){
@@ -227,10 +223,10 @@ public class BukkitLiftRedstoneListener implements Listener {
 			
 			BukkitElevatorManager.bukkitElevators.add(bukkitElevator);
 
-			plugin.logDebug("Going Up: " + bukkitElevator.goingUp);
+			plugin.logDebug("Going " + (bukkitElevator.goingUp ? "up" : "down"));
 			plugin.logDebug("Number of passengers: " + bukkitElevator.getSize());
 			plugin.logDebug("Elevator chunks: " + bukkitElevator.chunks.size());
-			plugin.logDebug("Total generation time: " + (System.currentTimeMillis() - startTime));
+			plugin.logDebug("Total generation time: " + (System.currentTimeMillis() - startTime) + "ms");
 		}
 	}
 }

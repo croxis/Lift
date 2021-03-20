@@ -30,7 +30,7 @@ public abstract class Elevator {
 	public String cause = "";
 	long startTime = 0;
 	boolean cacheLock = false;
-	
+
 	TreeMap <Integer, Floor> floormap = new TreeMap<>();//Index is y value
 	TreeMap <Integer, Floor> floormap2 = new TreeMap<>();//Index is floor value
 
@@ -42,10 +42,6 @@ public abstract class Elevator {
 		floormap2.clear();
 	}
 
-	void setStartTimeToNow () {
-	    startTime = System.currentTimeMillis();
-    }
-	
 	public Floor getFloorFromN(int n){
 		return floormap2.get(n);
 	}
@@ -57,7 +53,7 @@ public abstract class Elevator {
 	public int getTotalFloors(){
 		return floormap2.size();
 	}
-	
+
 	public String getFailReason() {
 		return failReason;
 	}

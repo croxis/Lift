@@ -18,8 +18,9 @@
  */
 package net.croxis.plugins.lift;
 
-import com.flowpowered.math.vector.Vector3d;
-import com.flowpowered.math.vector.Vector3i;
+import java.util.HashSet;
+import java.util.Iterator;
+
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.manipulator.mutable.entity.FallDistanceData;
@@ -31,8 +32,8 @@ import org.spongepowered.api.world.Chunk;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import java.util.HashSet;
-import java.util.Iterator;
+import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 
 public class SpongeElevatorManager extends ElevatorManager{
     private static SpongeLift plugin;
@@ -268,7 +269,7 @@ public class SpongeElevatorManager extends ElevatorManager{
 				if((e.goingUp && passenger.getLocation().getY() > e.destFloor.getY() - 0.7)
 						|| (!e.goingUp && passenger.getLocation().getY() < e.destFloor.getY()-0.1)){
                     plugin.debug("Removing passenger: " + passenger.toString() + " with y " + Double.toString(passenger.getLocation().getY()));
-                    plugin.debug("Trigger status: Going up: " + Boolean.toString(e.goingUp));
+                    plugin.debug("Trigger status: Going " + (e.goingUp ? "up" : "down"));
                     plugin.debug("Floor Y: " + Double.toString(e.destFloor.getY()));
 					passenger.setVelocity(new Vector3d(0, 0, 0));
 					Vector3d pLoc = passenger.getLocation().getPosition();
@@ -284,12 +285,16 @@ public class SpongeElevatorManager extends ElevatorManager{
 			while (holders.hasNext()){
 				holder = holders.next();
                 plugin.debug("Holding: " + holder.toString() + " at " + e.getHolderPos(holder));
-				holder.setLocationSafely(e.getHolderPos(holder));
-                FallDistanceData fallData = holder.get(FallDistanceData.class).get();
-                holder.offer(fallData.fallDistance().set(0.0F));
-				holder.setVelocity(new Vector3d(0,0,0));
+				freezeEntity(holder, e.getHolderPos(holder));
 			}
 		}
+	}
+
+	private void freezeEntity(Entity holder, Location location) {
+		holder.setLocationSafely(location);
+		FallDistanceData fallData = holder.get(FallDistanceData.class).get();
+		holder.offer(fallData.fallDistance().set(0.0F));
+		holder.setVelocity(new Vector3d(0,0,0));
 	}
 
 	private void moveToHolder(SpongeElevator e, Iterator<Entity> passengers,
@@ -313,7 +318,6 @@ public class SpongeElevatorManager extends ElevatorManager{
 	
 	public static void addPassenger(SpongeElevator elevator, Entity passenger){
 		// Adds a new entity to lift to be held in position
-		plugin.debug("[Manager] Adding passenger " + passenger.toString());
 		if (passenger instanceof Player)
 			setupPlayer((Player) passenger);
 		elevator.addPassenger(passenger);
