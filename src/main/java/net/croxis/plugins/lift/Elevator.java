@@ -25,10 +25,11 @@ public abstract class Elevator {
 	//int destinationY = 0; //Destination y coordinate
 	String id = "";
 	public boolean goingUp = false;
-	public double speed = 0.5;
+	public double speed;
 	private String failReason = "";
 	public String cause = "";
-	long startTime = 0;
+	long startTime;
+	long maxEndTime;
 	boolean cacheLock = false;
 
 	TreeMap <Integer, Floor> floormap = new TreeMap<>();//Index is y value
@@ -36,7 +37,22 @@ public abstract class Elevator {
 
     Floor destFloor = null;
     Floor startFloor = null;
-	
+
+    double centerX;
+    double centerZ;
+
+	protected void start() {
+    	if (destFloor == null || startFloor == null) {
+    		throw new IllegalStateException("Cannot start Elevator with undefined start or destination");
+	    }
+    	startTime = System.currentTimeMillis();
+    	// [|startY-destY| = distance] * [avg sec/block with speed 1 = 0.05] * [to millis = 1000] / speed
+		long rideDuration = (long) (Math.abs(startFloor.getY() - destFloor.getY()) * 0.05 * 1000L / speed);
+		maxEndTime = startTime + rideDuration + Config.secondsUntilTimeout * 1000;
+
+		calcCenter();
+    }
+
 	public void clear(){
 		floormap.clear();
 		floormap2.clear();
@@ -66,4 +82,6 @@ public abstract class Elevator {
 	public void setCacheLock(boolean cacheLock) {
 		this.cacheLock = cacheLock;
 	}
+
+	protected abstract void calcCenter();
 }

@@ -53,6 +53,17 @@ public class BukkitElevator extends Elevator{
 
     public String toString() { return "BukkitElevator[" + this.id + "]";}
 
+    @Override
+    public void start() {
+        try {
+            super.start();
+            plugin.logDebug("Lift will timeout after " + (maxEndTime - startTime) + "ms");
+        } catch (IllegalStateException e) {
+            plugin.logWarn(e.getMessage());
+        }
+        BukkitElevatorManager.bukkitElevators.add(this);
+    }
+
     public void clear(){
         super.clear();
         baseBlocks.clear();
@@ -109,12 +120,14 @@ public class BukkitElevator extends Elevator{
     }
 
     /**
-     * Quickly ends the lift by teleporting all entities to the correct floor height
+     * Quickly ends the lift by teleporting all entities to the correct floor height at the shaft center
      */
     void tpPassengersToDest() {
         for (Entity passenger : passengers) {
             Location destination = passenger.getLocation();
             destination.setY(destFloor.getY());
+            destination.setX(centerX);
+            destination.setZ(centerZ);
             passenger.teleport(destination, TeleportCause.UNKNOWN);
             passenger.setFallDistance(0);
             if (passenger instanceof Player) {
@@ -162,6 +175,18 @@ public class BukkitElevator extends Elevator{
 
     public Map<Location, BlockState> getAboveFloorBlocks(){
         return aboveFloorBlocks;
+    }
+
+    @Override
+    public void calcCenter() {
+        double x = 0;
+        double z = 0;
+        for (Location location : floorBlocks.keySet()) {
+            x += location.getX();
+            z += location.getZ();
+        }
+        centerX = x / floorBlocks.size() + 0.5;
+        centerZ = z / floorBlocks.size() + 0.5;
     }
 
     public void addCarpetBlock(Block block){

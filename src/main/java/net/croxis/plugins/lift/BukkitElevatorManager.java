@@ -264,17 +264,17 @@ public class BukkitElevatorManager extends ElevatorManager{
         }
         Iterator<Entity> holdersIterators = bukkitElevator.getHolders().iterator();
         while (holdersIterators.hasNext()){
-            Entity passenger = holdersIterators.next();
-            passenger.setFallDistance(0);
-            passenger.setGravity(true);
-            if (passenger instanceof Player){
-                removePlayer((Player) passenger, holdersIterators);
-            } else if (passenger instanceof Minecart) {
-                final Vector v = bukkitElevator.getMinecartSpeeds().get(passenger);
-                passenger.setVelocity(v != null ? v : new Vector(0, 0, 0));
+            Entity holder = holdersIterators.next();
+            holder.setFallDistance(0);
+            holder.setGravity(true);
+            if (holder instanceof Player){
+                removePlayer((Player) holder, holdersIterators);
+            } else if (holder instanceof Minecart) {
+                final Vector v = bukkitElevator.getMinecartSpeeds().get(holder);
+                holder.setVelocity(v != null ? v : new Vector(0, 0, 0));
             }
-            if (passenger instanceof Vehicle){
-                List<Entity> vehiclePassengers = passenger.getPassengers();
+            if (holder instanceof Vehicle){
+                List<Entity> vehiclePassengers = holder.getPassengers();
                 for (Entity vehiclePassenger : vehiclePassengers) {
                     if (vehiclePassenger instanceof Player)
                         restorePlayer((Player) vehiclePassenger);

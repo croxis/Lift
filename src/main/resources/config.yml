@@ -12,6 +12,7 @@ preventLeave: true
 checkFloor: false
 liftMobs: true
 mouseScroll: true
+secondsUntilTimeout: 2
 floorBlocks:
   - GLASS
   - "*_STAINED_GLASS"

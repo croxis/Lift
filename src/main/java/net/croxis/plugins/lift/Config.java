@@ -18,9 +18,6 @@
  */
 package net.croxis.plugins.lift;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +28,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * Note that fields that are configurable in config.yml should have the same name, so
@@ -59,6 +59,7 @@ public class Config {
 	static String scrollSelectEnabled;
 	static String scrollSelectDisabled;
     static Integer signVersion = 2;
+    static Integer secondsUntilTimeout;
 
 	protected void mapConfigurationToClassFields(ConfigurationSection section, Class<? extends Config> clazz) {
 		if (section == null) {

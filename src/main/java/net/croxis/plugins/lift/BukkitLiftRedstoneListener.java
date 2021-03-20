@@ -220,8 +220,8 @@ public class BukkitLiftRedstoneListener implements Listener {
 					gb.setType(Material.AIR);
 				}
 			}
-			
-			BukkitElevatorManager.bukkitElevators.add(bukkitElevator);
+
+			bukkitElevator.start();
 
 			plugin.logDebug("Going " + (bukkitElevator.goingUp ? "up" : "down"));
 			plugin.logDebug("Number of passengers: " + bukkitElevator.getSize());

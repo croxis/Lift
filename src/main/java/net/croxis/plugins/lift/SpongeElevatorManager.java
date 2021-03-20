@@ -234,6 +234,17 @@ public class SpongeElevatorManager extends ElevatorManager{
 				eleviterator.remove();
 				continue;
 			}
+
+			// If the lift has been running longer than it should of
+			// Teleport all players and end the lift
+			if (System.currentTimeMillis() > e.maxEndTime) {
+				plugin.debug("Ending lift due to timeout.");
+				e.tpPassengersToDest();
+				e.endLift();
+				eleviterator.remove();
+				continue;
+			}
+
 			while (passengers.hasNext()){
 				passenger = passengers.next();
 				

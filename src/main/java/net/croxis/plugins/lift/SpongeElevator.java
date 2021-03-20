@@ -18,7 +18,13 @@
  */
 package net.croxis.plugins.lift;
 
-import com.flowpowered.math.vector.Vector3d;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.TreeMap;
+
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
@@ -32,10 +38,14 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.vehicle.minecart.Minecart;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.Direction;
-import org.spongepowered.api.world.*;
+import org.spongepowered.api.world.BlockChangeFlags;
+import org.spongepowered.api.world.Chunk;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
-import java.util.*;
+import com.flowpowered.math.vector.Vector3d;
 
 public class SpongeElevator extends Elevator{
     PluginContainer pluginContainer = Sponge.getPluginManager().getPlugin("lift").get();
@@ -54,7 +64,18 @@ public class SpongeElevator extends Elevator{
 	public SpongeElevator(String cause){
 	    this.cause = cause;
     }
-	
+
+    @Override
+    public void start() {
+	    try {
+		    super.start();
+	    } catch (IllegalStateException e) {
+		    plugin.getLogger().warn(e.getMessage());
+	    }
+	    plugin.debug("Lift will timeout after " + (maxEndTime - startTime) + "ms");
+	    SpongeElevatorManager.elevators.add(this);
+    }
+
 	public void clear(){
 		super.clear();
 		baseBlocks.clear();
@@ -89,7 +110,19 @@ public class SpongeElevator extends Elevator{
 	public SpongeFloor getFloorFromY(int y){
 		return (SpongeFloor) super.getFloorFromY(y);
 	}
-	
+
+	@Override
+	public void calcCenter() {
+		double x = 0;
+		double z = 0;
+		for (Location location : floorBlocks.keySet()) {
+			x += location.getX();
+			z += location.getZ();
+		}
+		centerX = x / floorBlocks.size();
+		centerZ = z / floorBlocks.size();
+	}
+
 	public SpongeFloor getFloorFromN(int n){
 		return (SpongeFloor) super.getFloorFromN(n);
 	}
@@ -269,16 +302,14 @@ public class SpongeElevator extends Elevator{
             location.restoreSnapshot(aboveFloorBlocks.get(location), true, BlockChangeFlags.ALL);
         }
 
-        for (Iterator<Entity> iter = passengers.iterator(); iter.hasNext(); ){
-            Entity e = iter.next();
-         	SpongeElevatorManager.fallers.remove(e);
-         	e.setVelocity(new Vector3d(0, 0, 0));
-         	if (e instanceof Player)
-         	    SpongeElevatorManager.removePlayer((Player) e);
-            else if (e instanceof Minecart)
-                e.setVelocity(getMinecartSpeeds().get(e));
-            iter.remove();
-		}
+	    for (Entity passenger : passengers) {
+		    SpongeElevatorManager.fallers.remove(passenger);
+		    passenger.setVelocity(new Vector3d(0, 0, 0));
+		    if (passenger instanceof Player)
+			    SpongeElevatorManager.removePlayer((Player) passenger);
+		    else if (passenger instanceof Minecart)
+			    passenger.setVelocity(getMinecartSpeeds().get(passenger));
+	    }
 
         for (Iterator<Entity> iter = getHolders(); iter.hasNext(); ){
             Entity passenger = iter.next();
@@ -289,27 +320,29 @@ public class SpongeElevator extends Elevator{
         }
 
         //Fire off redstone signal for arrival
-        // TileEntity entity = testLocation.getRelative(Direction.DOWN).getTileEntity().get();
-        //Sign sign = (Sign) entity;
-        Location<World> signLocation = ((SpongeFloor) destFloor).getButton().getRelative(Direction.UP);
-        Direction direction = signLocation.get(DirectionalData.class).get().direction().get();
-        Direction behindBlock = Direction.NORTH;
-        if (direction.equals(Direction.NORTH))
-            behindBlock = Direction.SOUTH;
-        else if (direction.equals(Direction.EAST))
-            behindBlock = Direction.WEST;
-        else if (direction.equals(Direction.SOUTH))
-            behindBlock = Direction.NORTH;
-        else if (direction.equals(Direction.WEST))
-            behindBlock = Direction.EAST;
+        Location<World> aboveBtn = ((SpongeFloor) destFloor).getButton().getRelative(Direction.UP);
+        Direction direction = aboveBtn.get(DirectionalData.class).get().direction().get();
+        Direction behindBlock = direction.getOpposite();
 
-        Location<World> testBlock = signLocation.getRelative(behindBlock).getRelative(behindBlock);
+        Location<World> testBlock = aboveBtn.getRelative(behindBlock).getRelative(behindBlock);
         if (testBlock.getBlockType().equals(BlockTypes.STONE_BUTTON) || testBlock.getBlockType().equals(BlockTypes.WOODEN_BUTTON)){
             testBlock.offer(Keys.POWERED, true);
         }
 
         clear();
     }
+
+	/**
+	 * Quickly ends the lift by teleporting all entities to the correct floor height
+	 */
+	void tpPassengersToDest() {
+		for (Entity passenger : passengers) {
+			passenger.setLocationSafely(new Location<>(passenger.getWorld(), destFloor.buttonX, destFloor.getY(), destFloor.buttonZ));
+			if (passenger instanceof Player) {
+				((Player) passenger).sendMessage(Text.builder("§7Lift timeout - You have been teleported to destination.").build());
+			}
+		}
+	}
 }
 
 
