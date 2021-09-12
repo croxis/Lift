@@ -4,6 +4,7 @@ For download see [Lift on spigotmc.org](https://www.spigotmc.org/resources/lift.
 
 ### Changes
 
+* v72 (1.17.2) - Removed Nocheatplus support. Increased limits for 1.18
 * v71 (1.16.4) - A Lift does timeout when it's active longer than expected (passengers stuck).  
   Passengers will then be teleported to the destination. See config "secondsUntilTimeout" (default 2s)  
 * v70 (1.16.3) - Bugfix (#191)  

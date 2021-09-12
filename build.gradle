@@ -7,7 +7,7 @@ defaultTasks 'clean', 'build'
 //the naming of this artifact
 group = 'net.croxis.plugins.lift'
 jar.archiveFileName = 'Lift.jar'
-version = '71'
+version = '72'
 description = 'Elevators!'
 
 // Minimum version of Java required
@@ -15,11 +15,11 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 //dependencies versions
-ext.bukkitVersion = '1.16.4-R0.1-SNAPSHOT'
+ext.bukkitVersion = '1.17.1-R0.1-SNAPSHOT'
 
 //dependencies declaration
 dependencies {
-	compile group: 'fr.neatmonster', name: 'nocheatplus', version: '3.16.1-SNAPSHOT'
+	//compile group: 'fr.neatmonster', name: 'nocheatplus', version: '3.16.1-SNAPSHOT'
 	compile group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
 	//compileOnly 'org.spigotmc:plugin-annotations:1.2.0-SNAPSHOT'
 	
@@ -64,11 +64,6 @@ repositories {
 	
 	maven {
 		url "https://hub.spigotmc.org/nexus/content/groups/public/"
-	}
-
-	maven {
-        name = 'metrics'
-		url "http://repo.mcstats.org/content/repositories/public"
 	}
 
 	maven {

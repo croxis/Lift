@@ -40,9 +40,6 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
 
-import fr.neatmonster.nocheatplus.checks.CheckType;
-import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
-
 public class BukkitElevatorManager extends ElevatorManager{
     private static BukkitLift plugin;
     static Set<BukkitElevator> bukkitElevators = new HashSet<>();
@@ -66,8 +63,8 @@ public class BukkitElevatorManager extends ElevatorManager{
         BukkitElevator bukkitElevator = new BukkitElevator(plugin);
         bukkitElevator.cause = "Starting elevator gen caused by: " + cause + " v" + plugin.getDescription().getVersion();
         int yscan = block.getY() - 1;
-        while(yscan >= -1){
-            if (yscan == -1){ //Gone too far with no base abort!
+        while(yscan >= -64){
+            if (yscan == -64){ //Gone too far with no base abort!
                 plugin.logDebug("No elevator base found");
                 bukkitElevator.setFailReason("No elevator base found");
                 return null;
@@ -376,11 +373,6 @@ public class BukkitElevatorManager extends ElevatorManager{
 
         player.setGravity(false);
         player.setAllowFlight(true);
-
-        if (BukkitConfig.useNoCheatPlus){
-            NCPExemptionManager.exemptPermanently(player, CheckType.MOVING_NOFALL);
-            NCPExemptionManager.exemptPermanently(player, CheckType.MOVING_SURVIVALFLY);
-        }
     }
 
     static void restorePlayer(Player player){
@@ -393,10 +385,6 @@ public class BukkitElevatorManager extends ElevatorManager{
         } else {
             player.setAllowFlight(false);
             plugin.logDebug("Removing player from flight");
-            if (BukkitConfig.useNoCheatPlus){
-                NCPExemptionManager.unexempt(player, CheckType.MOVING_NOFALL);
-                NCPExemptionManager.unexempt(player, CheckType.MOVING_SURVIVALFLY);
-            }
         }
     }
 

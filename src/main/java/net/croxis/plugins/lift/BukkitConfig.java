@@ -42,7 +42,6 @@ public class BukkitConfig extends Config {
 	public static HashSet<Material> floorMaterials = new HashSet<>();
     public static HashSet<Material> buttonMaterials = new HashSet<>();
     public static HashSet<Material> signMaterials = new HashSet<>();
-	static boolean useNoCheatPlus = false;
 	static boolean serverFlight;
 
     public void loadConfig(BukkitLift plugin){
@@ -97,11 +96,6 @@ public class BukkitConfig extends Config {
 
         if (preventEntry){
             Bukkit.getServer().getPluginManager().registerEvents(plugin, plugin);
-        }
-
-        if(plugin.getServer().getPluginManager().getPlugin("NoCheatPlus") != null){
-            useNoCheatPlus = true;
-            plugin.logDebug("Hooked into NoCheatPlus");
         }
     }
 }
