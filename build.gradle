@@ -11,8 +11,8 @@ version = '72'
 description = 'Elevators!'
 
 // Minimum version of Java required
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = '16'
+targetCompatibility = '16'
 
 //dependencies versions
 ext.bukkitVersion = '1.17.1-R0.1-SNAPSHOT'
