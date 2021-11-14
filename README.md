@@ -2,6 +2,9 @@
 For download see [Lift on spigotmc.org](https://www.spigotmc.org/resources/lift.4704/) or 
 [Lift on bukkit.org](https://dev.bukkit.org/projects/lift).
 
+### This plugin is no longer maintained
+You can instead take a look at [LiftReloaded](https://www.spigotmc.org/resources/liftreloaded.97551)
+
 ### Changes
 
 * v72 (1.17.2) - Removed Nocheatplus support. Increased limits for 1.18
