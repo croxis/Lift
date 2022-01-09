@@ -22,21 +22,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<bukkitVersion>1.17.1-R0.1-SNAPSHOT</bukkitVersion>
-		<spongeVersion>7.2.0</spongeVersion>
+		<spongeVersion>7.4.0</spongeVersion>
 	</properties>
     
     <repositories>
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-		</repository>
-        <repository>
-            <id>md_5-snapshots</id>
-            <url>https://repo.md-5.net/content/repositories/snapshots/</url>
-        </repository>
-		<repository>
-			<id>md5-repo</id>
-			<url>http://repo.md-5.net/content/repositories/releases/</url>
 		</repository>
 		<repository>
 			<id>sponge</id>
