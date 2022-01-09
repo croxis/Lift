@@ -18,6 +18,8 @@
  */
 package net.croxis.plugins.lift;
 
+import java.util.*;
+import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -32,13 +34,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import org.bukkit.event.player.*;
 
 public class BukkitLiftPlayerListener implements Listener{
 	private BukkitLift plugin;
@@ -240,6 +236,15 @@ public class BukkitLiftPlayerListener implements Listener{
 	public void onPlayerQuit(PlayerQuitEvent event){
 		BukkitElevatorManager.removePlayer(event.getPlayer());
 		removePlayerCache(event.getPlayer());
+	}
+
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		if (player.isOp()) {
+			player.sendMessage("§6[Lift] This plugin is no longer maintained. You can " +
+					"instead take a look at LiftReloaded: https://www.spigotmc.org/resources/liftreloaded.97551");
+		}
 	}
 	
 	@EventHandler

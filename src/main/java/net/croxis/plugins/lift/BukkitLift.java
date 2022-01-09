@@ -19,7 +19,6 @@
 package net.croxis.plugins.lift;
 
 import java.util.logging.Level;
-
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
@@ -61,8 +60,8 @@ public class BukkitLift extends JavaPlugin implements Listener {
     public void onDisable() {
     	BukkitElevatorManager.bukkitElevators.clear();
     	getServer().getScheduler().cancelTask(BukkitElevatorManager.taskid);
-        System.out.println(this + " is now disabled!");
-    }
+		logInfo(this + " is now disabled!");
+	}
 
     public void onEnable() {
     	new BukkitLiftRedstoneListener(this);
@@ -77,8 +76,7 @@ public class BukkitLift extends JavaPlugin implements Listener {
         logDebug("checkGlass: " + BukkitConfig.checkFloor);
         logDebug("baseBlocks: " + BukkitConfig.blockSpeeds.toString());
         logDebug("floorBlocks: " + BukkitConfig.floorMaterials.toString());
-        
-        System.out.println(this + " is now enabled!");
+        logInfo(this + " is now enabled!");
     }
 	
 	@EventHandler(priority = EventPriority.HIGHEST)

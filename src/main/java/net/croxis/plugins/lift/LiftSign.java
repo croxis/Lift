@@ -79,8 +79,6 @@ class LiftSign {
             readVersion1();
         else if (line0.split(":").length == 2)
             readVersion2();
-        if (Config.debug)
-            System.out.print("Sign version: " + Integer.toString(signVersion));
         if (signVersion < 2)
             updateFormat();
     }
