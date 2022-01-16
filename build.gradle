@@ -1,13 +1,16 @@
 plugins {
-    id 'org.spongepowered.plugin' version '0.8.1'
+	id 'java'
 }
+
+// This may not be required, but has solved issues in the past
+compileJava.options.encoding = 'UTF-8'
 
 defaultTasks 'clean', 'build'
 
 //the naming of this artifact
 group = 'net.croxis.plugins.lift'
 jar.archiveFileName = 'Lift.jar'
-version = '72'
+version = '73'
 description = 'Elevators!'
 
 // Minimum version of Java required
@@ -15,7 +18,7 @@ sourceCompatibility = JavaVersion.VERSION_16
 targetCompatibility = JavaVersion.VERSION_16
 
 //dependencies versions
-ext.bukkitVersion = '1.17.1-R0.1-SNAPSHOT'
+ext.bukkitVersion = '1.18.1-R0.1-SNAPSHOT'
 
 //dependencies declaration
 dependencies {
@@ -23,10 +26,10 @@ dependencies {
 	//compile group: 'org.bukkit', name: 'bukkit', version: bukkitVersion
 	//compile group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
 	//compileOnly 'org.spigotmc:plugin-annotations:1.2.0-SNAPSHOT'
-	implementation group: 'org.bukkit', name: 'bukkit', version: bukkitVersion
+	//implementation group: 'org.bukkit', name: 'bukkit', version: bukkitVersion
 	implementation group: 'org.spigotmc', name: 'spigot-api', version: bukkitVersion
-	
-	//compile 'org.spongepowered:spongeapi:7.4.0'
+
+	//implementation group: 'org.spongepowered', name: 'spongeapi', version:'8.0.0-SNAPSHOT'
 	
 	testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
@@ -61,8 +64,8 @@ repositories {
 		url = 'https://hub.spigotmc.org/nexus/content/repositories/public/'
 	}
 
-	maven {
-        name = 'sponge'
-        url = 'https://repo.spongepowered.org/maven'
-    }
+	//maven {
+    //    name = 'sponge'
+    //    url = 'https://repo.spongepowered.org/maven'
+    //}
 } 
