@@ -62,9 +62,10 @@ public class BukkitElevatorManager extends ElevatorManager{
         plugin.logDebug("Starting elevator gen caused by: " + cause + " v" + plugin.getDescription().getVersion());
         BukkitElevator bukkitElevator = new BukkitElevator(plugin);
         bukkitElevator.cause = "Starting elevator gen caused by: " + cause + " v" + plugin.getDescription().getVersion();
-        int yscan = block.getY() - 1;
+        int yscan = block.getY();
         while(yscan >= block.getWorld().getMinHeight()){
-            if (yscan == block.getWorld().getMinHeight()){ //Gone too far with no base abort!
+            yscan--;
+            if (yscan < block.getWorld().getMinHeight()){ //Gone too far with no base abort!
                 plugin.logDebug("No elevator base found");
                 bukkitElevator.setFailReason("No elevator base found");
                 return null;
@@ -90,7 +91,6 @@ public class BukkitElevatorManager extends ElevatorManager{
                 plugin.logDebug("Is Base Block: " + BukkitElevatorManager.isBaseBlock(checkBlock));
                 return null;
             }
-            yscan--;
         }
         plugin.logDebug("Base size: " + bukkitElevator.baseBlocks.size() + " at " + bukkitElevator.baseBlocks.iterator().next().getLocation().toString());
 
